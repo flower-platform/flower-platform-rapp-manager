@@ -24,6 +24,7 @@ public class Main {
 		HttpServer server = new HttpServer(serverPort, false);
 		server.registerCommand("startApp", StartAppCommand.class);
 		server.registerCommand("stopApp", StopAppCommand.class);
+		server.registerCommand("getLog", GetLogCommand.class);
 	}
 	
 }
