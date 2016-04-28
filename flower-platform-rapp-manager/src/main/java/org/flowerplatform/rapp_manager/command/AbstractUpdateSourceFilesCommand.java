@@ -1,6 +1,6 @@
 package org.flowerplatform.rapp_manager.command;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.flowerplatform.rapp_manager.SourceFileDto;
 import org.flowerplatform.tiny_http_server.IHttpCommand;
@@ -13,7 +13,7 @@ public abstract class AbstractUpdateSourceFilesCommand implements IHttpCommand {
 
 	protected String rAppName;
 	
-	protected ArrayList<SourceFileDto> files; 
+	protected List<SourceFileDto> files; 
 
 	public String getrAppName() {
 		return rAppName;
@@ -23,11 +23,11 @@ public abstract class AbstractUpdateSourceFilesCommand implements IHttpCommand {
 		this.rAppName = rAppName;
 	}
 
-	public ArrayList<SourceFileDto> getFiles() {
+	public List<SourceFileDto> getFiles() {
 		return files;
 	}
 
-	public void setFiles(ArrayList<SourceFileDto> files) {
+	public void setFiles(List<SourceFileDto> files) {
 		this.files = files;
 	}
 	
