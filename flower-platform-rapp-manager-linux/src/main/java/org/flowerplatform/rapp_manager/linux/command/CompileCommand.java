@@ -9,6 +9,7 @@ import java.io.FileFilter;
 import java.io.IOException;
 
 import org.flowerplatform.rapp_manager.command.AbstractCompileCommand;
+import org.flowerplatform.rapp_manager.linux.CompilationException;
 
 
 /**
@@ -43,7 +44,7 @@ public class CompileCommand extends AbstractCompileCommand {
 				p.waitFor();
 				if (p.exitValue() != 0) {
 					log("failed");
-					throw new RuntimeException("Error compiling: " + f.getName());
+					throw new CompilationException("Error compiling: " + f.getName());
 				}
 				log("done");
 			}

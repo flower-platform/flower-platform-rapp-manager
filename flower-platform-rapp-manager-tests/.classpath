@@ -38,5 +38,6 @@
 	<classpathentry kind="lib" path="test_deps/junit-4.12.jar"/>
 	<classpathentry kind="lib" path="test_deps/junit-toolbox-2.2.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/flower-platform-rapp-manager-arduino-ide"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/flower-platform-rapp-manager-linux"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
