@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import org.flowerplatform.rapp_manager.SourceFileDto;
 import org.flowerplatform.rapp_manager.command.AbstractUpdateSourceFilesCommand;
+import org.flowerplatform.rapp_manager.linux.Util;
 import org.flowerplatform.tiny_http_server.HttpCommandException;
 
 /**
@@ -18,35 +19,17 @@ import org.flowerplatform.tiny_http_server.HttpCommandException;
  */
 public class UpdateSourceFilesCommand extends AbstractUpdateSourceFilesCommand {
 	
-	/**
-	 * Deletes all the files contained in the folder given as parameter.
-	 * 
-	 * @throws HttpCommandException if any problem occurrs.
-	 */
-	private void deleteFilesFromFolder(File dir) throws HttpCommandException {
-		if (!dir.exists() || !dir.isDirectory()) {
-			return;
-		}
-		for (File f : dir.listFiles()) {
-			try {
-				if (!(f.delete())) {
-					throw new HttpCommandException("Can't delete file " + f.getAbsolutePath());
-				}
-			} catch (HttpCommandException hce) { 
-				throw hce;
-			} catch (Throwable th) {
-				throw new HttpCommandException( String.format("Error while deleting file %s . Message is \"%s\".", f.getAbsolutePath(), th.getMessage()) );
-			}
-		}
-	}
-
 	@Override
 	public Object run() throws HttpCommandException {
 		File appDir = new File(String.format("%s/%s/%s", System.getProperty("user.home"), RAPPS_DIR, rAppName));
 		appDir.mkdirs();
 		
 		// Make sure the working folder is clean (i.e. no unnecessary files)
-		deleteFilesFromFolder(appDir);
+		try {
+			Util.deleteFilesFromFolder(appDir);
+		} catch (IOException e) {
+			throw new HttpCommandException(e.getMessage(), e);
+		}
 		
 		// save files to disk
 		for (SourceFileDto srcFile : files) {

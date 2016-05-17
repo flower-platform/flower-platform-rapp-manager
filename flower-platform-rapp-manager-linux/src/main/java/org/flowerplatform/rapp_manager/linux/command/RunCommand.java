@@ -6,6 +6,7 @@ import static org.flowerplatform.rapp_manager.linux.Main.logp;
 import java.io.IOException;
 
 import org.flowerplatform.rapp_manager.command.AbstractRunCommand;
+import org.flowerplatform.tiny_http_server.HttpCommandException;
 
 
 /**
@@ -17,7 +18,7 @@ public class RunCommand extends AbstractRunCommand {
 
 	private static final String START_APP_COMMAND = "/opt/flower-platform/bin/start-app %s %s";
 	
-	public Object run() {
+	public Object run() throws HttpCommandException {
 		if (rAppName == null) {
 			throw new IllegalArgumentException("rApp name not specified");
 		}
@@ -30,7 +31,7 @@ public class RunCommand extends AbstractRunCommand {
 			p.waitFor();
 			if (p.exitValue() != 0) {
 				log("failed");
-				throw new RuntimeException("Error starting rApp: " + rAppName);
+				throw new HttpCommandException("Error starting rApp: " + rAppName);
 			} else {
 				log("done");
 			}

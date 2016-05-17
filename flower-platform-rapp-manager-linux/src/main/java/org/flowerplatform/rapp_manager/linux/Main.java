@@ -3,7 +3,9 @@ package org.flowerplatform.rapp_manager.linux;
 import java.io.File;
 
 import org.flowerplatform.rapp_manager.linux.command.CompileCommand;
+import org.flowerplatform.rapp_manager.linux.command.DeleteCommand;
 import org.flowerplatform.rapp_manager.linux.command.GetLogCommand;
+import org.flowerplatform.rapp_manager.linux.command.GetStatusCommand;
 import org.flowerplatform.rapp_manager.linux.command.RunCommand;
 import org.flowerplatform.rapp_manager.linux.command.StopCommand;
 import org.flowerplatform.rapp_manager.linux.command.UpdateSourceFilesCommand;
@@ -33,7 +35,9 @@ public class Main {
 		server.registerCommand("compile", CompileCommand.class);
 		server.registerCommand("run", RunCommand.class);
 		server.registerCommand("stop", StopCommand.class);
+		server.registerCommand("delete", DeleteCommand.class);
 		server.registerCommand("getLog", GetLogCommand.class);
+		server.registerCommand("getStatus", GetStatusCommand.class);
 	}
 
 	public static void logp(String message) {
