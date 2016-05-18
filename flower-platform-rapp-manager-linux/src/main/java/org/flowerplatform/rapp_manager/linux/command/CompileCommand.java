@@ -1,6 +1,5 @@
 package org.flowerplatform.rapp_manager.linux.command;
 
-import static org.flowerplatform.rapp_manager.linux.Main.RAPPS_DIR;
 import static org.flowerplatform.rapp_manager.linux.Main.log;
 
 import java.io.ByteArrayOutputStream;
@@ -11,6 +10,7 @@ import java.io.InputStream;
 
 import org.flowerplatform.rapp_manager.command.AbstractCompileCommand;
 import org.flowerplatform.rapp_manager.linux.CompilationException;
+import org.flowerplatform.rapp_manager.linux.Constants;
 
 
 /**
@@ -25,15 +25,15 @@ public class CompileCommand extends AbstractCompileCommand {
 	private static final String PY_EXTENSION = ".py";
 	
 	public Object run() {
-		if (rAppName == null) {
-			throw new IllegalArgumentException("rApp name not specified");
+		if (rappName == null) {
+			throw new IllegalArgumentException("Rapp name not specified");
 		}
 		Process p;
 		StringBuilder sb = new StringBuilder();
 		try {
-			sb.append("Compiling " + rAppName + "... ");
-			File appDir = new File(String.format("%s/%s/%s", System.getProperty("user.home"), RAPPS_DIR, rAppName));
-			File[] pyFiles = appDir.listFiles(new FileFilter() {
+			sb.append("Compiling " + rappName + "... ");
+			File rappDir = new File(String.format(Constants.RAPP_DIR_PATTERN, System.getProperty("user.home"), rappName));
+			File[] pyFiles = rappDir.listFiles(new FileFilter() {
 				@Override
 				public boolean accept(File pathname) {
 					return pathname.getName().endsWith(PY_EXTENSION);

@@ -21,11 +21,11 @@ public class UpdateSourceFilesAndCompile {
 		UpdateSourceFilesCommand cmdUpdateSourceFiles = new UpdateSourceFilesCommand();
 		SourceFileDto file = Util.getTestResourceContent("RaspberryApp.py");
 		cmdUpdateSourceFiles.setFiles((Collections.singletonList(file)));
-		cmdUpdateSourceFiles.setrAppName("RaspberryApp");
+		cmdUpdateSourceFiles.setRappName("RaspberryApp");
 		cmdUpdateSourceFiles.run();
 		
 		CompileCommand cmdCompile = new CompileCommand();
-		cmdCompile.setrAppName("RaspberryApp");
+		cmdCompile.setRappName("RaspberryApp");
 		cmdCompile.run();
 	}
 	
@@ -34,11 +34,11 @@ public class UpdateSourceFilesAndCompile {
 		UpdateSourceFilesCommand cmdUpdateSourceFiles = new UpdateSourceFilesCommand();
 		SourceFileDto file = Util.getTestResourceContent("RaspberryAppCompilationError.py");
 		cmdUpdateSourceFiles.setFiles((Collections.singletonList(file)));
-		cmdUpdateSourceFiles.setrAppName("RaspberryAppCompilationError");
+		cmdUpdateSourceFiles.setRappName("RaspberryAppCompilationError");
 		cmdUpdateSourceFiles.run();
 		
 		CompileCommand cmdCompile = new CompileCommand();
-		cmdCompile.setrAppName("RaspberryAppCompilationError");
+		cmdCompile.setRappName("RaspberryAppCompilationError");
 		cmdCompile.run();
 	}
 

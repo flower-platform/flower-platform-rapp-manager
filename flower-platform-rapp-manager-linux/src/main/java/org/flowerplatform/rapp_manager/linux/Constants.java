@@ -16,5 +16,7 @@ public class Constants {
 	public static final String PID_FILE_PATTERN = "%s/run/%s.pid";
 
 	public static final String RAPP_PROPERTIES_FILE_NAME = "rapp.properties";
+
+	public static final String PROPERTY_START_AT_BOOT = "startAtBoot";
 	
 }

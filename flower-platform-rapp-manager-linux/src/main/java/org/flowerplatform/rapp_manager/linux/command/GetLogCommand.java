@@ -21,15 +21,15 @@ public class GetLogCommand implements IHttpCommand {
 	
 	private static Map<String, Long> logOffsets = new HashMap<>(); 	// <fileName, offset>
 	
-	private String rAppName;
+	private String rappName;
 	
 	public Object run() {
-		if (rAppName == null) {
-			throw new IllegalArgumentException("rApp name not specified");
+		if (rappName == null) {
+			throw new IllegalArgumentException("Rapp name not specified");
 		}
-		String logFileName = String.format("%s/log/%s.log", System.getProperty("user.home"), rAppName);
+		String logFileName = String.format("%s/log/%s.log", System.getProperty("user.home"), rappName);
 		try (RandomAccessFile logFile = new RandomAccessFile(logFileName, "r")) {
-			Long offset = logOffsets.remove(rAppName);
+			Long offset = logOffsets.remove(rappName);
 			if (offset == null) {
 				offset = logFile.length();
 			}
@@ -55,7 +55,7 @@ public class GetLogCommand implements IHttpCommand {
 				sb.append("\n[...]\n");
 				offset = fileLength - MAX_SEND_SIZE;
 			}
-			logOffsets.put(rAppName, fileLength);
+			logOffsets.put(rappName, fileLength);
 			logFile.seek(offset);
 			byte[] data = new byte[(int)(fileLength - offset)];
 			logFile.readFully(data);
@@ -68,12 +68,12 @@ public class GetLogCommand implements IHttpCommand {
 		}
 	}
 
-	public String getrAppName() {
-		return rAppName;
+	public String getRappName() {
+		return rappName;
 	}
 
-	public void setrAppName(String board) {
-		this.rAppName = board;
+	public void setRappName(String rappName) {
+		this.rappName = rappName;
 	}
 	
 }
