@@ -9,6 +9,7 @@ public class Library {
 	private String url;
 	private String version;
 	private List<String> headerFiles;
+	
 	private transient UserLibrary userLibrary;
 	
 	

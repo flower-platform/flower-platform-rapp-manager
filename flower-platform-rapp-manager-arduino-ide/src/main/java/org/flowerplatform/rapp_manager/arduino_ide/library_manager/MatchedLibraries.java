@@ -41,11 +41,9 @@ public class MatchedLibraries {
 		
 	};	
 	
-	private UserLibrary existingLibrary;
+	private Library existingLibrary;
 	
-	private String[] existingHeaderFiles;
-	
-	private Map<String, Object> requiredLibrary;
+	private Library requiredLibrary;
 	
 	private Status status = Status.UNKNOWN;
 	
@@ -53,29 +51,9 @@ public class MatchedLibraries {
 	
 	private String name;
 
-	public UserLibrary getExistingLibrary() {
-		return existingLibrary;
-	}
+	
 
-	public void setExistingLibrary(UserLibrary existingLibrary) {
-		this.existingLibrary = existingLibrary;
-	}
-
-	public String[] getExistingHeaderFiles() {
-		return existingHeaderFiles;
-	}
-
-	public void setExistingHeaderFiles(String[] existingHeaderFiles) {
-		this.existingHeaderFiles = existingHeaderFiles;
-	}
-
-	public Map<String, Object> getRequiredLibrary() {
-		return requiredLibrary;
-	}
-
-	public void setRequiredLibrary(Map<String, Object> requiredLibrary) {
-		this.requiredLibrary = requiredLibrary;
-	}
+	
 
 	public Status getStatus() {
 		return status;

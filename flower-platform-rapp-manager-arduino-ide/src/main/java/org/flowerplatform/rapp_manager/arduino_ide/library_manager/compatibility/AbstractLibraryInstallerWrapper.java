@@ -1,9 +1,12 @@
 package org.flowerplatform.rapp_manager.arduino_ide.library_manager.compatibility;
 
-import org.flowerplatform.rapp_manager.arduino_ide.library_manager.Library;
+import java.io.File;
+import java.io.IOException;
 
 import cc.arduino.contributions.libraries.ContributedLibrary;
 import cc.arduino.contributions.libraries.LibraryInstaller;
+import processing.app.Base;
+import processing.app.packages.LibraryList;
 
 /**
  * Needed because between 1.6.5 and 1.6.6 the signature was modified
@@ -25,8 +28,10 @@ public abstract class AbstractLibraryInstallerWrapper {
 	abstract protected void initLibraryInstaller();
 	
 
-	protected Library getInstalledLibraries() {
-		return null;
+	protected LibraryList getInstalledLibraries() {
+		return Base.INSTANCE.getUserLibs();
 	}
-	
+	protected String[] getheaderListFromIncludePath(File path) throws IOException {
+		return Base.headerListFromIncludePath(path);
+	}
 }
