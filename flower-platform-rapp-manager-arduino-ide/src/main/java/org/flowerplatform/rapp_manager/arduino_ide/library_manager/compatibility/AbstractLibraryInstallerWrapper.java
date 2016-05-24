@@ -29,9 +29,12 @@ public abstract class AbstractLibraryInstallerWrapper {
 	
 
 	protected LibraryList getInstalledLibraries() {
+		//TODO metoda ce intoarce o lista de UserLibrary: Base.INSTANCE.getUserLibs()
 		return Base.INSTANCE.getUserLibs();
 	}
 	protected String[] getheaderListFromIncludePath(File path) throws IOException {
+		//TODO metoda folosita pentru analiare libs existente : return Base.headerListFromIncludePath(path);
+		//TODO am pus aici pentru a putea fi mockuita
 		return Base.headerListFromIncludePath(path);
 	}
 }

@@ -82,12 +82,4 @@ public class MatchedLibraries {
 	public MatchedLibraries() {
 		super();
 	}
-
-	public MatchedLibraries(Status status, Action action, String name) {
-		super();
-		this.status = status;
-		this.action = action;
-		this.name = name;
-	}
-	
 }

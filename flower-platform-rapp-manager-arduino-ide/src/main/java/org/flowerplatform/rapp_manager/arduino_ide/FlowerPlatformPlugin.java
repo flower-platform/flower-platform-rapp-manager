@@ -21,8 +21,10 @@ import org.flowerplatform.rapp_manager.arduino_ide.command.GetBoardsCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.HeartbeatCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.SelectBoardCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.SetOptionsCommand;
+import org.flowerplatform.rapp_manager.arduino_ide.command.SynchronizeLibrariesCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.UpdateSourceFilesCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.UploadToBoardCommand;
+import org.flowerplatform.rapp_manager.arduino_ide.library_manager.compatibility.LibraryInstallerWrapper;
 import org.flowerplatform.tiny_http_server.CommandFactory;
 import org.flowerplatform.tiny_http_server.FlexRequestHandler;
 import org.flowerplatform.tiny_http_server.HttpServer;
@@ -103,6 +105,9 @@ public class FlowerPlatformPlugin implements Tool {
 						command = mapper.readValue((String) data, commandClass);
 						if (command instanceof IFlowerPlatformPluginAware) {
 							((IFlowerPlatformPluginAware) command).setFlowerPlatformPlugin(FlowerPlatformPlugin.this);
+						} else if (command instanceof SynchronizeLibrariesCommand) {
+							//TODO aici verific si versiunea de arduino si injectez LibraryInstaller pentru comanda SynchronizeLibrariesCommand
+							((SynchronizeLibrariesCommand) command).setInstaller(new LibraryInstallerWrapper());
 						}
 						return command;
 					} catch (IOException e) {
