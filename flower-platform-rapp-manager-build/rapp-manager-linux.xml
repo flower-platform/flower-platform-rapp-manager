@@ -7,6 +7,6 @@
   <modules>
   	<module>../flower-platform-rapp-manager</module>
   	<module>../flower-platform-rapp-manager-linux</module>
-  	<module>../../tiny-http-server/tiny-http-server</module>
+  	<module>../../../tiny-http-server/workspace/tiny-http-server</module>
   </modules>
 </project>
