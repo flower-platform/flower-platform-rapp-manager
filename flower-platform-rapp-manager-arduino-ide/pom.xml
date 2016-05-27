@@ -1,11 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	
+
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.flowerplatform</groupId>
 	<artifactId>flower-platform-rapp-manager-arduino-ide</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>flower-platform-rapp-manager-arduino-ide</name>
+	
+	<properties>
+		<arduino.home>D:/Java/arduino-1.6.7</arduino.home>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.flowerplatform</groupId>
@@ -17,14 +22,14 @@
 			<artifactId>arduino-core</artifactId>
 			<version>1.0</version>
 			<scope>system</scope>
-			<systemPath>D:/Java/arduino-1.6.7/lib/arduino-core.jar</systemPath>
+			<systemPath>${arduino.home}/lib/arduino-core.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>processing</groupId>
 			<artifactId>processing-app</artifactId>
 			<version>1.0</version>
 			<scope>system</scope>
-			<systemPath>D:/Java/arduino-1.6.7/lib/pde.jar</systemPath>
+			<systemPath>${arduino.home}/lib/pde.jar</systemPath>
 		</dependency>
 	</dependencies>
 	<build>
