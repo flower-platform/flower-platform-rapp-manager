@@ -6,6 +6,11 @@
 	<artifactId>flower-platform-rapp-manager-linux</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>flower-platform-rapp-manager-linux</name>
+
+	<properties>
+		<maven.build.timestamp.format>yyyy-MM-dd-HHmm</maven.build.timestamp.format>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.flowerplatform</groupId>
@@ -13,6 +18,7 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -34,9 +40,11 @@
 					</execution>
 				</executions>
 				<configuration>
+					<finalName>${project.artifactId}-${project.version}-${maven.build.timestamp}</finalName>
 					<descriptor>assembly.xml</descriptor>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
+
 </project>
