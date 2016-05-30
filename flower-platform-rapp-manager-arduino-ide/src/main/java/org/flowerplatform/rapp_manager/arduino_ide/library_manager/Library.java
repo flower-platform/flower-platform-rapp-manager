@@ -1,15 +1,25 @@
 package org.flowerplatform.rapp_manager.arduino_ide.library_manager;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import processing.app.packages.UserLibrary;
 
+@JsonIgnoreProperties(value = { "userLibrary" })
 public class Library {
 	private String name;
 	private String url;
 	private String version;
-	private List<String> headerFiles;
+	private String[] headerFiles;
+	boolean matched;
+	private String checksum;
 	
+	
+	public boolean isMatched() {
+		return matched;
+	}
+	public void setMatched(boolean matched) {
+		this.matched = matched;
+	}
 	private transient UserLibrary userLibrary;
 	
 	
@@ -31,10 +41,10 @@ public class Library {
 	public void setVersion(String version) {
 		this.version = version;
 	}
-	public List<String> getHeaderFiles() {
+	public String[] getHeaderFiles() {
 		return headerFiles;
 	}
-	public void setHeaderFiles(List<String> headerFiles) {
+	public void setHeaderFiles(String[] headerFiles) {
 		this.headerFiles = headerFiles;
 	}
 	public UserLibrary getUserLibrary() {

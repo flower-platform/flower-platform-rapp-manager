@@ -1,16 +1,12 @@
 package org.flowerplatform.rapp_manager.arduino_ide.library_manager;
 
-import java.util.Map;
-
-import processing.app.packages.UserLibrary;
-
 /**
  * @author Cristian Spiescu
  */
-public class MatchedLibraries {
+public class MatchedLibrary {
 	
 	public enum Status { 
-		OK("OK"), NEEDS_DOWNLOAD("Needs download"), NEEDS_UPDATE("Needs update"), UNKNOWN("Unknown");
+		OK("OK"), NEEDS_DOWNLOAD("Needs download"), NEEDS_UPDATE("Needs update"), UNKNOWN("Unknown"), NEEDS_DELETE("Needs delete");
 		
 		private String label;
 
@@ -52,9 +48,6 @@ public class MatchedLibraries {
 	private String name;
 
 	
-
-	
-
 	public Status getStatus() {
 		return status;
 	}
@@ -79,7 +72,25 @@ public class MatchedLibraries {
 		this.name = name;
 	}
 
-	public MatchedLibraries() {
-		super();
+	public MatchedLibrary() {
+		this.existingLibrary = new Library();
+		this.requiredLibrary = new Library();
 	}
+	
+	public Library getExistingLibrary() {
+		return existingLibrary;
+	}
+
+	public void setExistingLibrary(Library existingLibrary) {
+		this.existingLibrary = existingLibrary;
+	}
+
+	public Library getRequiredLibrary() {
+		return requiredLibrary;
+	}
+
+	public void setRequiredLibrary(Library requiredLibrary) {
+		this.requiredLibrary = requiredLibrary;
+	}
+
 }
