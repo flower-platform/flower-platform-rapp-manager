@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import org.flowerplatform.rapp_manager.SourceFileDto;
 import org.flowerplatform.rapp_manager.arduino_ide.FlowerPlatformPlugin;
@@ -22,7 +23,7 @@ import processing.app.Editor;
  * @author Claudiu Matei
  * @author Andrei Taras
  */
-public class UpdateSourceFilesCommand extends AbstractUpdateSourceFilesCommand implements IFlowerPlatformPluginAware{
+public class UpdateSourceFilesCommand extends AbstractUpdateSourceFilesCommand implements IFlowerPlatformPluginAware {
 
 	private static final String STANDARD_EXTENSION = "ino";
 	
@@ -55,13 +56,30 @@ public class UpdateSourceFilesCommand extends AbstractUpdateSourceFilesCommand i
 	/**
 	 * Persists the given files on disk, and opens the *.ino file in the editor.
 	 */
-	private void saveAndOpenInEditor(File dir) throws ReflectionException {
-		// update source files
+	private void saveAndOpenInEditor(File dir) throws HttpCommandException, ReflectionException {
+		if (files == null || files.size() == 0) {
+			throw new HttpCommandException("Cannot perform operation. No source files provided.");
+		}
+
+		boolean found = false;
+		// Scan the list of files; if any ends with *.ino => rename it to FLOWER_PLATFORM_WORK_FOLDER_NAME
+		// because this is required by Arduino IDE.
 		for (SourceFileDto srcFile : files) {
 			if (srcFile.getName().endsWith("." + STANDARD_EXTENSION)) {
 				// The *.ino file needs to have the same name as the folder it is found in.
 				srcFile.setName(FlowerPlatformPlugin.FLOWER_PLATFORM_WORK_FOLDER_NAME + "." + STANDARD_EXTENSION);
+				found = true;
+				break;
 			}
+		}
+
+		if (!found) {
+			// If no *.ino files were found, then just grab the first one, rename it, and use that as the main source.
+			files.get(0).setName(FlowerPlatformPlugin.FLOWER_PLATFORM_WORK_FOLDER_NAME + "." + STANDARD_EXTENSION);
+		}
+		
+		// update source files
+		for (SourceFileDto srcFile : files) {
 			File f = new File(dir.getAbsolutePath() + File.separator + srcFile.getName());
 			try {
 				BaseNoGui.saveFile(srcFile.getContents(), f);
