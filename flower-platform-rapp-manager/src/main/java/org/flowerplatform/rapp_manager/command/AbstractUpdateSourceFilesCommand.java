@@ -10,25 +10,20 @@ import org.flowerplatform.tiny_http_server.IHttpCommand;
  * @author Claudiu Matei
  */
 public abstract class AbstractUpdateSourceFilesCommand implements IHttpCommand {
-
-	protected String rAppName;
-	
+	protected String rappName;
 	protected List<SourceFileDto> files; 
 
-	public String getrAppName() {
-		return rAppName;
+	public String getRappName() {
+		return rappName;
 	}
-
-	public void setrAppName(String rAppName) {
-		this.rAppName = rAppName;
+	public void setRappName(String rappName) {
+		this.rappName = rappName;
 	}
 
 	public List<SourceFileDto> getFiles() {
 		return files;
 	}
-
 	public void setFiles(List<SourceFileDto> files) {
 		this.files = files;
 	}
-	
 }

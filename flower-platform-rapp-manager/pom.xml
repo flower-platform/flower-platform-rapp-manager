@@ -4,4 +4,9 @@
   <artifactId>flower-platform-rapp-manager</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>flower-platform-rapp-manager</name>
+  
+  <properties>
+  	<maven.compiler.source>1.8</maven.compiler.source>
+  	<maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
 </project>

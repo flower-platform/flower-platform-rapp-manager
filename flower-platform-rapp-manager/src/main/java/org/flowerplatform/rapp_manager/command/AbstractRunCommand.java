@@ -3,15 +3,12 @@ package org.flowerplatform.rapp_manager.command;
 import org.flowerplatform.tiny_http_server.IHttpCommand;
 
 public abstract class AbstractRunCommand implements IHttpCommand {
+	protected String rappName;
 
-	protected String rAppName;
-
-	public String getrAppName() {
-		return rAppName;
+	public String getRappName() {
+		return rappName;
 	}
-
-	public void setrAppName(String rAppName) {
-		this.rAppName = rAppName;
+	public void setRappName(String rappName) {
+		this.rappName = rappName;
 	}
-	
 }
