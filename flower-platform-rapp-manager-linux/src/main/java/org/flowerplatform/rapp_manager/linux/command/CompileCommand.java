@@ -1,14 +1,16 @@
 package org.flowerplatform.rapp_manager.linux.command;
 
-import static org.flowerplatform.rapp_manager.linux.Main.RAPPS_DIR;
 import static org.flowerplatform.rapp_manager.linux.Main.log;
-import static org.flowerplatform.rapp_manager.linux.Main.logp;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.flowerplatform.rapp_manager.command.AbstractCompileCommand;
+import org.flowerplatform.rapp_manager.linux.CompilationException;
+import org.flowerplatform.rapp_manager.linux.Constants;
 
 
 /**
@@ -23,14 +25,15 @@ public class CompileCommand extends AbstractCompileCommand {
 	private static final String PY_EXTENSION = ".py";
 	
 	public Object run() {
-		if (rAppName == null) {
-			throw new IllegalArgumentException("rApp name not specified");
+		if (rappName == null) {
+			throw new IllegalArgumentException("Rapp name not specified");
 		}
 		Process p;
+		StringBuilder sb = new StringBuilder();
 		try {
-			log("Compiling rApp: " + rAppName);
-			File appDir = new File(String.format("%s/%s/%s", System.getProperty("user.home"), RAPPS_DIR, rAppName));
-			File[] pyFiles = appDir.listFiles(new FileFilter() {
+			sb.append("Compiling " + rappName + "... ");
+			File rappDir = new File(String.format(Constants.RAPP_DIR_PATTERN, System.getProperty("user.home"), rappName));
+			File[] pyFiles = rappDir.listFiles(new FileFilter() {
 				@Override
 				public boolean accept(File pathname) {
 					return pathname.getName().endsWith(PY_EXTENSION);
@@ -39,19 +42,33 @@ public class CompileCommand extends AbstractCompileCommand {
 			for (File f : pyFiles) {
 				String cmd = String.format(COMPILE_COMMAND, f.getPath());
 				p = Runtime.getRuntime().exec(cmd);
-				logp(String.format("Compiling %s...", f.getPath()));
-				p.waitFor();
-				if (p.exitValue() != 0) {
-					log("failed");
-					throw new RuntimeException("Error compiling: " + f.getName());
+				
+				// read error stream
+				StringBuilder compilationErrors = new StringBuilder(); 
+				try (InputStream in = p.getErrorStream()) {
+					ByteArrayOutputStream result = new ByteArrayOutputStream();
+					byte[] buf = new byte[1024];
+					int n;
+					while ((n = in.read(buf)) != -1) {
+					    result.write(buf, 0, n);
+					}
+					compilationErrors.append(result.toString("UTF8"));
 				}
-				log("done");
+				
+				p.waitFor();
+				
+				if (p.exitValue() != 0) {
+					sb.append("\n" + compilationErrors);
+					log(sb.toString());
+					throw new CompilationException(sb.toString());
+				}
 			}
-			log("Compilation finished successfully");
-			return "rApp compiled: " + rAppName;
+			sb.append("OK");
+			log(sb.toString());
+			return sb.toString().getBytes();
 		} catch (IOException | InterruptedException e) {
 			return e.getMessage();
-		} 	
+		}
 	}
 
 }

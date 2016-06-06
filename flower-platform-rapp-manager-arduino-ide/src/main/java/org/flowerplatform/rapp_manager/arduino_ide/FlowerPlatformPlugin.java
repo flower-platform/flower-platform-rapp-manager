@@ -65,7 +65,7 @@ public class FlowerPlatformPlugin implements Tool {
 	}
 
 	@Override
-	public void init(Editor editor) {
+	public void init(final Editor editor) {
 		// get/create global properties
 		globalProperties = readProperties(getGlobalPropertiesFile());
 		boolean writeProperties = false;

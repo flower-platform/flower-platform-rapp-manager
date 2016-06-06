@@ -6,6 +6,8 @@ import static org.flowerplatform.rapp_manager.linux.Main.logp;
 import java.io.IOException;
 
 import org.flowerplatform.rapp_manager.command.AbstractRunCommand;
+import org.flowerplatform.rapp_manager.linux.Util;
+import org.flowerplatform.tiny_http_server.HttpCommandException;
 
 
 /**
@@ -17,24 +19,35 @@ public class RunCommand extends AbstractRunCommand {
 
 	private static final String START_APP_COMMAND = "/opt/flower-platform/bin/start-app %s %s";
 	
-	public Object run() {
-		if (rAppName == null) {
-			throw new IllegalArgumentException("rApp name not specified");
+	public Object run() throws HttpCommandException {
+		if (rappName == null) {
+			throw new HttpCommandException("Rapp name not specified");
 		}
+		
+		// check if rapp is already running
+		try {
+			if (Util.isRappRunning(rappName)) {
+				throw new HttpCommandException("Rapp is already running.");
+			}
+		} catch (IOException | InterruptedException e) {
+			throw new HttpCommandException(e.getMessage(), e);
+		}
+		
+		// try to start rapp
 		Process p;
 		try {
-			logp("Starting rApp: " + rAppName);
-			String cmd = String.format(START_APP_COMMAND, System.getProperty("user.home"), rAppName);
+			logp("Starting rapp: " + rappName);
+			String cmd = String.format(START_APP_COMMAND, System.getProperty("user.home"), rappName);
 			p = Runtime.getRuntime().exec(cmd);
 			logp("...");
 			p.waitFor();
 			if (p.exitValue() != 0) {
 				log("failed");
-				throw new RuntimeException("Error starting rApp: " + rAppName);
+				throw new HttpCommandException("Error starting rapp: " + rappName);
 			} else {
 				log("done");
 			}
-			return "rApp started: " + rAppName;
+			return "Rapp started: " + rappName;
 		} catch (IOException | InterruptedException e) {
 			return e.getMessage();
 		}
