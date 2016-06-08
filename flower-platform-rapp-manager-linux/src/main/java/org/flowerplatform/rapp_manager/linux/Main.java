@@ -10,6 +10,7 @@ import org.flowerplatform.rapp_manager.linux.command.GetStatusCommand;
 import org.flowerplatform.rapp_manager.linux.command.RunCommand;
 import org.flowerplatform.rapp_manager.linux.command.SetPropertiesCommand;
 import org.flowerplatform.rapp_manager.linux.command.StopCommand;
+import org.flowerplatform.rapp_manager.linux.command.UpdateSourceFilesAndCompileCommand;
 import org.flowerplatform.rapp_manager.linux.command.UpdateSourceFilesCommand;
 import org.flowerplatform.tiny_http_server.HttpServer;
 
@@ -35,6 +36,7 @@ public class Main {
 		HttpServer server = new HttpServer(serverPort, false);
 		server.registerCommand("updateSourceFiles", UpdateSourceFilesCommand.class);
 		server.registerCommand("compile", CompileCommand.class);
+		server.registerCommand("updateSourceFilesAndCompile", UpdateSourceFilesAndCompileCommand.class);
 		server.registerCommand("run", RunCommand.class);
 		server.registerCommand("stop", StopCommand.class);
 		server.registerCommand("delete", DeleteCommand.class);
