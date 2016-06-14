@@ -1,0 +1,37 @@
+#!/bin/sh
+
+set -e
+# Automatically added by dh_installdocs
+if [ "$1" = "configure" ]; then
+  if [ -d /usr/doc -a ! -e /usr/doc/flower-platform -a -d /usr/share/doc/flower-platform ]; then
+    ln -sf ../share/doc/flower-platform /usr/doc/flower-platform
+  fi
+fi
+# End automatically added section
+
+echo "Executing post-install script"
+
+USERNAME=flowerplatform
+
+userExists=false
+getent passwd $USERNAME >/dev/null 2>&1 && userExists=true
+if ! $userExists; then
+echo "Creating user $USERNAME..."
+useradd -m -d /home/$USERNAME $USERNAME
+fi
+
+echo "Creating logs folder..."
+mkdir -p /home/$USERNAME/log
+chown $USERNAME:$USERNAME /home/$USERNAME/log
+
+echo "Adding user to groups..."
+usermod -G dialout,cdrom,audio,video,plugdev,games,users,input,netdev,spi,i2c,gpio $USERNAME
+
+echo "Registering service..."
+systemctl daemon-reload
+update-rc.d rappmanager defaults
+
+echo "Starting service..."
+service rappmanager start
+
+echo "Post-install script done."

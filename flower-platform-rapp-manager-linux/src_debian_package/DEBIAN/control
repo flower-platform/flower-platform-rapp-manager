@@ -1,0 +1,9 @@
+Package: flower-platform
+Version: 1.0
+Section: base
+Priority: optional
+Architecture: all
+Depends: oracle-java8-jdk, python2.7
+Maintainer: Crispico <contact@crispico.com>
+Description: Flower Platform 
+ Flower platform for Raspberry Pi
