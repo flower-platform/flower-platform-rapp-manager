@@ -15,8 +15,10 @@
 		    <fileset dir="target/" includes="*-bundle.jar" />
 			<globmapper from="*" to="rapp-manager.jar" />
 		</copy>
+		<exec executable="fakeroot">
+			<arg value="dpkg-deb" />
+			<arg value="--build" />
+			<arg value="src_debian_package" />
+		</exec>
 	</target>
-	 <exec executable="fakeroot">
-	 	<arg value="dpkg-deb --build ./src_debian_package" />
-	 </exec>
 </project>
