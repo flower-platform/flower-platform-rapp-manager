@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     @author Claudiu Matei                                             
+     ====================================================================== -->
+<project name="project" default="default" basedir="..">
+	<description>
+           Flower Platform Rapp Manager Linux Package
+    </description>
+
+	<!-- ================================= 
+          target: default              
+         ================================= -->
+	<target name="default">
+		<copy file="../../rapp-manager-linux/workspace/target/*-bundle.jar" tofile="../../rapp-manager-linux/workspace/target/rapp-manager.jar" />
+	</target>
+
+</project>
