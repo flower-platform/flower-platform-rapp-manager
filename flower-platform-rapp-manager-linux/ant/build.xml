@@ -20,6 +20,6 @@
 			<arg value="--build" />
 			<arg value="src_debian_package" />
 		</exec>
-		<rename src="src_debian_package.deb" dest="flower-platform_1.0.0_all.deb" />
+		<move file="src_debian_package.deb" tofile="target/flower-platform_1.0.0_all.deb" />
 	</target>
 </project>
