@@ -10,8 +10,8 @@
 		<maven.build.timestamp.format>yyyy-MM-dd-HHmm</maven.build.timestamp.format>
 	</properties>
 	<modules>
+		<module>${tiny-http-server.folder}</module>
 		<module>../flower-platform-rapp-manager</module>
 		<module>../flower-platform-rapp-manager-arduino-ide</module>
-		<module>${tiny-http-server.folder}</module>
 	</modules>
 </project>
