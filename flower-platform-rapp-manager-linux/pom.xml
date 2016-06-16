@@ -9,7 +9,7 @@
 
 	<properties>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
-		<versionDir>src/main/java/org/flowerplatform/rapp_manager/linux</versionDir>
+		<versionDir>../flower-platform-rapp-manager-linux/src/main/java/org/flowerplatform/rapp_manager/linux</versionDir>
 	</properties>
 
 	<dependencies>
