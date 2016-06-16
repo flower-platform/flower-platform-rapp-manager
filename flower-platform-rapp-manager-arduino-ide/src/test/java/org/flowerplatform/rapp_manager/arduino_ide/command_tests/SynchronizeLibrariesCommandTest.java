@@ -20,8 +20,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 public class SynchronizeLibrariesCommandTest {
 		
 	MatchedLibrary.Status[] expectedStatus = {Status.OK, Status.UNKNOWN, Status.NEEDS_DOWNLOAD, Status.NEEDS_DOWNLOAD, Status.NEEDS_DOWNLOAD, Status.NEEDS_DOWNLOAD};

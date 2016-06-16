@@ -1,5 +1,7 @@
 package org.flowerplatform.rapp_manager.arduino_ide.library_manager;
 
+import org.flowerplatform.rapp_manager.arduino_ide.library_manager.MatchedLibrary.Action;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import processing.app.packages.UserLibrary;
@@ -11,8 +13,6 @@ public class Library {
 	private String version;
 	private String[] headerFiles;
 	boolean matched;
-	private String checksum;
-	
 	
 	public boolean isMatched() {
 		return matched;
