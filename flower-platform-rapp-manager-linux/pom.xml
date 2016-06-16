@@ -9,7 +9,7 @@
 
 	<properties>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
-		<versionDir>../flower-platform-rapp-manager-linux/src/main/java/org/flowerplatform/rapp_manager/linux</versionDir>
+		<versionDir>${project.basedir}/src/main/java/org/flowerplatform/rapp_manager/linux</versionDir>
 	</properties>
 
 	<dependencies>
@@ -47,10 +47,11 @@
 			<plugin>
 				<groupId>com.google.code.maven-replacer-plugin</groupId>
 				<artifactId>replacer</artifactId>
-				<version>1.5.2</version>
+				<version>1.5.3</version>
 				<inherited>false</inherited>
 				<executions>
 					<execution>
+						<id>set-version-before</id>
 						<phase>compile</phase>
 						<goals>
 							<goal>replace</goal>

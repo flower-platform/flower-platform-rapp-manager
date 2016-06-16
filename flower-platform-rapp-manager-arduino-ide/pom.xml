@@ -10,7 +10,7 @@
 	<properties>
 		<arduino.home>D:/Java/arduino-1.6.7</arduino.home>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
-		<versionDir>../flower-platform-rapp-manager-arduino-ide/src/main/java/org/flowerplatform/rapp_manager/arduino_ide</versionDir>
+		<versionDir>${project.basedir}/src/main/java/org/flowerplatform/rapp_manager/arduino_ide</versionDir>
 	</properties>
 
 	<dependencies>
@@ -62,10 +62,11 @@
 			<plugin>
 				<groupId>com.google.code.maven-replacer-plugin</groupId>
 				<artifactId>replacer</artifactId>
-				<version>1.5.2</version>
+				<version>1.5.3</version>
 				<inherited>false</inherited>
 				<executions>
 					<execution>
+						<id>set-version-before</id>
 						<phase>compile</phase>
 						<goals>
 							<goal>replace</goal>
