@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.flowerplatform</groupId>
 	<artifactId>flower-platform-rapp-manager-arduino-ide-build</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>pom</packaging>
 	<properties>
 		<tiny-http-server.folder>../../tiny-http-server/tiny-http-server</tiny-http-server.folder>

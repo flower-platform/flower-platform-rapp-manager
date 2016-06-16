@@ -4,13 +4,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.flowerplatform</groupId>
 	<artifactId>flower-platform-rapp-manager</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>flower-platform-rapp-manager</name>
 	<dependencies>
 		<dependency>
 			<groupId>org.flowerplatform</groupId>
 			<artifactId>tiny-http-server</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 </project>

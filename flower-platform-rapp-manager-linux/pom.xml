@@ -4,23 +4,27 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.flowerplatform</groupId>
 	<artifactId>flower-platform-rapp-manager-linux</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>flower-platform-rapp-manager-linux</name>
 
 	<properties>
-		<maven.build.timestamp.format>yyyy-MM-dd-HHmm</maven.build.timestamp.format>
+		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+		<versionDir>../flower-platform-rapp-manager-linux/src/main/java/org/flowerplatform/rapp_manager/linux</versionDir>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.flowerplatform</groupId>
 			<artifactId>flower-platform-rapp-manager</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 
 	<build>
+		<finalName>${project.artifactId}-${project.version}-${maven.build.timestamp}</finalName>
 		<plugins>
+			
+			<!-- compile -->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.3</version>
@@ -28,8 +32,80 @@
 					<source>1.7</source>
 					<target>1.7</target>
 				</configuration>
+				<executions>
+					<execution>
+            			<id>post-compile-version</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
+
+			<!-- replace version in Version.java -->
 			<plugin>
+				<groupId>com.google.code.maven-replacer-plugin</groupId>
+				<artifactId>replacer</artifactId>
+				<version>1.5.3</version>
+				<inherited>false</inherited>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<goals>
+							<goal>replace</goal>
+						</goals>
+						<configuration>
+							<file>${versionDir}/Version.java</file>
+							<regex>true</regex>
+							<replacements>
+								<replacement>
+									<token>VERSION = .*;</token>
+									<value>VERSION = "${project.version}";</value>
+								</replacement>
+								<replacement>
+									<token>BUILD_TIMESTAMP = .*;</token>
+									<value>BUILD_TIMESTAMP = "${maven.build.timestamp}";</value>
+								</replacement>
+							</replacements>
+						</configuration>
+					</execution>
+         		</executions>
+			</plugin>
+			
+			<!-- backup and restore Version.java -->
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>0</id>
+						<phase>generate-sources</phase>
+						<configuration>
+							<tasks>
+								<copy file="${versionDir}/Version.java" tofile="${versionDir}/Version.java.bak"	overwrite="true" />
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>1</id>
+						<phase>process-classes</phase>
+						<configuration>
+							<tasks>
+								<move file="${versionDir}/Version.java.bak" tofile="${versionDir}/Version.java" overwrite="true" />
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+        	
+        	<!-- create jar bundle -->
+        	<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<executions>
 					<execution>
@@ -40,7 +116,6 @@
 					</execution>
 				</executions>
 				<configuration>
-					<finalName>${project.artifactId}-${project.version}-${maven.build.timestamp}</finalName>
 					<descriptor>assembly.xml</descriptor>
 				</configuration>
 			</plugin>
