@@ -77,24 +77,36 @@
          		</executions>
 			</plugin>
 			
-			<!-- backup and restore Version.java -->
+			<!-- backup and restore Version.java; sleep after replace (to change modified unix timestamp) -->
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>0</id>
+						<id>backup-version-file</id>
 						<phase>generate-sources</phase>
 						<configuration>
 							<tasks>
-								<copy file="${versionDir}/Version.java" tofile="${versionDir}/Version.java.bak"	overwrite="true" />
+								<copy file="${versionDir}/Version.java" tofile="${versionDir}/Version.java.bak" overwrite="true" />
 							</tasks>
 						</configuration>
 						<goals>
 							<goal>run</goal>
 						</goals>
 					</execution>
+		            <execution>
+		                <id>sleep</id>
+		                <phase>compile</phase>
+				        <configuration>
+				            <tasks>
+				                 <sleep seconds="1" />
+				            </tasks>
+				        </configuration>
+		                <goals>
+		                    <goal>run</goal>
+		                </goals>
+		            </execution>
 					<execution>
-						<id>1</id>
+						<id>restore-version-file</id>
 						<phase>process-classes</phase>
 						<configuration>
 							<tasks>
@@ -123,6 +135,7 @@
 					<descriptor>assembly.xml</descriptor>
 				</configuration>
 			</plugin>
+			
 		</plugins>
 	</build>
 
