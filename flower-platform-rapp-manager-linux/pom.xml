@@ -23,7 +23,7 @@
 	<build>
 		<finalName>${project.artifactId}-${project.version}-${maven.build.timestamp}</finalName>
 		<plugins>
-			
+
 			<!-- compile -->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -39,9 +39,6 @@
 						<goals>
 							<goal>compile</goal>
 						</goals>
-						<configuration>
-							<useIncrementalCompilation>false</useIncrementalCompilation>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -76,7 +73,7 @@
 					</execution>
          		</executions>
 			</plugin>
-			
+
 			<!-- backup and restore Version.java; sleep after replace (to change modified unix timestamp) -->
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
@@ -93,18 +90,6 @@
 							<goal>run</goal>
 						</goals>
 					</execution>
-		            <execution>
-		                <id>sleep</id>
-		                <phase>compile</phase>
-				        <configuration>
-				            <tasks>
-				                 <sleep seconds="1" />
-				            </tasks>
-				        </configuration>
-		                <goals>
-		                    <goal>run</goal>
-		                </goals>
-		            </execution>
 					<execution>
 						<id>restore-version-file</id>
 						<phase>process-classes</phase>
@@ -119,7 +104,7 @@
 					</execution>
 				</executions>
 			</plugin>
-        	
+
         	<!-- create jar bundle -->
         	<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
