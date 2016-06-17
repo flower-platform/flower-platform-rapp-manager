@@ -54,6 +54,9 @@
 						<goals>
 							<goal>compile</goal>
 						</goals>
+						<configuration>
+							<useIncrementalCompilation>false</useIncrementalCompilation>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
