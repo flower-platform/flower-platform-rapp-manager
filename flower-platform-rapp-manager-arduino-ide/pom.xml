@@ -47,15 +47,6 @@
 					<source>1.7</source>
 					<target>1.7</target>
 				</configuration>
-				<executions>
-					<execution>
-            			<id>post-compile-version</id>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 
 			<!-- replace version in Version.java -->
@@ -87,37 +78,6 @@
 						</configuration>
 					</execution>
          		</executions>
-			</plugin>
-
-			<!-- backup and restore Version.java; sleep after replace (to change modified unix timestamp) -->
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>backup-version-file</id>
-						<phase>generate-sources</phase>
-						<configuration>
-							<tasks>
-								<copy file="${versionDir}/Version.java" tofile="${versionDir}/Version.java.bak" overwrite="true" />
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>restore-version-file</id>
-						<phase>process-classes</phase>
-						<configuration>
-							<tasks>
-								<move file="${versionDir}/Version.java.bak" tofile="${versionDir}/Version.java" overwrite="true" />
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 
         	<!-- create jar bundle -->
