@@ -11,6 +11,14 @@
           target: default              
          ================================= -->
 	<target name="default">
+
+		<loadfile encoding="UTF-8" property="version" srcFile="pom.xml" >
+			<filterchain>
+				<striplinebreaks/>
+		    	<containsregex pattern=".*?&lt;version&gt;(.+?)&lt;.*" replace="\1" />
+			</filterchain>
+		</loadfile>
+		
 		<copy todir="src_debian_package/opt/flower-platform/bin" overwrite="true">
 		    <fileset dir="target/" includes="*-bundle.jar" />
 			<globmapper from="*" to="rapp-manager.jar" />
@@ -20,6 +28,6 @@
 			<arg value="--build" />
 			<arg value="src_debian_package" />
 		</exec>
-		<move file="src_debian_package.deb" tofile="target/flower-platform_1.0.0_all.deb" />
+		<move file="src_debian_package.deb" tofile="target/flower-platform_${version}_all.deb" />
 	</target>
 </project>
