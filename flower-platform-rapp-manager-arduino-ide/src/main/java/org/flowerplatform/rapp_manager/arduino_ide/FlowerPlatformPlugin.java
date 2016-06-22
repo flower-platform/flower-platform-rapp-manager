@@ -14,8 +14,6 @@ import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Properties;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import javax.swing.JMenu;
 
 import org.flowerplatform.rapp_manager.arduino_ide.command.CompileCommand;
@@ -26,7 +24,6 @@ import org.flowerplatform.rapp_manager.arduino_ide.command.SetOptionsCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.SynchronizeLibrariesCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.UpdateSourceFilesCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.UploadToBoardCommand;
-import org.flowerplatform.rapp_manager.arduino_ide.library_manager.Library;
 import org.flowerplatform.rapp_manager.arduino_ide.library_manager.compatibility.AbstractLibraryInstallerWrapper;
 import org.flowerplatform.rapp_manager.arduino_ide.library_manager.compatibility.LibraryInstallerWrapper;
 import org.flowerplatform.rapp_manager.arduino_ide.library_manager.compatibility.LibraryInstallerWrapperPre166;
@@ -73,7 +70,7 @@ public class FlowerPlatformPlugin implements Tool {
 	}
 
 	@Override
-	public void init(Editor editor) {
+	public void init(final Editor editor) {
 		// get/create global properties
 		globalProperties = readProperties(getGlobalPropertiesFile());
 		boolean writeProperties = false;

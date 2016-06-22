@@ -10,6 +10,7 @@
 	    <groupId>junit</groupId>
 	    <artifactId>junit</artifactId>
 	    <version>4.12</version>
+	    <scope>test</scope>
 	</dependency>
 
   	<dependency>
@@ -17,6 +18,12 @@
 	    <artifactId>mockito-all</artifactId>
 	    <version>1.9.5</version>
 	    <scope>test</scope>
+	</dependency>
+	
+	<dependency>
+	    <groupId>com.github.zafarkhaja</groupId>
+	    <artifactId>java-semver</artifactId>
+	    <version>0.9.0</version>
 	</dependency>
   </dependencies>
   

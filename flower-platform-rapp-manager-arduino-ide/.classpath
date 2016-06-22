@@ -22,7 +22,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_73">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
@@ -35,5 +35,6 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/flower-platform-rapp-manager"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/processing"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/arduino-core"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/jdk1.8.0_73/lib/tools.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

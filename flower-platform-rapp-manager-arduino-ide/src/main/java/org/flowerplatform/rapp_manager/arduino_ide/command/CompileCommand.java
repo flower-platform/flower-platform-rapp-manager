@@ -92,8 +92,8 @@ public class CompileCommand extends AbstractCompileCommand implements IFlowerPla
 		};
 
 		try {
-			RunnableWithListener presentHandlerWrapper = new RunnableWithListener(Util.getPrivateField(Editor.class, editor, "presentHandler"), compilationEndListener);
-			RunnableWithListener runHandlerWrapper = new RunnableWithListener(Util.getPrivateField(Editor.class, editor, "runHandler"), compilationEndListener);
+			RunnableWithListener presentHandlerWrapper = new RunnableWithListener((Runnable) Util.getPrivateField(Editor.class, editor, "presentHandler"), compilationEndListener);
+			RunnableWithListener runHandlerWrapper = new RunnableWithListener((Runnable) Util.getPrivateField(Editor.class, editor, "runHandler"), compilationEndListener);
 			
 			editor.handleRun(false, presentHandlerWrapper, runHandlerWrapper);
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException e1) {

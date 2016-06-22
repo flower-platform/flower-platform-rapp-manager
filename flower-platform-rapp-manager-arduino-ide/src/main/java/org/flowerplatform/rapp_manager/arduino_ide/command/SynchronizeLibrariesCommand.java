@@ -25,7 +25,10 @@ import cc.arduino.contributions.VersionHelper;
 
 public class SynchronizeLibrariesCommand implements IHttpCommand{
 	
-	List<Library> requiredLibraries;
+	private List<Library> requiredLibraries;
+	private boolean dryRun;
+	private boolean duplicateLibraries;
+	
 	public List<Library> getRequiredLibraries() {
 		return requiredLibraries;
 	}
@@ -50,8 +53,6 @@ public class SynchronizeLibrariesCommand implements IHttpCommand{
 		this.duplicateLibraries = duplicateLibraries;
 	}
 
-	boolean dryRun;
-	boolean duplicateLibraries;
 	
 	@JsonIgnore
 	protected transient AbstractLibraryInstallerWrapper installer;

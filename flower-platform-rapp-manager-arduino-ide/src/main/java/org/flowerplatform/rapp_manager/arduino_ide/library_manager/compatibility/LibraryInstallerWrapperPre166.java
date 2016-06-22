@@ -39,7 +39,7 @@ public class LibraryInstallerWrapperPre166 extends AbstractLibraryInstallerWrapp
 			liField.setAccessible(true);
 			librariesIndexer = (LibrariesIndexer) liField.get(null);
 			
-			installer = new LibraryInstaller(librariesIndexer, BaseNoGui.getPlatform());
+			installer = new LibraryInstaller(BaseNoGui.getPlatform());
 		} catch (NoSuchFieldException | SecurityException
 				| IllegalArgumentException | IllegalAccessException e) {
 			FlowerPlatformPlugin.log("Cannot instantiate LibraryInstaller", e);
