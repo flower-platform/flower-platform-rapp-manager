@@ -22,7 +22,7 @@ import org.flowerplatform.rapp_manager.arduino_ide.command.GetBoardsWithDetails;
 import org.flowerplatform.rapp_manager.arduino_ide.command.GetLogCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.GetSelectedBoard;
 import org.flowerplatform.rapp_manager.arduino_ide.command.GetStatusCommand;
-import org.flowerplatform.rapp_manager.arduino_ide.command.SelectBoardCommand;
+import org.flowerplatform.rapp_manager.arduino_ide.command.SetSelectedBoardCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.SetOptionsCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.UpdateSourceFilesAndCompileCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.UpdateSourceFilesCommand;
@@ -121,7 +121,7 @@ public class FlowerPlatformPlugin implements Tool {
 			server.registerCommand("getBoards", GetBoardsCommand.class);
 			server.registerCommand("getSelectedBoard", GetSelectedBoard.class);
 			//server.registerCommand("getBoardsWithDetails", GetBoardsWithDetails.class);
-			server.registerCommand("selectBoard", SelectBoardCommand.class);
+			server.registerCommand("setSelectedBoard", SetSelectedBoardCommand.class);
 			server.registerCommand("setOptions", SetOptionsCommand.class);
 			server.registerCommand("getStatus", GetStatusCommand.class);
 			server.registerCommand("getLog", GetLogCommand.class);

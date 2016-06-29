@@ -1,5 +1,7 @@
 package org.flowerplatform.rapp_manager.arduino_ide.model;
 
+import java.util.List;
+
 /**
  * Holds information about a given board, its properties, etc.
  * This is intended to be a wrapper over the boards listed in the "Tools" menu
@@ -18,11 +20,14 @@ public class Board {
 	 */
 	private boolean selected;
 	
+	private List<BoardProperty> properties;
+	
 	public Board() {
 	}
-	public Board(String name, boolean selected) {
+	public Board(String name, boolean selected, List<BoardProperty> properties) {
 		this.name = name;
 		this.selected = selected;
+		this.properties = properties;
 	}
 	
 	public String getName() {
@@ -36,5 +41,16 @@ public class Board {
 	}
 	public void setSelected(boolean selected) {
 		this.selected = selected;
+	}
+	public List<BoardProperty> getProperties() {
+		return properties;
+	}
+	public void setProperties(List<BoardProperty> properties) {
+		this.properties = properties;
+	}
+
+	@Override
+	public String toString() {
+		return "Board [name=" + name + ", selected=" + selected + ", properties=" + properties + "]";
 	}
 }

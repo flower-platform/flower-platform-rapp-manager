@@ -1,8 +1,21 @@
 package org.flowerplatform.rapp_manager.arduino_ide.util;
 
+import java.awt.Component;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+
+import org.flowerplatform.rapp_manager.arduino_ide.FlowerPlatformPlugin;
+import org.flowerplatform.rapp_manager.arduino_ide.model.BoardOption;
+import org.flowerplatform.rapp_manager.arduino_ide.model.BoardProperty;
 
 import processing.app.Editor;
+import processing.app.I18n;
 
 /**
  * Utility class.
@@ -47,6 +60,42 @@ public class Util {
 		result.message = Util.getPrivateField(processing.app.EditorStatus.class, editorStatus, "message");
 
 		return result;
+	}
+	
+	/**
+	 * Retrieves the list of extra options associated with the currently selected board.
+	 * These options are present in the Tools menu, and they are different from board to board.
+	 */
+	public static List<BoardProperty> getToolsMenuExtraBoardOptions(JMenu toolsMenu) {
+		List<BoardProperty> properties = new ArrayList<>();
+		
+		for (Component c : toolsMenu.getMenuComponents()) {
+			if ((c instanceof JMenu) && c.isVisible()) {
+				JMenu menu = (JMenu) c;
+				String option = menu.getText();
+				if (option == null) {
+					continue;
+				}
+				int index = option.indexOf(':');
+				if (index > 0) {
+					option = option.substring(0, index);
+				}
+				if (option.equals(I18n.tr(FlowerPlatformPlugin.BOARD_MENU_TEXT_KEY)) || option.equals(I18n.tr(FlowerPlatformPlugin.PROGRAMMER_MENU_TEXT_KEY))) {
+					continue;
+				}
+				List<BoardOption> values = new ArrayList<>();
+				for (int i = 0; i <  menu.getItemCount(); i++) {
+					JMenuItem item = menu.getItem(i);
+					if (item != null && item.isEnabled() && item.isVisible()) {
+						values.add(new BoardOption(item.getText(), item.isSelected()));
+					}
+				}
+				
+				properties.add(new BoardProperty(option, values));
+			}
+		}		
+		
+		return properties;
 	}
 	
 	public static class EditorStatus {

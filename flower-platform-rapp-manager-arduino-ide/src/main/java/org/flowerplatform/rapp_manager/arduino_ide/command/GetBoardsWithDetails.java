@@ -34,7 +34,7 @@ public class GetBoardsWithDetails implements IHttpCommand, IFlowerPlatformPlugin
 			for (TargetPlatform targetPlatform : targetPackage.platforms()) {
 				for (TargetBoard board : targetPlatform.getBoards().values()) {
 					boards.add(
-						new Board(board.getName(), false)
+						new Board(board.getName(), false, null)
 					);
 				}
 			}

@@ -15,17 +15,17 @@ import javax.swing.event.MenuListener;
 
 import org.flowerplatform.rapp_manager.arduino_ide.FlowerPlatformPlugin;
 import org.flowerplatform.rapp_manager.arduino_ide.IFlowerPlatformPluginAware;
+import org.flowerplatform.rapp_manager.arduino_ide.model.Board;
 import org.flowerplatform.tiny_http_server.IHttpCommand;
 
 import processing.app.Editor;
 import processing.app.I18n;
 
 /**
- * 
  * @author Claudiu Matei
- *
+ * @author Andrei Taras
  */
-public class SelectBoardCommand implements IHttpCommand, IFlowerPlatformPluginAware {
+public class SetSelectedBoardCommand extends Board implements IHttpCommand, IFlowerPlatformPluginAware {
 
 	private FlowerPlatformPlugin plugin;
 	

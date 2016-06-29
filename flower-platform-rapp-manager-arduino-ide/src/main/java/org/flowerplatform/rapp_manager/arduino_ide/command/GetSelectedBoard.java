@@ -1,8 +1,6 @@
 package org.flowerplatform.rapp_manager.arduino_ide.command;
 
 import java.awt.Component;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -12,6 +10,7 @@ import javax.swing.event.MenuListener;
 import org.flowerplatform.rapp_manager.arduino_ide.FlowerPlatformPlugin;
 import org.flowerplatform.rapp_manager.arduino_ide.IFlowerPlatformPluginAware;
 import org.flowerplatform.rapp_manager.arduino_ide.model.Board;
+import org.flowerplatform.rapp_manager.arduino_ide.util.Util;
 import org.flowerplatform.tiny_http_server.IHttpCommand;
 
 import processing.app.Editor;
@@ -46,7 +45,7 @@ public class GetSelectedBoard implements IHttpCommand, IFlowerPlatformPluginAwar
 		for (int i = 1; i < boardsMenu.getItemCount(); i++) {
 			JMenuItem item = boardsMenu.getItem(i);
 			if (item != null && item.isEnabled() && item.isSelected()) {
-				return new Board(item.getText(), item.isSelected());
+				return new Board(item.getText(), item.isSelected(), Util.getToolsMenuExtraBoardOptions(toolsMenu));
 			}
 		}
 		

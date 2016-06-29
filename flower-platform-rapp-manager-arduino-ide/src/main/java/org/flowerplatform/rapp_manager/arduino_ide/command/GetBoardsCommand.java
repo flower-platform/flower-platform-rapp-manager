@@ -53,7 +53,7 @@ public class GetBoardsCommand implements IHttpCommand, IFlowerPlatformPluginAwar
 			JMenuItem item = boardsMenu.getItem(i);
 			if (item != null && item.isEnabled()) {
 				boards.add(
-					new Board(item.getText(), item.isSelected())
+					new Board(item.getText(), item.isSelected(), null)
 				);
 			}
 		}
