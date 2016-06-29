@@ -16,6 +16,8 @@ import javax.swing.event.MenuListener;
 import org.flowerplatform.rapp_manager.arduino_ide.FlowerPlatformPlugin;
 import org.flowerplatform.rapp_manager.arduino_ide.IFlowerPlatformPluginAware;
 import org.flowerplatform.rapp_manager.arduino_ide.model.Board;
+import org.flowerplatform.rapp_manager.arduino_ide.model.BoardOption;
+import org.flowerplatform.rapp_manager.arduino_ide.model.BoardProperty;
 import org.flowerplatform.tiny_http_server.IHttpCommand;
 
 import processing.app.Editor;
@@ -28,8 +30,6 @@ import processing.app.I18n;
 public class SetSelectedBoardCommand extends Board implements IHttpCommand, IFlowerPlatformPluginAware {
 
 	private FlowerPlatformPlugin plugin;
-	
-	private String board;
 	
 	public Object run() {
 		Editor editor = plugin.getEditor();
@@ -56,11 +56,11 @@ public class SetSelectedBoardCommand extends Board implements IHttpCommand, IFlo
 		for (int i = 0; i < boardMenu.getItemCount(); i++) {
 			JMenuItem item = boardMenu.getItem(i);
 			if (item != null && item.isEnabled()) {
-				if (item.getText().equals(board)) {
+				if (item.getText().equals(this.getName())) {
 					boardFound = true;
 					item.setSelected(true);
 					item.getActionListeners()[0].actionPerformed(null);
-					log("Board selected: " + board);
+					log("Board selected: " + this.getName());
 				}
 			}
 		}
@@ -101,6 +101,11 @@ public class SetSelectedBoardCommand extends Board implements IHttpCommand, IFlo
 					if (item != null && item.isVisible()) {
 						values.add(item.getText());
 					}
+					if (isOptionSelected(option, item.getText())) {
+						// Also set the selected flag if necessary
+						item.setSelected(true);
+						item.getActionListeners()[0].actionPerformed(null);
+					}
 				}
 				options.put(option, values);
 			}
@@ -110,17 +115,32 @@ public class SetSelectedBoardCommand extends Board implements IHttpCommand, IFlo
 		return options;
 	}
 
-	public String getBoard() {
-		return board;
-	}
-
-	public void setBoard(String board) {
-		this.board = board;
-	}
-
 	@Override
 	public void setFlowerPlatformPlugin(FlowerPlatformPlugin plugin) {
 		this.plugin = plugin;
 	}
 	
+	/**
+	 * Searches in the param board, among the list of properties and returns true if the 
+	 * one given as param is selected.
+	 */
+	private boolean isOptionSelected(String property, String optionValue) {
+		List<BoardProperty> properties = getProperties();
+		if (properties != null) {
+			for (BoardProperty boardProperty : properties) {
+				if (property.equals(boardProperty.getName())) {
+					List<BoardOption> options = boardProperty.getOptions();
+					if (options != null) {
+						for (BoardOption boardOption : options) {
+							if (optionValue.equals(boardOption.getName())) {
+								return boardOption.isSelected();
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
 }
