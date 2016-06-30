@@ -12,7 +12,7 @@ import com.googlecode.junittoolbox.WildcardPatternSuite;
 import processing.app.Base;
 
 @RunWith(WildcardPatternSuite.class)
-@SuiteClasses({"**/*.class", "!*TestSuiteArduinoIde.class"})
+@SuiteClasses({"SynchronizePackages.class", "!*TestSuiteArduinoIde.class"})
 public class TestSuiteArduinoIde {
 
 	public static FlowerPlatformPlugin flowerPlatformPlugin;

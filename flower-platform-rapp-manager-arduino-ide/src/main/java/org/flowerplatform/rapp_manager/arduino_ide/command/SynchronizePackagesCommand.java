@@ -5,6 +5,13 @@ import org.flowerplatform.ramm_manager.arduino_ide.package_manager.PackagesInsta
 import org.flowerplatform.tiny_http_server.HttpCommandException;
 import org.flowerplatform.tiny_http_server.IHttpCommand;
 
+/**
+ * This command is used to install/remove a platform inside a package. 
+ * A platform is characterized from a package name(which contains platform to handle) platform name and platform version. 
+ * When install selected, url to download from should be provided
+ * @author Silviu Negoita
+ *
+ */
 public class SynchronizePackagesCommand implements IHttpCommand {
 	
 	private String packageName;

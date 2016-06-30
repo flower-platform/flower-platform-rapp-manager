@@ -39,9 +39,11 @@ public class PackagesInstallerWrapper extends AbstractPackagesInstallerWrapper {
 			System.out.println(progress.getStatus());
 		}
 		};
+		// get contribution installer from Arduino IDE
 		contributionInstaller = new ContributionInstaller(BaseNoGui.getPlatform(), new GPGDetachedSignatureVerifier());
 		contributionInstaller.updateIndex(progressListener);
 		
+		// get contribution indexer from Arduino IDE
 		contributionIndexer = BaseNoGui.indexer;
 		
 	}
@@ -56,7 +58,7 @@ public class PackagesInstallerWrapper extends AbstractPackagesInstallerWrapper {
 			} else {
 				return Arrays.asList("Platform already installed. Exiting");
 			}
-		} else { //if we don't find this platform in already downloaded packages, we try to index from specified url and manually search for it
+		} else { //if we don't find this platform in already downloaded packages, we try to index from specified url and manually search for it in index
 			File downloadedJson = download(url);
 			ContributionsIndex index = parseIndexFromFile(downloadedJson);
 			Version toFindVersion = VersionHelper.valueOf(version);
@@ -126,7 +128,6 @@ public class PackagesInstallerWrapper extends AbstractPackagesInstallerWrapper {
 		        platform.resolveToolsDependencies(packagesWithTools);
 		      }
 		    }
-		
 		return packages;
 	}
 	
@@ -143,21 +144,14 @@ public class PackagesInstallerWrapper extends AbstractPackagesInstallerWrapper {
 		return (ContributionsIndex) parseIndex.invoke(contributionIndexer, jsonFile);
 	}
 	
-	/** 
-	 * Method used by GWT client as command of a dry run. This only scan current installed packages and return some 
-	 * informations about given platform to find.
-	 * @param name
-	 * @param architecture
-	 * @param version
-	 * @return
-	 */
+	
 	public PackageDto findPlatformByNameArchVersion(String name, String architecture, String version) {
 		ContributedPlatform founded = contributionIndexer.getIndex().findPlatform(name, architecture, version);
 		if (founded == null) return null;
 		
 		PackageDto result = new PackageDto();
 		result.setInstalled(founded.isInstalled());
-		result.setPlatformArch(founded.getName());
+		result.setPlatformVersion(founded.getVersion());
 		result.setPlatformArch(founded.getArchitecture());
 		result.setPackageName(founded.getParentPackage().getName());
 		return result;

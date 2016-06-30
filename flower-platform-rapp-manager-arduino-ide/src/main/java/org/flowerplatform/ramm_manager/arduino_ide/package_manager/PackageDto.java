@@ -4,15 +4,16 @@ public class PackageDto {
 	private String packageName;
 	private String platformVersion;
 	
+
+	private String platformArch;
+	private boolean isInstalled;
+	
 	public String getPlatformVersion() {
 		return platformVersion;
 	}
 	public void setPlatformVersion(String platformVersion) {
 		this.platformVersion = platformVersion;
 	}
-
-	private String platformArch;
-	private boolean isInstalled;
 	
 	public String getPackageName() {
 		return packageName;

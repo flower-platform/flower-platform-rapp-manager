@@ -1,4 +1,4 @@
-package org.flowerplatform.rapp_manager.arduino_ide.command_tests;
+package org.flowerplatform.rapp_manager.arduino_ide.test;
 
 
 import static org.junit.Assert.assertEquals;
