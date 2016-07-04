@@ -24,18 +24,44 @@ public class GetStatusCommand implements IHttpCommand, IFlowerPlatformPluginAwar
 
 	@Override
 	public Object run() {
-		//Don't actually do anything, but return a simple status.
-		return new Status();
+		Status status = new Status();
+		status.setVersion("1.0");
+		status.setHostSystemName("Arduino IDE");
+		status.setHostSystemVersion(BaseNoGui.VERSION_NAME);
+		
+		return status;
 	}
 
 	public static class Status {
-		private String version = BaseNoGui.VERSION_NAME;
+		public Status() {
+		}
+		public Status(String version, String hostSystemName, String hostSystemVersion) {
+			this.version = version;
+			this.hostSystemName = hostSystemName;
+			this.hostSystemVersion = hostSystemVersion;
+		}
 
+		private String version = BaseNoGui.VERSION_NAME;
+		private String hostSystemName;
+		private String hostSystemVersion;
+		
 		public String getVersion() {
 			return version;
 		}
 		public void setVersion(String version) {
 			this.version = version;
+		}
+		public String getHostSystemName() {
+			return hostSystemName;
+		}
+		public void setHostSystemName(String hostSystemName) {
+			this.hostSystemName = hostSystemName;
+		}
+		public String getHostSystemVersion() {
+			return hostSystemVersion;
+		}
+		public void setHostSystemVersion(String hostSystemVersion) {
+			this.hostSystemVersion = hostSystemVersion;
 		}
 	}
 }
