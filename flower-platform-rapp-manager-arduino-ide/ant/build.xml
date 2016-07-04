@@ -14,6 +14,7 @@
 		<loadfile property="version" srcfile="src/main/resources/flowerino-plugin-version.txt"></loadfile>
 		<jar destfile="build/FlowerPlatformPlugin.jar" basedir="target/classes">
 			<fileset dir="../../tiny-http-server/tiny-http-server/bin" />
+			<fileset dir="../../tiny-http-server/tiny-http-server/target/classes" />
 			<fileset dir="../flower-platform-rapp-manager/target/classes" />
 			<manifest>
 				<attribute name="Implementation-Version" value="${version}"/>

@@ -18,13 +18,16 @@ import javax.swing.JMenu;
 
 import org.flowerplatform.rapp_manager.arduino_ide.command.CompileCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.GetBoardsCommand;
-import org.flowerplatform.rapp_manager.arduino_ide.command.HeartbeatCommand;
-import org.flowerplatform.rapp_manager.arduino_ide.command.SelectBoardCommand;
+import org.flowerplatform.rapp_manager.arduino_ide.command.GetBoardsWithDetails;
+import org.flowerplatform.rapp_manager.arduino_ide.command.GetLogCommand;
+import org.flowerplatform.rapp_manager.arduino_ide.command.GetSelectedBoard;
+import org.flowerplatform.rapp_manager.arduino_ide.command.GetStatusCommand;
+import org.flowerplatform.rapp_manager.arduino_ide.command.SetSelectedBoardCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.SetOptionsCommand;
+import org.flowerplatform.rapp_manager.arduino_ide.command.UpdateSourceFilesAndCompileCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.UpdateSourceFilesCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.UploadToBoardCommand;
 import org.flowerplatform.tiny_http_server.CommandFactory;
-import org.flowerplatform.tiny_http_server.FlexRequestHandler;
 import org.flowerplatform.tiny_http_server.HttpServer;
 import org.flowerplatform.tiny_http_server.IHttpCommand;
 
@@ -92,7 +95,7 @@ public class FlowerPlatformPlugin implements Tool {
 			int serverPort = Integer.parseInt(globalProperties.getProperty("commandServerPort"));
 			HttpServer server = new HttpServer(serverPort);
 			// Set special handler which reports errors as (200 OK) messages, with code and message.
-			server.setRequestHandler(new FlexRequestHandler());
+			// server.setRequestHandler(new FlexRequestHandler());
 			// set command factory, in order to inject plugin reference into the IFlowerPlatformPluginAware command instances
 			server.setCommandFactory(new CommandFactory() { 
 				@Override
@@ -106,6 +109,7 @@ public class FlowerPlatformPlugin implements Tool {
 						}
 						return command;
 					} catch (IOException e) {
+						e.printStackTrace(System.err);
 						throw new RuntimeException("Cannot create command object", e);
 					}
 				}
@@ -113,10 +117,14 @@ public class FlowerPlatformPlugin implements Tool {
 			server.registerCommand("uploadToBoard", UploadToBoardCommand.class);
 			server.registerCommand("updateSourceFiles", UpdateSourceFilesCommand.class);
 			server.registerCommand("compile", CompileCommand.class);
+			server.registerCommand("updateSourceFilesAndCompile", UpdateSourceFilesAndCompileCommand.class);
 			server.registerCommand("getBoards", GetBoardsCommand.class);
-			server.registerCommand("selectBoard", SelectBoardCommand.class);
+			server.registerCommand("getSelectedBoard", GetSelectedBoard.class);
+			//server.registerCommand("getBoardsWithDetails", GetBoardsWithDetails.class);
+			server.registerCommand("setSelectedBoard", SetSelectedBoardCommand.class);
 			server.registerCommand("setOptions", SetOptionsCommand.class);
-			server.registerCommand("heartbeat", HeartbeatCommand.class);
+			server.registerCommand("getStatus", GetStatusCommand.class);
+			server.registerCommand("getLog", GetLogCommand.class);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -131,7 +139,7 @@ public class FlowerPlatformPlugin implements Tool {
 				editor.getJMenuBar().add(menu, editor.getJMenuBar().getComponentCount() - 1);
 				editor.getJMenuBar().revalidate();
 			}
-			
+
 			@Override
 			public void componentResized(ComponentEvent e) {}
 			@Override
@@ -143,7 +151,6 @@ public class FlowerPlatformPlugin implements Tool {
 
 	@Override
 	public void run() {
-
 	}
 
 	@Override
@@ -231,4 +238,3 @@ public class FlowerPlatformPlugin implements Tool {
 	}
 	
 }
- 

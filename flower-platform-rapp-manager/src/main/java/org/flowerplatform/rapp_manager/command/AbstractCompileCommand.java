@@ -9,9 +9,7 @@ public abstract class AbstractCompileCommand implements IHttpCommand {
 	public String getRappName() {
 		return rappName;
 	}
-
 	public void setRappName(String rappName) {
 		this.rappName = rappName;
 	}
-	
 }
