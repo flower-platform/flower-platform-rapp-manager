@@ -7,11 +7,29 @@
 	<version>1.0.0</version>
 	<name>flower-platform-rapp-manager-tests</name>
 
+	<properties>
+		<arduino.home>D:/Java/arduino-1.6.7</arduino.home>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.flowerplatform</groupId>
 			<artifactId>flower-platform-rapp-manager</artifactId>
 			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>cc.arduino</groupId>
+			<artifactId>arduino-core</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${arduino.home}/lib/arduino-core.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>processing</groupId>
+			<artifactId>processing-app</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${arduino.home}/lib/pde.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.flowerplatform</groupId>
