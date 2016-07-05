@@ -3,9 +3,9 @@
 	
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.flowerplatform</groupId>
-	<artifactId>flower-platform-rapp-manager-tests</artifactId>
+	<artifactId>flower-platform-rapp-manager-tests-parent</artifactId>
 	<version>1.0.0</version>
-	<name>flower-platform-rapp-manager-tests</name>
+	<name>flower-platform-rapp-manager-tests-parent</name>
 	<packaging>pom</packaging>
 
 	<properties>
@@ -17,6 +17,7 @@
 		<module>../flower-platform-rapp-manager</module>
 		<module>../flower-platform-rapp-manager-linux</module>
 		<module>../flower-platform-rapp-manager-arduino-ide</module>
+		<module>../flower-platform-rapp-manager-tests</module>
 	</modules>
 
 </project>

@@ -6,7 +6,8 @@
 	
 	<property name="arduinoDir" value="D:/Arduino_IDEs/"/>
 	<property name="testSuite" value="org.flowerplatform.rapp_manager.arduino_ide.test.TestSuiteArduinoIde"/>
-	
+	<property name="tiny-http-server.folder" value="../../tiny-http-server/tiny-http-server" />
+
 	<description>
             description
     </description>
@@ -21,7 +22,7 @@
 				<jvmarg value="-Xms128M"/>
 				<jvmarg value="-Xmx512M"/>
 				
-				<jvmarg value="-DAPP_DIR=&quot;@{arduino-dir}&quot;"/>
+				<jvmarg value="-DAPP_DIR=@{arduino-dir}"/>
 				
 				<!-- Dependencies needed for running tests -->
 				<classpath>
@@ -42,7 +43,7 @@
 				<classpath location="../flower-platform-rapp-manager-arduino-ide/target/classes" />
         		
 				<!-- The link with the tiny-http-server project -->
-				<classpath location="../../tiny-http-server/tiny-http-server/bin" />
+				<classpath location="${tiny-http-server.folder}/target/classes" />
         		
 				<!-- The Arduino IDE jars, needed for actually launching Arduino IDE. -->
 				<classpath>
