@@ -16,7 +16,7 @@
     	<attribute name="arduino-dir"/>
         <attribute name="test-suite"/>
         <sequential>
-        	<junit printsummary="yes" haltonfailure="yes" fork="true" jvm="@{arduino-dir}/java/bin/javaw.exe">
+        	<junit showoutput="yes" printsummary="yes" haltonfailure="yes" fork="true" jvm="@{arduino-dir}/java/bin/javaw.exe">
         				
 				<jvmarg value="-Dsun.java2d.d3d=false"/>
 				<jvmarg value="-Xms128M"/>
@@ -33,7 +33,8 @@
 					<pathelement location="src/test/resources/"/>
 				</classpath>
         		
-				<!-- The regular, and test classes from the current project (i.e. flower-platform-rapp-manager-tests) -->
+				<!-- The regular, and test classes from the current project -->
+				<classpath location="target/classes"/>
 				<classpath location="target/test-classes"/>
 
         		<!-- The link with the flower-platform-rapp-manager project -->
@@ -78,8 +79,8 @@
 			
 		    ds = project.createDataType("dirset");
 		    ds.setDir( new File( project.getProperty("arduinoDir") ) );
-		    ds.setIncludes( "/*/" );
-		 	ds.setExcludes( "/*/*/" );
+		    ds.setIncludes( "*/" );
+		 	ds.setExcludes( "*/*/" );
 
 		    // iterate over directories found.
 		    srcFiles = ds.getDirectoryScanner( project ).getIncludedDirectories( );
