@@ -16,8 +16,6 @@
 		<module>${tiny-http-server.folder}</module>
 		<module>../flower-platform-rapp-manager</module>
 		<module>../flower-platform-rapp-manager-arduino-ide</module>
-		<module>../flower-platform-rapp-manager-linux</module>
-		<module>../flower-platform-rapp-manager-tests</module>
 	</modules>
 
 </project>
