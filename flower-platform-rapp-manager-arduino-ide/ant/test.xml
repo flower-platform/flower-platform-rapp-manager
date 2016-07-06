@@ -16,7 +16,7 @@
     	<attribute name="arduino-dir"/>
         <attribute name="test-suite"/>
         <sequential>
-        	<junit showoutput="yes" printsummary="yes" haltonfailure="yes" fork="true" jvm="@{arduino-dir}/java/bin/javaw.exe">
+        	<junit showoutput="yes" printsummary="yes" haltonfailure="yes" fork="true" jvm="@{arduino-dir}/java/bin/java">
         				
 				<jvmarg value="-Dsun.java2d.d3d=false"/>
 				<jvmarg value="-Xms128M"/>
