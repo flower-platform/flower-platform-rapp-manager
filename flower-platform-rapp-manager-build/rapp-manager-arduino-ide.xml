@@ -1,17 +1,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.flowerplatform</groupId>
 	<artifactId>flower-platform-rapp-manager-arduino-ide-build</artifactId>
 	<version>1.0.0</version>
 	<packaging>pom</packaging>
+	
 	<properties>
 		<tiny-http-server.folder>../../tiny-http-server/tiny-http-server</tiny-http-server.folder>
 		<maven.build.timestamp.format>yyyy-MM-dd-HHmm</maven.build.timestamp.format>
 	</properties>
+	
 	<modules>
 		<module>${tiny-http-server.folder}</module>
 		<module>../flower-platform-rapp-manager</module>
 		<module>../flower-platform-rapp-manager-arduino-ide</module>
 	</modules>
+
 </project>

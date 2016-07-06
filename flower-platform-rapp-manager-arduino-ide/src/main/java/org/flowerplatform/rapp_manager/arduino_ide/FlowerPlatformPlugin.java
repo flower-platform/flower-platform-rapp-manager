@@ -232,7 +232,7 @@ public class FlowerPlatformPlugin implements Tool {
 	}
 
 	public static File getFlowerPlatformWorkFolder() {
-		File f = new File("C:\\" + FLOWER_PLATFORM_WORK_FOLDER_NAME);
+		File f = new File(System.getProperty("user.home") + "/" + FLOWER_PLATFORM_WORK_FOLDER_NAME);
 		f.mkdirs();
 		return f;
 	}
