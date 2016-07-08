@@ -38,8 +38,7 @@ public class RunCommand extends AbstractRunCommand {
 		Process p;
 		try {
 			logp("Starting rapp: " + rappName);
-			String cmd = String.format(START_APP_COMMAND, System.getProperty("user.home"), rappName);
-			System.out.println("Executing cmd: " + cmd);
+			String cmd = String.format(START_APP_COMMAND, Constants.WORK_DIR, rappName);
 			p = Runtime.getRuntime().exec(cmd);
 			logp("...");
 			p.waitFor();

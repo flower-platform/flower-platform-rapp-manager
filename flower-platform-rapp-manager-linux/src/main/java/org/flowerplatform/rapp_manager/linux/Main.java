@@ -20,17 +20,16 @@ public class Main {
 		logf("Rappmanager starting at %s", new Date().toString());
 		
 		int serverPort = 65500;
-		String homeDir = System.getProperty("user.home");
 		
 		//check and create folder structure
 		File f;
-		f = new File(homeDir + "/lib");
+		f = new File(Constants.LIB_DIR);
 		f.mkdir();
-		f = new File(homeDir + "/log");
+		f = new File(Constants.LOG_DIR);
 		f.mkdir();
-		f = new File(homeDir + "/rapps");
+		f = new File(Constants.RAPPS_DIR);
 		f.mkdir();
-		f = new File(homeDir + "/run");
+		f = new File(Constants.PID_DIR);
 		f.mkdir();
 
 		HttpServer server = new HttpServer(serverPort, false);

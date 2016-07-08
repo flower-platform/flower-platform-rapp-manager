@@ -26,7 +26,7 @@ public class DeleteCommand implements IHttpCommand {
 		if (rappName == null) {
 			throw new HttpCommandException("Rapp name not specified");
 		}
-		File rappDir = new File(String.format(Constants.RAPP_DIR_PATTERN, System.getProperty("user.home"), rappName));
+		File rappDir = new File(String.format(Constants.RAPP_DIR_PATTERN, rappName));
 		if (!rappDir.exists()) {
 			HttpCommandException e = new HttpCommandException(String.format("Rapp not found: %s", rappName));
 			log(e.getMessage(), e);

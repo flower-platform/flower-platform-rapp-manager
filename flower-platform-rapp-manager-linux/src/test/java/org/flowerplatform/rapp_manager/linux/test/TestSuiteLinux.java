@@ -14,8 +14,8 @@ public class TestSuiteLinux {
 
 	@BeforeClass
 	public static void init() throws ReflectiveOperationException, SecurityException {
+		System.setProperty("user.home", "./target/test-classes");
 		TestUtil.modifyFieldValue(Constants.class, "BIN_PATH", "./src_debian_package/opt/flower-platform/bin", null);
-	    System.setProperty("user.home", "./target/test-classes");
 	}
 
 }

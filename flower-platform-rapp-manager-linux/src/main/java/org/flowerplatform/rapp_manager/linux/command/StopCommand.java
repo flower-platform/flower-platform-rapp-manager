@@ -18,7 +18,7 @@ import org.flowerplatform.tiny_http_server.IHttpCommand;
  */
 public class StopCommand implements IHttpCommand {
 
-	private static final String START_APP_COMMAND = Constants.BIN_PATH + "/stop-app %s %s";
+	private static final String STOP_APP_COMMAND = Constants.BIN_PATH + "/stop-app %s %s";
 	
 	private String rappName;
 	
@@ -39,7 +39,7 @@ public class StopCommand implements IHttpCommand {
 		Process p;
 		try {
 			logp("Stopping rapp: " + rappName);
-			String cmd = String.format(START_APP_COMMAND, System.getProperty("user.home"), rappName);
+			String cmd = String.format(STOP_APP_COMMAND, Constants.WORK_DIR, rappName);
 			p = Runtime.getRuntime().exec(cmd);
 			logp("...");
 			p.waitFor();

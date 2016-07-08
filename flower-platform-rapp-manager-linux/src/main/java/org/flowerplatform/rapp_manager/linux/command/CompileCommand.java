@@ -32,7 +32,7 @@ public class CompileCommand extends AbstractCompileCommand {
 		try {
 			compilationLog.append("Compiling " + rappName + "... \n");
 			
-			File rappDir = new File(String.format(Constants.RAPP_DIR_PATTERN, System.getProperty("user.home"), rappName));
+			File rappDir = new File(String.format(Constants.RAPP_DIR_PATTERN, rappName));
 			File[] pyFiles = rappDir.listFiles(new FileFilter() {
 				@Override
 				public boolean accept(File pathname) {
