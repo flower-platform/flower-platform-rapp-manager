@@ -18,12 +18,11 @@ import javax.swing.JMenu;
 
 import org.flowerplatform.rapp_manager.arduino_ide.command.CompileCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.GetBoardsCommand;
-import org.flowerplatform.rapp_manager.arduino_ide.command.GetBoardsWithDetails;
 import org.flowerplatform.rapp_manager.arduino_ide.command.GetLogCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.GetSelectedBoard;
 import org.flowerplatform.rapp_manager.arduino_ide.command.GetStatusCommand;
-import org.flowerplatform.rapp_manager.arduino_ide.command.SetSelectedBoardCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.SetOptionsCommand;
+import org.flowerplatform.rapp_manager.arduino_ide.command.SetSelectedBoardCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.UpdateSourceFilesAndCompileCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.UpdateSourceFilesCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.UploadToBoardCommand;
@@ -56,7 +55,12 @@ public class FlowerPlatformPlugin implements Tool {
 	public static final String FLOWER_PLATFORM_WORK_FOLDER_NAME = "flower-platform-work";
 
 	protected Editor editor;
-	protected Properties globalProperties; 
+	protected Properties globalProperties;
+	
+	/**
+	 * Internal properties file, packed within current jar.
+	 */
+	protected Properties internalProperties;
 	
 	public Properties getGlobalProperties() {
 		return globalProperties;
@@ -68,6 +72,12 @@ public class FlowerPlatformPlugin implements Tool {
 
 	@Override
 	public void init(final Editor editor) {
+		try {
+			internalProperties = readInternalProperties();
+		} catch (Throwable th) {
+			th.printStackTrace(System.err);
+		}
+		
 		// get/create global properties
 		globalProperties = readProperties(getGlobalPropertiesFile());
 		boolean writeProperties = false;
@@ -197,6 +207,27 @@ public class FlowerPlatformPlugin implements Tool {
 		return properties;
 	}
 	
+	private Properties readInternalProperties() {
+		Properties properties = new Properties();
+		InputStream is = null; 
+		try {
+			is = this.getClass().getClassLoader().getResourceAsStream("org/flowerplatform/all.properties");
+			properties.load(is);
+		} catch (IOException ex) {
+			log("Error opening internal properties file.");
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e1) {
+					log("Error while opening internal properties file");
+				}
+			}
+		}
+		
+		return properties;
+	}
+	
 	public void writeProperties(Properties properties, File file) {
 		OutputStream os = null;
 		try {
@@ -237,4 +268,11 @@ public class FlowerPlatformPlugin implements Tool {
 		return f;
 	}
 	
+	/**
+	 * Returns the version of the plugin.
+	 * @return
+	 */
+	public String getVersion() {
+		return internalProperties.getProperty("app.version");
+	}
 }

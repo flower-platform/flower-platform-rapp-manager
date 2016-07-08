@@ -12,10 +12,10 @@
 		<dependencySet>
 			<outputDirectory>/</outputDirectory>
 			<unpack>true</unpack>
-			<scope>runtime</scope>
-			<excludes>
-				<exclude>com.fasterxml.jackson.core:*</exclude>
-			</excludes>
+			<scope>compile</scope>
+			<includes>
+				<include>org.flowerplatform:*:*</include>
+			</includes>
 		</dependencySet>
 	</dependencySets>
 </assembly>

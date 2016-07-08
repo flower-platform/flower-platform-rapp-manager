@@ -12,9 +12,9 @@ import processing.app.BaseNoGui;
  * @author Andrei Taras
  */
 public class GetStatusCommand implements IHttpCommand, IFlowerPlatformPluginAware {
-	
+
 	public static final String MESSAGE_OK = "Ok";
-	
+
 	private FlowerPlatformPlugin plugin;
 
 	@Override
@@ -25,7 +25,7 @@ public class GetStatusCommand implements IHttpCommand, IFlowerPlatformPluginAwar
 	@Override
 	public Object run() {
 		Status status = new Status();
-		status.setVersion("1.0");
+		status.setVersion(plugin.getVersion());
 		status.setHostSystemName("Arduino IDE");
 		status.setHostSystemVersion(BaseNoGui.VERSION_NAME);
 		

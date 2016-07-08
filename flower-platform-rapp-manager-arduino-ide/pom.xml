@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.flowerplatform</groupId>
-	<artifactId>flower-platform-rapp-manager</artifactId>
+	<artifactId>flower-platform-rapp-manager-arduino-ide</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>flower-platform-rapp-manager</name>
   
@@ -9,7 +9,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		 	
-		<arduino.home>D:/Java/arduino-1.6.7</arduino.home>
+		<arduino.home>D:/workspace/arduino_ide/</arduino.home>
 		<maven.build.timestamp.format>yyyy-MM-dd-HHmm</maven.build.timestamp.format>
 	</properties>
   
@@ -19,6 +19,11 @@
 			<artifactId>flower-platform-rapp-manager</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.flowerplatform</groupId>
+			<artifactId>tiny-http-server</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>		
 		<dependency>
 			<groupId>cc.arduino</groupId>
 			<artifactId>arduino-core</artifactId>
@@ -34,19 +39,28 @@
 			<systemPath>${arduino.home}/lib/pde.jar</systemPath>
 		</dependency>
 	</dependencies>
+	
 	<build>
+		<resources>
+		    <resource>
+		        <directory>src/main/resources</directory>
+		        <filtering>true</filtering>
+		    </resource>
+		</resources>
+	
 		<finalName>${project.artifactId}-${project.version}-${maven.build.timestamp}</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.3</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.6</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -57,8 +71,27 @@
 				</executions>
 				<configuration>
 					<descriptor>assembly.xml</descriptor>
+					<appendAssemblyId>false</appendAssemblyId>
 				</configuration>
 			</plugin>
+			<plugin>
+			  <artifactId>maven-antrun-plugin</artifactId>
+			  <version>1.8</version>
+			  <executions>
+			    <execution>
+			      <phase>package</phase>
+			      <configuration>
+			      	<failOnError>false</failOnError>
+					<tasks>
+						<copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${user.home}/Documents/Arduino/tools/FlowerPlatformPlugin/tool/FlowerPlatformPlugin.jar" />
+					</tasks>
+			      </configuration>
+			      <goals>
+			        <goal>run</goal>
+			      </goals>
+			    </execution>
+			  </executions>
+			</plugin>			
 		</plugins>
 	</build>
 
