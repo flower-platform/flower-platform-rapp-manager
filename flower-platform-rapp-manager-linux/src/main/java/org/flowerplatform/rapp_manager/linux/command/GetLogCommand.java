@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.flowerplatform.tiny_http_server.HttpCommandException;
 import org.flowerplatform.tiny_http_server.IHttpCommand;
 
 
@@ -33,7 +34,7 @@ public class GetLogCommand implements IHttpCommand {
 	
 	private String token;
 
-	public Object run() {
+	public Object run() throws HttpCommandException {
 		if (System.currentTimeMillis() > nextSessionCleanUpTimestamp) {
 			cleanUpSessions();
 		}
@@ -85,7 +86,7 @@ public class GetLogCommand implements IHttpCommand {
 			return sb.toString().getBytes();
 			
 		} catch (IOException e) {
-			throw new RuntimeException(e.getMessage(), e);
+			throw new HttpCommandException(e.getMessage(), e);
 		}
 	}
 

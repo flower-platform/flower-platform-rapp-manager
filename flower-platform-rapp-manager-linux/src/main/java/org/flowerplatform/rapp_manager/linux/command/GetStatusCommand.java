@@ -13,6 +13,7 @@ import java.util.List;
 import org.flowerplatform.rapp_manager.linux.RappDescriptor;
 import org.flowerplatform.rapp_manager.linux.ServerStatus;
 import org.flowerplatform.rapp_manager.linux.Util;
+import org.flowerplatform.tiny_http_server.HttpCommandException;
 import org.flowerplatform.tiny_http_server.IHttpCommand;
 
 
@@ -23,7 +24,7 @@ import org.flowerplatform.tiny_http_server.IHttpCommand;
  */
 public class GetStatusCommand implements IHttpCommand {
 
-	public Object run() {
+	public Object run() throws HttpCommandException {
 		File rappsDir = new File(String.format(RAPPS_DIR_PATTERN, System.getProperty("user.home")));
 		File[] rappDirs = rappsDir.listFiles(new FileFilter() {
 			@Override

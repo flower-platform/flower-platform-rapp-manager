@@ -44,6 +44,7 @@ public class DeleteCommand implements IHttpCommand {
 		} catch (IOException | InterruptedException ex) {
 			HttpCommandException e = new HttpCommandException(ex.getMessage(), ex);
 			log(e.getMessage(), e);
+			throw e;
 		}
 		return null;
 	}

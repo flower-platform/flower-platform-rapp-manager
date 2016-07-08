@@ -5,6 +5,7 @@ import static org.flowerplatform.rapp_manager.linux.Main.logp;
 
 import java.io.IOException;
 
+import org.flowerplatform.rapp_manager.linux.Constants;
 import org.flowerplatform.rapp_manager.linux.Util;
 import org.flowerplatform.tiny_http_server.HttpCommandException;
 import org.flowerplatform.tiny_http_server.IHttpCommand;
@@ -17,7 +18,7 @@ import org.flowerplatform.tiny_http_server.IHttpCommand;
  */
 public class StopCommand implements IHttpCommand {
 
-	private static final String START_APP_COMMAND = "/opt/flower-platform/bin/stop-app %s %s";
+	private static final String START_APP_COMMAND = Constants.BIN_PATH + "/stop-app %s %s";
 	
 	private String rappName;
 	
