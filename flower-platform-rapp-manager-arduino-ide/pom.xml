@@ -10,12 +10,12 @@
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		 	
+
 		<arduino.home>D:/workspace/arduino_ide/</arduino.home>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 		<versionDir>${project.basedir}/src/main/java/org/flowerplatform/rapp_manager/arduino_ide</versionDir>
 	</properties>
-  
+
 	<dependencies>
 		<dependency>
 			<groupId>org.flowerplatform</groupId>
@@ -64,25 +64,17 @@
 			<version>2.2</version>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<resources>
-		    <resource>
-		        <directory>src/main/resources</directory>
-		        <filtering>true</filtering>
-		    </resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
 		</resources>
-	
-		<finalName>${project.artifactId}-${project.version}-${maven.build.timestamp}</finalName>
+
+		<finalName>${project.artifactId}-${project.version}</finalName>
 		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.3</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -105,26 +97,30 @@
 				<configuration>
 					<descriptor>assembly.xml</descriptor>
 					<appendAssemblyId>false</appendAssemblyId>
+					<classifier>arduino-ide-bundle</classifier>
 				</configuration>
 			</plugin>
 			<plugin>
-			  <artifactId>maven-antrun-plugin</artifactId>
-			  <version>1.8</version>
-			  <executions>
-			    <execution>
-			      <phase>package</phase>
-			      <configuration>
-			      	<failOnError>false</failOnError>
-					<tasks>
-						<copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${user.home}/Documents/Arduino/tools/FlowerPlatformPlugin/tool/FlowerPlatformPlugin.jar" />
-					</tasks>
-			      </configuration>
-			      <goals>
-			        <goal>run</goal>
-			      </goals>
-			    </execution>
-			  </executions>
-			</plugin>			
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.8</version>
+				<executions>
+					<execution>
+						<id>copyplugin</id>
+						<phase>package</phase>
+						<configuration>
+							<failOnError>false</failOnError>
+							<tasks>
+								<copy
+									file="${project.build.directory}/${project.build.finalName}.jar"
+									tofile="${user.home}/Documents/Arduino/tools/FlowerPlatformPlugin/tool/FlowerPlatformPlugin.jar" />
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
