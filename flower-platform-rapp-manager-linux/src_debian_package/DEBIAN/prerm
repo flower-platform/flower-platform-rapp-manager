@@ -1,0 +1,25 @@
+#!/bin/sh
+
+set -e
+# Automatically added by dh_installdocs
+if [ \( "$1" = "upgrade" -o "$1" = "remove" \) -a -L /usr/doc/flower-platform ]; then
+  rm -f /usr/doc/flower-platform
+fi
+# End automatically added section
+
+echo "Execute pre-removal script"
+USERNAME=flowerplatform
+
+echo "Stopping service..."
+service rappmanager stop
+
+echo "Unregistering service..."
+update-rc.d rappmanager remove
+
+echo "Killing processes..."
+killall -w -u $USERNAME || true
+
+echo "Deleting user $USERNAME..."
+userdel $USERNAME
+
+echo "Pre-removal script done."

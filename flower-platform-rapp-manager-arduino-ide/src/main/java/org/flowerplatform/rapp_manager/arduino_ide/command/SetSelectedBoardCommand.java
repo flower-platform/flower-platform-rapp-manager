@@ -18,6 +18,7 @@ import org.flowerplatform.rapp_manager.arduino_ide.IFlowerPlatformPluginAware;
 import org.flowerplatform.rapp_manager.arduino_ide.model.Board;
 import org.flowerplatform.rapp_manager.arduino_ide.model.BoardOption;
 import org.flowerplatform.rapp_manager.arduino_ide.model.BoardProperty;
+import org.flowerplatform.rapp_manager.arduino_ide.util.Util;
 import org.flowerplatform.tiny_http_server.IHttpCommand;
 
 import processing.app.Editor;
@@ -60,7 +61,8 @@ public class SetSelectedBoardCommand extends Board implements IHttpCommand, IFlo
 					boardFound = true;
 					item.setSelected(true);
 					item.getActionListeners()[0].actionPerformed(null);
-					log("Board selected: " + this.getName());
+					log(Util.COMMAND_EXECUTION_LOG_PREFIX + toString());
+					break;
 				}
 			}
 		}
@@ -110,9 +112,8 @@ public class SetSelectedBoardCommand extends Board implements IHttpCommand, IFlo
 				options.put(option, values);
 			}
 		}
-
 		
-		return options;
+		return null;
 	}
 
 	@Override
@@ -142,5 +143,31 @@ public class SetSelectedBoardCommand extends Board implements IHttpCommand, IFlo
 		}
 		
 		return false;
+	}
+
+	@Override
+	public String toString() {
+		boolean first = true;
+		StringBuilder str = new StringBuilder();
+		str.append("Board type set to: '");
+		str.append(getName());
+		str.append("'.");
+		if (!getProperties().isEmpty()) {
+			str.append(" Properties: ");
+		}
+		for (BoardProperty property : getProperties()) {
+			if (!first) {
+				str.append(", ");
+			}
+			first = false;
+			str.append(property.getName());
+			str.append(" = ");
+			if (!property.getOptions().isEmpty()) {
+				str.append("'");
+				str.append(property.getOptions().get(0).getName());
+				str.append("'");
+			}
+		}
+		return str.toString();
 	}
 }

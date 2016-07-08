@@ -3,9 +3,7 @@ package org.flowerplatform.rapp_manager.arduino_ide.util;
 import java.awt.Component;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -23,6 +21,8 @@ import processing.app.I18n;
  * @author Andrei Taras
  */
 public class Util {
+	
+	public static final String COMMAND_EXECUTION_LOG_PREFIX = "[Rapp Manager] ";
 	/**
 	 * Hack-ish method that retrieves a private field from the given class instance.
 	 * This is used to access stuff from within the main editor.

@@ -3,15 +3,15 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.flowerplatform</groupId>
 	<artifactId>flower-platform-rapp-manager-linux-build</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>pom</packaging>
 	<properties>
 		<tiny-http-server.folder>../../tiny-http-server/tiny-http-server</tiny-http-server.folder>
 		<maven.build.timestamp.format>yyyy-MM-dd-HHmm</maven.build.timestamp.format>
 	</properties>
 	<modules>
+		<module>${tiny-http-server.folder}</module>
 		<module>../flower-platform-rapp-manager</module>
 		<module>../flower-platform-rapp-manager-linux</module>
-		<module>${tiny-http-server.folder}</module>
 	</modules>
 </project>
