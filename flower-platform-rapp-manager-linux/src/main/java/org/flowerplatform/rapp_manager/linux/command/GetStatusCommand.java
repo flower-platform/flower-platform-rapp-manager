@@ -42,6 +42,7 @@ public class GetStatusCommand implements IHttpCommand {
 			try {
 				rapp.setRunning(Util.isRappRunning(rapp.getName()));
 				rapp.setStartAtBoot(Util.getStartAtBootFlag(rapp.getName()));
+				rapp.setUploadTimestamp(Util.getRappTimestamp(rapp.getName()));
 			} catch (IOException | InterruptedException e) {
 				log(e.getMessage(), e);
 				throw new RuntimeException(e.getMessage(), e);

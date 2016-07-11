@@ -9,6 +9,9 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -66,6 +69,24 @@ public class Util {
 		
 	}
 
+	/**
+	 * Returns the creation timestamp for the given {@code rappName}.
+	 * This timestamp is actually the creation date of the {@code rappName} folder.
+	 */
+	public static Long getRappTimestamp(String rappName) throws IOException {
+		File rappsDir = new File(String.format(RAPPS_DIR_PATTERN, System.getProperty("user.home")));
+		File rappDir = new File(rappsDir.getAbsolutePath() + File.separator + rappName);		
+		
+		if (rappDir.exists()) {
+			BasicFileAttributes attributes = Files.readAttributes(rappDir.toPath(), BasicFileAttributes.class);
+			if (attributes != null && attributes.creationTime() != null) {
+				return attributes.creationTime().toMillis();
+			}
+		}
+		
+		return null;
+	}
+	
 	public static boolean getStartAtBootFlag(String rappName) throws IOException {
 		Properties rappProperties = getProperties(rappName);
 		return rappProperties.getProperty(PROPERTY_START_AT_BOOT, "false").equalsIgnoreCase("true");
