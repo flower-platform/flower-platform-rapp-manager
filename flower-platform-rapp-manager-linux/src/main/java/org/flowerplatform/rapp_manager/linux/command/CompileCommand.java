@@ -11,6 +11,7 @@ import java.io.InputStream;
 import org.flowerplatform.rapp_manager.command.AbstractCompileCommand;
 import org.flowerplatform.rapp_manager.linux.CompilationException;
 import org.flowerplatform.rapp_manager.linux.Constants;
+import org.flowerplatform.tiny_http_server.HttpCommandException;
 
 /**
  * 
@@ -22,7 +23,7 @@ public class CompileCommand extends AbstractCompileCommand {
 	
 	private static final String PY_EXTENSION = ".py";
 	
-	public Object run() {
+	public Object run() throws HttpCommandException {
 		if (rappName == null) {
 			throw new IllegalArgumentException("Rapp name not specified");
 		}
@@ -31,7 +32,7 @@ public class CompileCommand extends AbstractCompileCommand {
 		try {
 			compilationLog.append("Compiling " + rappName + "... \n");
 			
-			File rappDir = new File(String.format(Constants.RAPP_DIR_PATTERN, System.getProperty("user.home"), rappName));
+			File rappDir = new File(String.format(Constants.RAPP_DIR_PATTERN, rappName));
 			File[] pyFiles = rappDir.listFiles(new FileFilter() {
 				@Override
 				public boolean accept(File pathname) {
@@ -71,7 +72,7 @@ public class CompileCommand extends AbstractCompileCommand {
 			log(compilationLog.toString());
 			return compilationLog.toString();
 		} catch (IOException | InterruptedException e) {
-			return e.getMessage();
+			throw new HttpCommandException(e.getMessage(), e);
 		}
 	}
 }

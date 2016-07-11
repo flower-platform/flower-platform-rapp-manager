@@ -6,6 +6,7 @@ import static org.flowerplatform.rapp_manager.linux.Main.logp;
 import java.io.IOException;
 
 import org.flowerplatform.rapp_manager.command.AbstractRunCommand;
+import org.flowerplatform.rapp_manager.linux.Constants;
 import org.flowerplatform.rapp_manager.linux.Util;
 import org.flowerplatform.tiny_http_server.HttpCommandException;
 
@@ -17,7 +18,7 @@ import org.flowerplatform.tiny_http_server.HttpCommandException;
  */
 public class RunCommand extends AbstractRunCommand {
 
-	private static final String START_APP_COMMAND = "/opt/flower-platform/bin/start-app %s %s";
+	private static final String START_APP_COMMAND = Constants.BIN_PATH + "/start-app %s %s";
 	
 	public Object run() throws HttpCommandException {
 		if (rappName == null) {
@@ -37,7 +38,7 @@ public class RunCommand extends AbstractRunCommand {
 		Process p;
 		try {
 			logp("Starting rapp: " + rappName);
-			String cmd = String.format(START_APP_COMMAND, System.getProperty("user.home"), rappName);
+			String cmd = String.format(START_APP_COMMAND, Constants.WORK_DIR, rappName);
 			p = Runtime.getRuntime().exec(cmd);
 			logp("...");
 			p.waitFor();
@@ -49,7 +50,7 @@ public class RunCommand extends AbstractRunCommand {
 			}
 			return "Rapp started: " + rappName;
 		} catch (IOException | InterruptedException e) {
-			return e.getMessage();
+			throw new HttpCommandException(e.getMessage(), e);
 		}
 	}
 

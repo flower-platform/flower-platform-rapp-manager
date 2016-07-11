@@ -2,7 +2,7 @@ package org.flowerplatform.rapp_manager.linux;
 
 import static org.flowerplatform.rapp_manager.linux.Constants.PID_FILE_PATTERN;
 import static org.flowerplatform.rapp_manager.linux.Constants.PROPERTY_START_AT_BOOT;
-import static org.flowerplatform.rapp_manager.linux.Constants.RAPPS_DIR_PATTERN;
+import static org.flowerplatform.rapp_manager.linux.Constants.RAPPS_DIR;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -25,7 +25,7 @@ import java.util.Scanner;
 public class Util {
 
 	public static List<String> getInstalledRapps() {
-		File rappsDir = new File(String.format(RAPPS_DIR_PATTERN, System.getProperty("user.home")));
+		File rappsDir = new File(RAPPS_DIR);
 		File[] rappDirs = rappsDir.listFiles(new FileFilter() {
 			@Override
 			public boolean accept(File file) {
@@ -48,7 +48,7 @@ public class Util {
 	 * @throws InterruptedException 
 	 */
 	public static boolean isRappRunning(String rappName) throws IOException, InterruptedException {
-		String pidFile = String.format(PID_FILE_PATTERN, System.getProperty("user.home"), rappName);
+		String pidFile = String.format(PID_FILE_PATTERN, rappName);
 		File f = new File(pidFile);
 		if (!f.exists()) {
 			return false;
@@ -60,13 +60,17 @@ public class Util {
 			pid = scanner.nextInt();	
 		}
 		
+		return isProcessRunning(pid);
+		
+	}
+
+	public static boolean isProcessRunning(int pid) throws IOException, InterruptedException {
 		// check if process with id "pid" is running
 		String cmd = String.format("ps -p %s", pid);
 		Process p = Runtime.getRuntime().exec(cmd);
 		p.waitFor();
 		
 		return p.exitValue() == 0;
-		
 	}
 
 	/**
@@ -99,7 +103,7 @@ public class Util {
 	 * @throws IOException
 	 */
 	public static Properties getProperties(String rappName) throws IOException {
-		File rappsDir = new File(String.format(RAPPS_DIR_PATTERN, System.getProperty("user.home")));
+		File rappsDir = new File(RAPPS_DIR);
 		File rappDir = new File(rappsDir.getAbsolutePath() + File.separator + rappName);
 		if (!rappDir.exists()) {
 			throw new RuntimeException(String.format("Rapp not found: %s", rappName));
@@ -121,8 +125,7 @@ public class Util {
 	 * @throws IOException
 	 */
 	public static void saveProperties(String rappName, Properties properties) throws IOException {
-		File rappsDir = new File(String.format(RAPPS_DIR_PATTERN, System.getProperty("user.home")));
-		File rappDir = new File(rappsDir.getAbsolutePath() + File.separator + rappName);
+		File rappDir = new File(String.format(Constants.RAPP_DIR_PATTERN, rappName));
 		if (!rappDir.exists()) {
 			throw new RuntimeException(String.format("Rapp not found: %s", rappName));
 		}

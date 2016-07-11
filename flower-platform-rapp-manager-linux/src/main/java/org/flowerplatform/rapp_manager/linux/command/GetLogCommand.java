@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.flowerplatform.rapp_manager.linux.Constants;
+import org.flowerplatform.tiny_http_server.HttpCommandException;
 import org.flowerplatform.tiny_http_server.IHttpCommand;
 
 
@@ -33,7 +35,7 @@ public class GetLogCommand implements IHttpCommand {
 	
 	private String token;
 
-	public Object run() {
+	public Object run() throws HttpCommandException {
 		if (System.currentTimeMillis() > nextSessionCleanUpTimestamp) {
 			cleanUpSessions();
 		}
@@ -45,11 +47,11 @@ public class GetLogCommand implements IHttpCommand {
 		}
 		String offsetKey = rappName + "~" + token;
 		
-		String logFileName = String.format("%s/log/%s.log", System.getProperty("user.home"), rappName);
+		String logFileName = String.format(Constants.LOG_FILE_PATTERN, rappName);
 		try (RandomAccessFile logFile = new RandomAccessFile(logFileName, "r")) {
 			Long offset = logOffsets.remove(offsetKey);
 			if (offset == null) {
-				offset = logFile.length();
+				offset = Math.max(0, logFile.length() - 16384);
 			}
 			
 			// wait for some new data to be written to the log file; wait no less than a second and no more than 8 seconds
@@ -85,7 +87,7 @@ public class GetLogCommand implements IHttpCommand {
 			return sb.toString().getBytes();
 			
 		} catch (IOException e) {
-			throw new RuntimeException(e.getMessage(), e);
+			throw new HttpCommandException(e.getMessage(), e);
 		}
 	}
 

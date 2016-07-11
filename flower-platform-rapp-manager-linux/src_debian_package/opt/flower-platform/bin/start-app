@@ -25,6 +25,7 @@ sleep 1 # sleep 1 second
 ps -p $PID >/dev/null 2>&1
 if [ $? -eq 0 ]
 then 
+    mkdir -p $HOME_DIR/run
     echo $PID > $HOME_DIR/run/$RAPP.pid
     exit 0
 fi

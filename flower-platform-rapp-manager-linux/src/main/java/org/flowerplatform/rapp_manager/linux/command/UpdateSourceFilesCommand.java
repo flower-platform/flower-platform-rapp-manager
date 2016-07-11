@@ -21,7 +21,7 @@ public class UpdateSourceFilesCommand extends AbstractUpdateSourceFilesCommand {
 	
 	@Override
 	public Object run() throws HttpCommandException {
-		File rappDir = new File(String.format(Constants.RAPP_DIR_PATTERN, System.getProperty("user.home"), rappName));
+		File rappDir = new File(String.format(Constants.RAPP_DIR_PATTERN, rappName));
 		rappDir.mkdirs();
 		
 		// Make sure the working folder is clean (i.e. no unnecessary files)
