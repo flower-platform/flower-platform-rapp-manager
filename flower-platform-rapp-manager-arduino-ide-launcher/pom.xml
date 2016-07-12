@@ -1,0 +1,61 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.flowerplatform</groupId>
+	<artifactId>flower-platform-rapp-manager-arduino-ide-launcher</artifactId>
+	<version>1.0.0</version>
+
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+
+		<arduino.home>D:/Java/arduino-1.6.7/</arduino.home>
+		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.flowerplatform</groupId>
+			<artifactId>flower-platform-launcher-for-updatable-code</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>cc.arduino</groupId>
+			<artifactId>arduino-core</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${arduino.home}/lib/arduino-core.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>processing</groupId>
+			<artifactId>processing-app</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${arduino.home}/lib/pde.jar</systemPath>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<finalName>FlowerPlatformPluginLauncher</finalName>
+		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.6</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<descriptor>assembly.xml</descriptor>
+					<appendAssemblyId>false</appendAssemblyId>
+					<classifier>bundle</classifier>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>	
+	
+</project>
