@@ -11,7 +11,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 
-		<arduino.home>D:/workspace/arduino_ide/</arduino.home>
+		<arduino.home>D:/Java/arduino-1.6.7/</arduino.home>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 		<versionDir>${project.basedir}/src/main/java/org/flowerplatform/rapp_manager/arduino_ide</versionDir>
 	</properties>

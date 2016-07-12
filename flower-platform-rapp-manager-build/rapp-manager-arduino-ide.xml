@@ -14,8 +14,10 @@
 	
 	<modules>
 		<module>${tiny-http-server.folder}</module>
+		<module>${tiny-http-server.folder}/../flower-platform-launcher-for-updatable-code</module>
 		<module>../flower-platform-rapp-manager</module>
 		<module>../flower-platform-rapp-manager-arduino-ide</module>
+		<module>../flower-platform-rapp-manager-arduino-ide-launcher</module>
 	</modules>
 
 </project>
