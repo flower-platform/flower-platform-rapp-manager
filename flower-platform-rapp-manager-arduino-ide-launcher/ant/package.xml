@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     @author Cristian Spiescu                                                                
+     ====================================================================== -->
+<project name="project" default="default" basedir="..">
+	<description>
+            description
+    </description>
+
+	<!-- ================================= 
+          target: default              
+         ================================= -->
+	<target name="default" description="Package (contains launcher and plugin)">
+
+		<loadfile encoding="UTF-8" property="version" srcFile="../flower-platform-rapp-manager-arduino-ide/pom.xml" >
+			<filterchain>
+				<striplinebreaks/>
+		    	<containsregex pattern=".*?&lt;version&gt;(.+?)&lt;.*" replace="\1" />
+			</filterchain>
+		</loadfile>
+		
+		<zip destfile="target/flower-platform-rapp-manager-arduino-ide-${version}.zip">
+			<zipfileset dir="target" includes="FlowerPlatformPluginLauncher.jar" prefix="FlowerPlatformPluginLauncher/tool" />
+			<zipfileset dir="../flower-platform-rapp-manager-arduino-ide/target" includes="flower-platform-rapp-manager-arduino-ide-${version}.jar" prefix="FlowerPlatformPluginLauncher/tool/new-version" />
+		</zip>
+	
+	</target>
+	
+</project>
