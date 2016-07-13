@@ -3,6 +3,8 @@ package org.flowerplatform.rapp_manager.linux;
 import static org.flowerplatform.rapp_manager.linux.Constants.PID_FILE_PATTERN;
 import static org.flowerplatform.rapp_manager.linux.Constants.PROPERTY_START_AT_BOOT;
 import static org.flowerplatform.rapp_manager.linux.Constants.RAPPS_DIR;
+import static org.flowerplatform.rapp_manager.linux.Constants.RAPP_DIR_PATTERN;
+import static org.flowerplatform.rapp_manager.linux.Main.log;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -78,7 +80,7 @@ public class Util {
 	 * This timestamp is actually the creation date of the {@code rappName} folder.
 	 */
 	public static Long getRappTimestamp(String rappName) throws IOException {
-		File rappsDir = new File(String.format(RAPPS_DIR_PATTERN, System.getProperty("user.home")));
+		File rappsDir = new File(RAPPS_DIR);
 		File rappDir = new File(rappsDir.getAbsolutePath() + File.separator + rappName);		
 		
 		if (rappDir.exists()) {
@@ -86,11 +88,13 @@ public class Util {
 			if (attributes != null && attributes.creationTime() != null) {
 				return attributes.creationTime().toMillis();
 			}
+		} else {
+			System.err.println("WARNING: Can't find rapp dir " + rappDir.getAbsolutePath());
 		}
 		
 		return null;
 	}
-	
+
 	public static boolean getStartAtBootFlag(String rappName) throws IOException {
 		Properties rappProperties = getProperties(rappName);
 		return rappProperties.getProperty(PROPERTY_START_AT_BOOT, "false").equalsIgnoreCase("true");
@@ -144,4 +148,30 @@ public class Util {
 		}
 	}
 	
+	/**
+	 * Returns a status for each application, for the given dir set.
+	 * Status can be a summary (i.e. currently, nothing but the name of the app), or 
+	 * detailed (running status, etc). 
+	 */
+	public static List<RappDescriptor> getRappsStatus(File[] rappDirs, boolean detailed) {
+		List<RappDescriptor> rapps = new ArrayList<>();
+		for (File rappDir : rappDirs) {
+			RappDescriptor rapp = new RappDescriptor();
+			rapp.setName(rappDir.getName());
+			
+			if (detailed) {
+				try {
+					rapp.setRunning(Util.isRappRunning(rapp.getName()));
+					rapp.setStartAtBoot(Util.getStartAtBootFlag(rapp.getName()));
+					rapp.setUploadTimestamp(Util.getRappTimestamp(rapp.getName()));
+				} catch (IOException | InterruptedException e) {
+					log(e.getMessage(), e);
+					throw new RuntimeException(e.getMessage(), e);
+				}
+			}
+			rapps.add(rapp);	
+		}
+		
+		return rapps;
+	}
 }

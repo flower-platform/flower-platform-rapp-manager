@@ -7,8 +7,6 @@ package org.flowerplatform.rapp_manager.linux;
  */
 public class Constants {
 
-	public static final String SERVER_VERSION = "0.0.1";
-
 	public static final String BIN_PATH;
 
 	public static final String WORK_DIR = System.getProperty("user.home"); 

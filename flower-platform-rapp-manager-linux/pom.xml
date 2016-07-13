@@ -51,6 +51,13 @@
 	</dependencies>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+	
 		<finalName>${project.artifactId}-${project.version}-${maven.build.timestamp}</finalName>
 		<plugins>
         	<!-- create jar bundle -->
@@ -66,6 +73,11 @@
 				</executions>
 				<configuration>
 					<descriptor>assembly.xml</descriptor>
+					<archive>
+						<manifest>
+							<mainClass>org.flowerplatform.rapp_manager.linux.Main</mainClass>
+						</manifest>
+					</archive>
 				</configuration>
 			</plugin>
 			

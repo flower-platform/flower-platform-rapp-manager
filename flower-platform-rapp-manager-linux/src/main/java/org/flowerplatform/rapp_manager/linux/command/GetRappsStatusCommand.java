@@ -10,13 +10,12 @@ import org.flowerplatform.rapp_manager.linux.Util;
 import org.flowerplatform.tiny_http_server.HttpCommandException;
 import org.flowerplatform.tiny_http_server.IHttpCommand;
 
-
 /**
  * Returns the global status of the application (i.e. general indicator such as ok/not ok).
  * 
  * @author Claudiu Matei
  */
-public class GetStatusCommand implements IHttpCommand {
+public class GetRappsStatusCommand implements IHttpCommand {
 	public Object run() throws HttpCommandException {
 		File rappsDir = new File(Constants.RAPPS_DIR);
 		File[] rappDirs = rappsDir.listFiles(new FileFilter() {
@@ -29,9 +28,7 @@ public class GetStatusCommand implements IHttpCommand {
 		ServerStatus status = new ServerStatus();
 		status.setVersion(Main.VERSION);
 		
-		status.setRapps(Util.getRappsStatus(rappDirs, false));
+		status.setRapps(Util.getRappsStatus(rappDirs, true));
 		return status;
 	}
-
-	
 }

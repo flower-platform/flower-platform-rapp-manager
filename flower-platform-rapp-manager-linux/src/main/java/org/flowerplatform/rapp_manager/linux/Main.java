@@ -1,11 +1,15 @@
 package org.flowerplatform.rapp_manager.linux;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
+import java.util.Properties;
 
 import org.flowerplatform.rapp_manager.linux.command.CompileCommand;
 import org.flowerplatform.rapp_manager.linux.command.DeleteCommand;
 import org.flowerplatform.rapp_manager.linux.command.GetLogCommand;
+import org.flowerplatform.rapp_manager.linux.command.GetRappsStatusCommand;
 import org.flowerplatform.rapp_manager.linux.command.GetStatusCommand;
 import org.flowerplatform.rapp_manager.linux.command.RunCommand;
 import org.flowerplatform.rapp_manager.linux.command.SetPropertiesCommand;
@@ -16,8 +20,17 @@ import org.flowerplatform.tiny_http_server.HttpServer;
 
 public class Main {
 
+	public static String VERSION = null;
+	
+	/**
+	 * Internal properties file, packed within current jar.
+	 */
+	protected static Properties internalProperties;
+	
 	public static void main(String[] args) throws Exception {
 		logf("Rappmanager starting at %s", new Date().toString());
+		
+		prepareProperties();
 		
 		int serverPort = 65500;
 		
@@ -41,6 +54,7 @@ public class Main {
 		server.registerCommand("delete", DeleteCommand.class);
 		server.registerCommand("getLog", GetLogCommand.class);
 		server.registerCommand("getStatus", GetStatusCommand.class);
+		server.registerCommand("getRappsStatus", GetRappsStatusCommand.class);
 		server.registerCommand("setProperties", SetPropertiesCommand.class);
 		
 		// start apps with "startAtBoot" flag set to true
@@ -83,4 +97,34 @@ public class Main {
 		t.printStackTrace(System.out);
 	}
 	
+	private static void prepareProperties() {
+		try {
+			internalProperties = readInternalProperties();
+			logf("Loaded properties %s", ""+internalProperties);
+			VERSION = internalProperties.getProperty("app.version");
+		} catch (Throwable th) {
+			th.printStackTrace(System.err);
+		}
+	}
+	
+	private static Properties readInternalProperties() {
+		Properties properties = new Properties();
+		InputStream is = null; 
+		try {
+			is = Main.class.getClassLoader().getResourceAsStream("org/flowerplatform/all.properties");
+			properties.load(is);
+		} catch (IOException ex) {
+			log("Error opening internal properties file.");
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e1) {
+					log("Error while opening internal properties file");
+				}
+			}
+		}
+		
+		return properties;
+	}
 }
