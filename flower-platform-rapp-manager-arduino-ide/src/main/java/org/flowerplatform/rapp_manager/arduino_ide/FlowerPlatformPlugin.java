@@ -104,8 +104,6 @@ public class FlowerPlatformPlugin implements Tool {
 		try {
 			int serverPort = Integer.parseInt(globalProperties.getProperty("commandServerPort"));
 			HttpServer server = new HttpServer(serverPort);
-			// Set special handler which reports errors as (200 OK) messages, with code and message.
-			// server.setRequestHandler(new FlexRequestHandler());
 			// set command factory, in order to inject plugin reference into the IFlowerPlatformPluginAware command instances
 			server.setCommandFactory(new CommandFactory() { 
 				@Override

@@ -14,6 +14,7 @@ public class HeartbeatTest {
 	@Test
 	public void heartbeat() {
 		GetStatusCommand hCommand = new GetStatusCommand();
+		hCommand.setFlowerPlatformPlugin(TestSuiteArduinoIde.flowerPlatformPlugin);
 		Object result = hCommand.run();
 		
 		// The only actual requirement is that the status command returns not-null value.
