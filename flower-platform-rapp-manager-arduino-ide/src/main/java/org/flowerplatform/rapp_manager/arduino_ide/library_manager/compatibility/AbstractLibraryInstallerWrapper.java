@@ -3,6 +3,7 @@ package org.flowerplatform.rapp_manager.arduino_ide.library_manager.compatibilit
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.flowerplatform.rapp_manager.arduino_ide.FlowerPlatformPlugin;
 import org.flowerplatform.rapp_manager.arduino_ide.library_manager.Library;
@@ -10,6 +11,8 @@ import org.flowerplatform.rapp_manager.arduino_ide.library_manager.Library;
 import cc.arduino.contributions.libraries.ContributedLibrary;
 import cc.arduino.contributions.libraries.LibraryInstaller;
 import processing.app.Base;
+import processing.app.BaseNoGui;
+import processing.app.packages.LibraryList;
 import processing.app.packages.UserLibrary;
 
 /**
@@ -34,7 +37,12 @@ public abstract class AbstractLibraryInstallerWrapper {
 
 	public List<Library> getInstalledLibraries()  {
 		List<Library> result = new ArrayList<Library>();
- 		for(UserLibrary uLib : Base.INSTANCE.getUserLibs()) {
+		LibraryList allLibraries = Base.INSTANCE.getIDELibs();
+		
+		for (UserLibrary uLib: Base.INSTANCE.getUserLibs()) {
+			allLibraries.add(uLib);
+		}
+ 		for(UserLibrary uLib : allLibraries) {
  			Library lib = new Library();
  			lib.setName(uLib.getName());
  			lib.setVersion(uLib.getVersion());

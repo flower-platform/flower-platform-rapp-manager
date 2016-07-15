@@ -1,0 +1,32 @@
+#!/bin/bash
+
+HOME_DIR=$1
+RAPP=$2
+
+#Get running pid
+if [ -f $HOME_DIR/run/$RAPP.pid ]
+then 
+    OLDPID=`cat $HOME_DIR/run/$RAPP.pid`
+fi
+
+if [[ $OLDPID > 0 ]]
+then
+    echo "Killing old process $OLDPID..."
+    kill $OLDPID
+fi
+
+# Start rapp
+python -u $HOME_DIR/rapps/$RAPP/$RAPP.py >$HOME_DIR/log/$RAPP.log 2>&1 &
+PID=$!
+
+sleep 1 # sleep 1 second
+
+# check if rapp is still running after 1 second
+ps -p $PID >/dev/null 2>&1
+if [ $? -eq 0 ]
+then 
+    echo $PID > $HOME_DIR/run/$RAPP.pid
+    exit 0
+fi
+
+exit 1

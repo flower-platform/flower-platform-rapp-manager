@@ -178,7 +178,7 @@ public class SynchronizeLibrariesCommand implements IHttpCommand{
 					break;
 				case DOWNLOAD:
 					RequiredLibraryWrapper requiredLibrary = new RequiredLibraryWrapper(entry.getRequiredLibrary());
-					installer.install(requiredLibrary, entry.getExistingLibrary().getUserLibrary());
+					installer.install(requiredLibrary, entry.getRequiredLibrary().getUserLibrary());
 					break;
 				}
 			}

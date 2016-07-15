@@ -11,6 +11,7 @@ import javax.swing.event.MenuListener;
 
 import org.flowerplatform.rapp_manager.arduino_ide.FlowerPlatformPlugin;
 import org.flowerplatform.rapp_manager.arduino_ide.IFlowerPlatformPluginAware;
+import org.flowerplatform.rapp_manager.arduino_ide.model.Board;
 import org.flowerplatform.tiny_http_server.IHttpCommand;
 
 import processing.app.Editor;
@@ -46,12 +47,14 @@ public class GetBoardsCommand implements IHttpCommand, IFlowerPlatformPluginAwar
 				break;
 			}
 		}
-		List<String> boards = new ArrayList<>();
+		List<Board> boards = new ArrayList<>();
 		// start from 1 (skip first entry - "Boards manager")
 		for (int i = 1; i < boardsMenu.getItemCount(); i++) {
 			JMenuItem item = boardsMenu.getItem(i);
 			if (item != null && item.isEnabled()) {
-				boards.add(item.getText());
+				boards.add(
+					new Board(item.getText(), item.isSelected(), null)
+				);
 			}
 		}
 		

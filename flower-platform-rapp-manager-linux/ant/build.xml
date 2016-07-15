@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     @author Claudiu Matei                                             
+     ====================================================================== -->
+<project name="project" default="default" basedir="..">
+	<description>
+           Flower Platform Rapp Manager Linux Package
+    </description>
+
+	<!-- ================================= 
+          target: default              
+         ================================= -->
+	<target name="default">
+
+		<loadfile encoding="UTF-8" property="version" srcFile="pom.xml" >
+			<filterchain>
+				<striplinebreaks/>
+		    	<containsregex pattern=".*?&lt;version&gt;(.+?)&lt;.*" replace="\1" />
+			</filterchain>
+		</loadfile>
+		
+		<copy todir="src_debian_package/opt/flower-platform/bin" overwrite="true">
+		    <fileset dir="target/" includes="*-bundle.jar" />
+			<globmapper from="*" to="rapp-manager.jar" />
+		</copy>
+		<exec executable="fakeroot">
+			<arg value="dpkg-deb" />
+			<arg value="--build" />
+			<arg value="src_debian_package" />
+		</exec>
+		<move file="src_debian_package.deb" tofile="target/flower-platform_${version}_all.deb" />
+	</target>
+</project>
