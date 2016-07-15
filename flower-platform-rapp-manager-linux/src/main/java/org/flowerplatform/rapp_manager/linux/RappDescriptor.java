@@ -7,7 +7,7 @@ package org.flowerplatform.rapp_manager.linux;
  */
 public class RappDescriptor {
 
-	private String name;
+	private String rappId;
 	
 	private Long uploadTimestamp;
 	
@@ -15,12 +15,12 @@ public class RappDescriptor {
 	
 	private Boolean running;
 
-	public String getName() {
-		return name;
+	public String getRappId() {
+		return rappId;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setRappId(String rappId) {
+		this.rappId = rappId;
 	}
 
 	public Long getUploadTimestamp() {

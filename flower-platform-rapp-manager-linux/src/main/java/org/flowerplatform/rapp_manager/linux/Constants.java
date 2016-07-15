@@ -29,6 +29,11 @@ public class Constants {
 
 	public static final String PROPERTY_START_AT_BOOT = "startAtBoot";
 	
+	/**
+	 * The extension of a Python source-code file.
+	 */
+	public static final String PY_EXTENSION = ".py";
+	
 	static {
 		BIN_PATH = "/opt/flower-platform/bin";
 	}

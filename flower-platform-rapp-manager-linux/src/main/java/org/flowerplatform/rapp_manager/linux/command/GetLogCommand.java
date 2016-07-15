@@ -7,9 +7,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.flowerplatform.rapp_manager.command.AbstractRappCommand;
 import org.flowerplatform.rapp_manager.linux.Constants;
+import org.flowerplatform.rapp_manager.linux.FileUtils;
 import org.flowerplatform.tiny_http_server.HttpCommandException;
-import org.flowerplatform.tiny_http_server.IHttpCommand;
 
 
 /**
@@ -17,7 +18,7 @@ import org.flowerplatform.tiny_http_server.IHttpCommand;
  * @author Claudiu Matei
  *
  */
-public class GetLogCommand implements IHttpCommand {
+public class GetLogCommand extends AbstractRappCommand {
 
 	private static final long SESSION_TIMEOUT_INTERVAL = 10 * 60 * 1000L;
 	
@@ -31,23 +32,21 @@ public class GetLogCommand implements IHttpCommand {
 	
 	private long nextSessionCleanUpTimestamp = System.currentTimeMillis() + SESSION_TIMEOUT_INTERVAL;
 	
-	private String rappName;
-	
 	private String token;
 
 	public Object run() throws HttpCommandException {
 		if (System.currentTimeMillis() > nextSessionCleanUpTimestamp) {
 			cleanUpSessions();
 		}
-		if (rappName == null) {
+		if (rappId == null) {
 			throw new IllegalArgumentException("Rapp name not specified");
 		}
 		if (token == null) {
 			throw new IllegalArgumentException("Token not specified");
 		}
-		String offsetKey = rappName + "~" + token;
+		String offsetKey = rappId + "~" + token;
 		
-		String logFileName = String.format(Constants.LOG_FILE_PATTERN, rappName);
+		String logFileName = String.format(Constants.LOG_FILE_PATTERN, FileUtils.rappIdToFilesystemName(rappId));
 		try (RandomAccessFile logFile = new RandomAccessFile(logFileName, "r")) {
 			Long offset = logOffsets.remove(offsetKey);
 			if (offset == null) {
@@ -103,14 +102,6 @@ public class GetLogCommand implements IHttpCommand {
 		nextSessionCleanUpTimestamp = System.currentTimeMillis() + SESSION_TIMEOUT_INTERVAL;
 	}
 	
-	public String getRappName() {
-		return rappName;
-	}
-
-	public void setRappName(String rappName) {
-		this.rappName = rappName;
-	}
-
 	public String getToken() {
 		return token;
 	}

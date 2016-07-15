@@ -60,16 +60,16 @@ public class Main {
 		// start apps with "startAtBoot" flag set to true
 		log("Autostarting rapps...");
 		try {
-			for (String rappName : Util.getInstalledRapps()) {
+			for (String rappId : Util.getInstalledRapps()) {
 				try {
-					if (!Util.getStartAtBootFlag(rappName) || Util.isRappRunning(rappName)) {
+					if (!Util.getStartAtBootFlag(rappId) || Util.isRappRunning(rappId)) {
 						continue;
 					}
 					RunCommand cmd = new RunCommand();
-					cmd.setRappName(rappName);
+					cmd.setRappId(rappId);
 					cmd.run();
 				} catch (Throwable e) {
-					log("Could not start rapp: " + rappName, e);
+					log("Could not start rapp: " + rappId, e);
 				}
 			}
 			log("Autostarting rapps finnished.");

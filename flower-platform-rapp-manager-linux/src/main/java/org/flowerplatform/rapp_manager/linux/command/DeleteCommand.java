@@ -5,30 +5,27 @@ import static org.flowerplatform.rapp_manager.linux.Main.log;
 import java.io.File;
 import java.io.IOException;
 
-import org.flowerplatform.rapp_manager.linux.Constants;
+import org.flowerplatform.rapp_manager.command.AbstractRappCommand;
+import org.flowerplatform.rapp_manager.linux.FileUtils;
 import org.flowerplatform.tiny_http_server.HttpCommandException;
-import org.flowerplatform.tiny_http_server.IHttpCommand;
-
 
 /**
  * 
  * @author Claudiu Matei
- *
  */
-public class DeleteCommand implements IHttpCommand {
+public class DeleteCommand extends AbstractRappCommand {
 
 	private static final String DELETE_COMMAND = "rm -rf %s";
 	
-	private String rappName;
-	
 	public Object run() throws HttpCommandException {
-		log("Deleting rapp: " + rappName);
-		if (rappName == null) {
+		if (rappId == null) {
 			throw new HttpCommandException("Rapp name not specified");
 		}
-		File rappDir = new File(String.format(Constants.RAPP_DIR_PATTERN, rappName));
+		
+		log("Deleting rapp: " + rappId);
+		File rappDir = FileUtils.getRappDir(rappId);
 		if (!rappDir.exists()) {
-			HttpCommandException e = new HttpCommandException(String.format("Rapp not found: %s", rappName));
+			HttpCommandException e = new HttpCommandException(String.format("Rapp not found: %s", rappId));
 			log(e.getMessage(), e);
 			throw e;
 		}
@@ -37,7 +34,7 @@ public class DeleteCommand implements IHttpCommand {
 			p = Runtime.getRuntime().exec(String.format(DELETE_COMMAND, rappDir));
 			p.waitFor();
 			if (p.exitValue() != 0) {
-				HttpCommandException e = new HttpCommandException("Error deleting rapp: " + rappName);
+				HttpCommandException e = new HttpCommandException("Error deleting rapp: " + rappId);
 				log (e.getMessage(), e);
 				throw e;
 			}
@@ -48,13 +45,4 @@ public class DeleteCommand implements IHttpCommand {
 		}
 		return null;
 	}
-
-	public String getRappName() {
-		return rappName;
-	}
-
-	public void setRappName(String board) {
-		this.rappName = board;
-	}
-	
 }

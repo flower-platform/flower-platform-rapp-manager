@@ -1,9 +1,7 @@
 package org.flowerplatform.rapp_manager;
 
 /**
- * 
  * @author Claudiu Matei
- *
  */
 public class SourceFileDto {
 
@@ -36,4 +34,8 @@ public class SourceFileDto {
 		this.contents = contents;
 	}
 	
+	@Override
+	public String toString() {
+		return "SourceFileDto [name=" + name + ", contents=" + (contents != null ? contents.length() : 0) + " characters]";
+	}
 }

@@ -5,8 +5,8 @@ import java.util.List;
 import org.flowerplatform.rapp_manager.SourceFileDto;
 import org.flowerplatform.rapp_manager.arduino_ide.FlowerPlatformPlugin;
 import org.flowerplatform.rapp_manager.arduino_ide.IFlowerPlatformPluginAware;
+import org.flowerplatform.rapp_manager.command.AbstractRappCommand;
 import org.flowerplatform.tiny_http_server.HttpCommandException;
-import org.flowerplatform.tiny_http_server.IHttpCommand;
 
 /**
  * Aggregate between {@link UpdateSourceFilesCommand} and {@link CompileCommand}
@@ -15,33 +15,26 @@ import org.flowerplatform.tiny_http_server.IHttpCommand;
  * 
  * @author Andrei Taras
  */
-public class UpdateSourceFilesAndCompileCommand implements IHttpCommand, IFlowerPlatformPluginAware {
+public class UpdateSourceFilesAndCompileCommand extends AbstractRappCommand implements IFlowerPlatformPluginAware {
 
 	private FlowerPlatformPlugin plugin;
 	
-	protected String rappName;
 	protected List<SourceFileDto> files;
 
 	@Override
 	public Object run() throws HttpCommandException {
 		UpdateSourceFilesCommand updateSourceFilesCommand = new UpdateSourceFilesCommand();
 		updateSourceFilesCommand.setFlowerPlatformPlugin(plugin);
-		updateSourceFilesCommand.setRappName(rappName);
+		updateSourceFilesCommand.setRappId(rappId);
 		updateSourceFilesCommand.setFiles(files);
 		updateSourceFilesCommand.run();
 
 		CompileCommand compileCommand = new CompileCommand();
 		compileCommand.setFlowerPlatformPlugin(plugin);
-		compileCommand.setRappName(rappName);
+		compileCommand.setRappId(rappId);
 		return compileCommand.run();
 	}
 
-	public String getRappName() {
-		return rappName;
-	}
-	public void setRappName(String rappName) {
-		this.rappName = rappName;
-	}
 	public List<SourceFileDto> getFiles() {
 		return files;
 	}

@@ -4,13 +4,12 @@ import static org.flowerplatform.rapp_manager.linux.Main.log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.flowerplatform.rapp_manager.command.AbstractCompileCommand;
 import org.flowerplatform.rapp_manager.linux.CompilationException;
-import org.flowerplatform.rapp_manager.linux.Constants;
+import org.flowerplatform.rapp_manager.linux.FileUtils;
 import org.flowerplatform.tiny_http_server.HttpCommandException;
 
 /**
@@ -18,29 +17,21 @@ import org.flowerplatform.tiny_http_server.HttpCommandException;
  * @author Claudiu Matei
  */
 public class CompileCommand extends AbstractCompileCommand {
-
 	private static final String COMPILE_COMMAND = "python -m py_compile %s";
 	
-	private static final String PY_EXTENSION = ".py";
-	
 	public Object run() throws HttpCommandException {
-		if (rappName == null) {
+		if (rappId == null) {
 			throw new IllegalArgumentException("Rapp name not specified");
 		}
 		Process p;
 		StringBuilder compilationLog = new StringBuilder();
 		try {
-			compilationLog.append("Compiling " + rappName + "... \n");
+			compilationLog.append("Compiling " + rappId + "... \n");
 			
-			File rappDir = new File(String.format(Constants.RAPP_DIR_PATTERN, rappName));
-			File[] pyFiles = rappDir.listFiles(new FileFilter() {
-				@Override
-				public boolean accept(File pathname) {
-					return pathname.getName().endsWith(PY_EXTENSION);
-				}
-			});
+			File[] pyFiles = FileUtils.getPyFiles(rappId);
 			if (pyFiles != null && pyFiles.length > 0) {
 				for (File f : pyFiles) {
+					compilationLog.append("Processing file " + f + " \n");
 					String cmd = String.format(COMPILE_COMMAND, f.getPath());
 					p = Runtime.getRuntime().exec(cmd);
 					
@@ -68,11 +59,13 @@ public class CompileCommand extends AbstractCompileCommand {
 				compilationLog.append("No *.py files provided. Nothing to compile ! \n");
 				throw new CompilationException(compilationLog.toString());
 			}
-			compilationLog.append("Successfully compiled application " + rappName + "\n");
-			log(compilationLog.toString());
+			compilationLog.append("Successfully compiled application " + rappId + "\n");
 			return compilationLog.toString();
 		} catch (IOException | InterruptedException e) {
+			log("Error occurred.", e);
 			throw new HttpCommandException(e.getMessage(), e);
+		} finally {
+			log(compilationLog.toString());
 		}
 	}
 }

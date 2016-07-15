@@ -18,7 +18,7 @@ public class RunStop {
 	@Test
 	public void testRunAndStopCommands() throws HttpCommandException, IOException, ReflectiveOperationException, SecurityException, InterruptedException {
 		RunCommand cmdRun = new RunCommand();
-		cmdRun.setRappName("TestApp");
+		cmdRun.setRappId("TestApp");
 		cmdRun.run();
 		try { Thread.sleep(1000); } catch (Exception e) { e.printStackTrace(); }
 		
@@ -40,7 +40,7 @@ public class RunStop {
 		try { Thread.sleep(1000); } catch (Exception e) { e.printStackTrace(); }
 		
 		StopCommand cmdStop = new StopCommand();
-		cmdStop.setRappName("TestApp");
+		cmdStop.setRappId("TestApp");
 		cmdStop.run();
 		
 		try { Thread.sleep(1000); } catch (Exception e) { e.printStackTrace(); }

@@ -3,8 +3,8 @@ package org.flowerplatform.rapp_manager.linux.command;
 import java.util.List;
 
 import org.flowerplatform.rapp_manager.SourceFileDto;
+import org.flowerplatform.rapp_manager.command.AbstractRappCommand;
 import org.flowerplatform.tiny_http_server.HttpCommandException;
-import org.flowerplatform.tiny_http_server.IHttpCommand;
 
 /**
  * Aggregate between {@link UpdateSourceFilesCommand} and {@link CompileCommand}
@@ -13,28 +13,21 @@ import org.flowerplatform.tiny_http_server.IHttpCommand;
  * 
  * @author Andrei Taras
  */
-public class UpdateSourceFilesAndCompileCommand implements IHttpCommand {
-	protected String rappName;
+public class UpdateSourceFilesAndCompileCommand extends AbstractRappCommand {
 	protected List<SourceFileDto> files; 
 
 	@Override
 	public Object run() throws HttpCommandException {
 		UpdateSourceFilesCommand updateSourceFilesCommand = new UpdateSourceFilesCommand();
-		updateSourceFilesCommand.setRappName(rappName);
+		updateSourceFilesCommand.setRappId(rappId);
 		updateSourceFilesCommand.setFiles(files);
 		updateSourceFilesCommand.run();
 		
 		CompileCommand compileCommand = new CompileCommand();
-		compileCommand.setRappName(rappName);
+		compileCommand.setRappId(rappId);
 		return compileCommand.run();
 	}
 
-	public String getRappName() {
-		return rappName;
-	}
-	public void setRappName(String rappName) {
-		this.rappName = rappName;
-	}
 	public List<SourceFileDto> getFiles() {
 		return files;
 	}
