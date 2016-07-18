@@ -4,9 +4,11 @@ import static org.flowerplatform.rapp_manager.linux.Main.log;
 import static org.flowerplatform.rapp_manager.linux.Main.logp;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.flowerplatform.rapp_manager.command.AbstractRappCommand;
 import org.flowerplatform.rapp_manager.linux.Constants;
+import org.flowerplatform.rapp_manager.linux.FileUtils;
 import org.flowerplatform.rapp_manager.linux.Util;
 import org.flowerplatform.tiny_http_server.HttpCommandException;
 
@@ -15,7 +17,11 @@ import org.flowerplatform.tiny_http_server.HttpCommandException;
  */
 public class StopCommand extends AbstractRappCommand {
 
-	private static final String STOP_APP_COMMAND = Constants.BIN_PATH + "/stop-app %s %s";
+	/**
+	 * The format of the command line invocation :
+	 * stop-app home_dir rappId filesystemName
+	 */
+	private static final String STOP_APP_COMMAND = "/bin/bash " + Constants.BIN_PATH + "/stop-app %s %s %s";
 	
 	public Object run() throws HttpCommandException {
 		if (rappId == null) {
@@ -34,19 +40,42 @@ public class StopCommand extends AbstractRappCommand {
 		Process p;
 		try {
 			logp("Stopping rapp: " + rappId);
-			String cmd = String.format(STOP_APP_COMMAND, Constants.WORK_DIR, rappId);
+			String cmd = String.format(STOP_APP_COMMAND, Constants.WORK_DIR, rappId, FileUtils.rappIdToFilesystemName(rappId));
 			p = Runtime.getRuntime().exec(cmd);
 			logp("...");
 			p.waitFor();
+			String processOutput = processOutputAsString(p);
+			
 			if (p.exitValue() != 0) {
-				log("failed");
-				throw new RuntimeException("Error stopping rapp: " + rappId);
+				log("failed : " + processOutput);
+				throw new RuntimeException("Error stopping rapp " + rappId + "; The output of the process was: \n\n" + processOutput);
 			} else {
-				log("done");
+				log("done : " + processOutput);
 			}
 			return "Rapp stopped: " + rappId;
 		} catch (IOException | InterruptedException e) {
-			return e.getMessage();
+			log("Error stopping app", e);
+			throw new HttpCommandException(e.getMessage());
 		}
+	}
+	
+	// Converts the output of the given process to a String
+	private static String processOutputAsString(Process p) throws UnsupportedOperationException, IOException {
+		StringBuilder result = new StringBuilder();
+		InputStream stdoutStream = p.getInputStream(), stderrStream = p.getErrorStream();
+		
+		if (stdoutStream != null) {
+			result.append("Normal output:\n");
+			result.append(Util.slurp(stdoutStream, 4096));
+		}
+		if (stderrStream != null) {
+			if (result.length() > 0) {
+				result.append("\n\n");
+			}
+			result.append("Err output:\n");
+			result.append(Util.slurp(stderrStream, 4096));
+		}
+		
+		return result.toString();
 	}
 }

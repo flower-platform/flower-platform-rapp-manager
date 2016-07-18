@@ -1,12 +1,15 @@
 #!/bin/bash
 
 HOME_DIR=$1
+# This is the un-escaped name of the RAPP, for display purposes.
 RAPP=$2
+# This is the actual name the RAPP is going to have on the filesystem. Use this for any dir reading, etc.
+FILESYSTEM_RAPP_NAME=$3
 
 #Get running pid
-if [ -f $HOME_DIR/run/$RAPP.pid ]
+if [ -f $HOME_DIR/run/$FILESYSTEM_RAPP_NAME.pid ]
 then 
-    OLDPID=`cat $HOME_DIR/run/$RAPP.pid`
+    OLDPID=`cat $HOME_DIR/run/$FILESYSTEM_RAPP_NAME.pid`
 fi
 
 if [[ $OLDPID > 0 ]]
@@ -16,7 +19,7 @@ then
 fi
 
 # Start rapp
-python -u $HOME_DIR/rapps/$RAPP/$RAPP.py >$HOME_DIR/log/$RAPP.log 2>&1 &
+python -u $HOME_DIR/rapps/$FILESYSTEM_RAPP_NAME/$FILESYSTEM_RAPP_NAME.py >$HOME_DIR/log/$FILESYSTEM_RAPP_NAME.log 2>&1 &
 PID=$!
 
 sleep 1 # sleep 1 second
@@ -26,7 +29,7 @@ ps -p $PID >/dev/null 2>&1
 if [ $? -eq 0 ]
 then 
     mkdir -p $HOME_DIR/run
-    echo $PID > $HOME_DIR/run/$RAPP.pid
+    echo $PID > $HOME_DIR/run/$FILESYSTEM_RAPP_NAME.pid
     exit 0
 fi
 

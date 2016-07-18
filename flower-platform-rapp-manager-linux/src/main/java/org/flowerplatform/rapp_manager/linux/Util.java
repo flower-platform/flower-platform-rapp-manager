@@ -10,6 +10,10 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
@@ -161,4 +165,25 @@ public class Util {
 		
 		return rapps;
 	}
+	
+	/**
+	 * Converts the given input stream into a string.
+	 */
+	public static String slurp(final InputStream is, final int bufferSize) throws UnsupportedEncodingException, IOException {
+	    final char[] buffer = new char[bufferSize];
+	    final StringBuilder out = new StringBuilder();
+	    try (Reader in = new InputStreamReader(is, "UTF-8")) {
+	        for (;;) {
+	            int rsz = in.read(buffer, 0, buffer.length);
+	            if (rsz < 0)
+	                break;
+	            out.append(buffer, 0, rsz);
+	        }
+	    } catch (UnsupportedEncodingException ex) {
+	    	throw ex;
+	    } catch (IOException ex) {
+	    	throw ex;
+	    }
+	    return out.toString();
+	}	
 }

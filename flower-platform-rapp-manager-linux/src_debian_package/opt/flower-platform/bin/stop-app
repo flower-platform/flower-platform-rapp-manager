@@ -1,14 +1,18 @@
 #!/bin/bash
 
 HOME_DIR=$1
+# This is the un-escaped name of the RAPP, for display purposes.
 RAPP=$2
-PIDFILE=$HOME_DIR/run/$RAPP.pid
+# This is the actual name the RAPP is going to have on the filesystem. Use this for any dir reading, etc.
+FILESYSTEM_RAPP_NAME=$3
+PIDFILE=$HOME_DIR/run/$FILESYSTEM_RAPP_NAME.pid
 
 #Get running pid
 if [ -f $PIDFILE ]
 then
-    PID=`cat $HOME_DIR/run/$RAPP.pid`
+    PID=`cat $HOME_DIR/run/$FILESYSTEM_RAPP_NAME.pid`
 else
+	echo "Failed to stop Rapp $RAPP. Application already stopped?"
     exit 1
 fi
 

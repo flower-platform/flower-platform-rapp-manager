@@ -19,7 +19,11 @@ import org.flowerplatform.tiny_http_server.HttpCommandException;
  */
 public class RunCommand extends AbstractRunCommand {
 
-	private static final String START_APP_COMMAND = Constants.BIN_PATH + "/start-app %s %s";
+	/**
+	 * The format of the command line invocation :
+	 * start-app home_dir rappId filesystemName
+	 */
+	private static final String START_APP_COMMAND = "/bin/bash " + Constants.BIN_PATH + "/start-app %s %s %s";
 	
 	public Object run() throws HttpCommandException {
 		if (rappId == null) {
@@ -39,7 +43,7 @@ public class RunCommand extends AbstractRunCommand {
 		Process p;
 		try {
 			logp("Starting rapp: " + rappId);
-			String cmd = String.format(START_APP_COMMAND, Constants.WORK_DIR, FileUtils.rappIdToFilesystemName(rappId));
+			String cmd = String.format(START_APP_COMMAND, Constants.WORK_DIR, rappId, FileUtils.rappIdToFilesystemName(rappId));
 			p = Runtime.getRuntime().exec(cmd);
 			logp("...");
 			p.waitFor();
