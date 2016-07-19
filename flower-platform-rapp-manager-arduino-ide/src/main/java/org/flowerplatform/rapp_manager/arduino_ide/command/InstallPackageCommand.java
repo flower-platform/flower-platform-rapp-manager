@@ -5,20 +5,15 @@ import org.flowerplatform.ramm_manager.arduino_ide.package_manager.PackagesInsta
 import org.flowerplatform.tiny_http_server.HttpCommandException;
 import org.flowerplatform.tiny_http_server.IHttpCommand;
 
-/**
- * This command is used to install/remove a platform inside a package. 
- * A platform is characterized from a package name(which contains platform to handle) platform name and platform version. 
- * When install selected, url to download from should be provided
- * @author Silviu Negoita
- *
- */
-public class SynchronizePackagesCommand implements IHttpCommand {
-	
+import cc.arduino.Constants;
+import processing.app.BaseNoGui;
+import processing.app.PreferencesData;
+
+public class InstallPackageCommand implements IHttpCommand{
 	private String packageName;
 	private String packageUrl;
 	private String platformArch;
 	private String platformVersion;
-	private boolean dryRun;
 	private boolean toInstall;
 	
 	public boolean isToInstall() {
@@ -29,13 +24,6 @@ public class SynchronizePackagesCommand implements IHttpCommand {
 		this.toInstall = toInstall;
 	}
 
-	public boolean isDryRun() {
-		return dryRun;
-	}
-
-	public void setDryRun(boolean dryRun) {
-		this.dryRun = dryRun;
-	}
 
 	public String getPackageName() {
 		return packageName;
@@ -73,15 +61,11 @@ public class SynchronizePackagesCommand implements IHttpCommand {
 	@Override
 	public Object run() throws HttpCommandException {
 		try {
-			AbstractPackagesInstallerWrapper installer =  new PackagesInstallerWrapper();
-			if (dryRun) {
-				return installer.findPlatformByNameArchVersion(packageName, platformArch, platformVersion);
-			} else {
-				if (toInstall)
-					return installer.install(packageName, platformArch, platformVersion, packageUrl);
-				else 
-					return installer.remove(packageName, platformArch, platformVersion);
-			}
+			AbstractPackagesInstallerWrapper installer =  new PackagesInstallerWrapper(packageUrl);
+			if (toInstall)
+				return installer.install(packageName, platformArch, platformVersion, packageUrl);
+			else 
+				return installer.remove(packageName, platformArch, platformVersion);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

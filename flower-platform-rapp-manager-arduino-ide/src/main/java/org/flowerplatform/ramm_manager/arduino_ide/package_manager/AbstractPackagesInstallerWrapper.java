@@ -2,6 +2,8 @@ package org.flowerplatform.ramm_manager.arduino_ide.package_manager;
 
 import java.util.List;
 
+import cc.arduino.contributions.packages.ContributedPlatform;
+
 
 /**
  * Wrapper for install/remove platform for Arduino IDE
@@ -38,5 +40,5 @@ public abstract class AbstractPackagesInstallerWrapper {
 	 * @param version platform version
 	 * @return PackageDto 
 	 */
-	public abstract PackageDto findPlatformByNameArchVersion(String name, String architecture, String version);
+	public abstract ContributedPlatform findPlatformByNameArchVersion(String name, String architecture, String version)  throws Exception;
 }

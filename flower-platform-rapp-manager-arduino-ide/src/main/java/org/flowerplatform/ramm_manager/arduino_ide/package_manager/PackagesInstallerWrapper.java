@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import com.github.zafarkhaja.semver.Version;
 
+import cc.arduino.Constants;
 import cc.arduino.contributions.DownloadableContributionsDownloader;
 import cc.arduino.contributions.GPGDetachedSignatureVerifier;
 import cc.arduino.contributions.ProgressListener;
@@ -25,6 +26,7 @@ import cc.arduino.contributions.packages.ContributionsIndexer;
 import cc.arduino.utils.MultiStepProgress;
 import cc.arduino.utils.Progress;
 import processing.app.BaseNoGui;
+import processing.app.PreferencesData;
 
 public class PackagesInstallerWrapper extends AbstractPackagesInstallerWrapper {
 	
@@ -33,30 +35,44 @@ public class PackagesInstallerWrapper extends AbstractPackagesInstallerWrapper {
 	
 	ProgressListener progressListener;
 	
-	public PackagesInstallerWrapper() throws Exception {progressListener = new ProgressListener() {
+	public PackagesInstallerWrapper(String packageUrl) throws Exception {progressListener = new ProgressListener() {
 		@Override
 		public void onProgress(Progress progress) {
 			System.out.println(progress.getStatus());
 		}
 		};
+		// delete all .tmp files from settings directory. any .tmp file can cause system instability.
+		clearDirectoryFromTemporaryFiles(BaseNoGui.getSettingsFolder());
 		// get contribution installer from Arduino IDE
 		contributionInstaller = new ContributionInstaller(BaseNoGui.getPlatform(), new GPGDetachedSignatureVerifier());
-		contributionInstaller.updateIndex(progressListener);
 		
 		// get contribution indexer from Arduino IDE
 		contributionIndexer = BaseNoGui.indexer;
 		
+		// set this property because is used by updateIndex method fomr Arduino IDE. this holds urls to contribution packages.
+		packageUrl = packageUrl.replace("\r\n", "\n").replace("\r", "\n").replace("\n", ",");
+		String additionalURLs = PreferencesData.get(Constants.PREF_BOARDS_MANAGER_ADDITIONAL_URLS, "");
+		
+		if (additionalURLs != null && additionalURLs.length() > 4) {
+			// preserve old additional urls and add the new one. 
+			if (!additionalURLs.contains(packageUrl)) // add only if it is not already there.
+				PreferencesData.set(Constants.PREF_BOARDS_MANAGER_ADDITIONAL_URLS, additionalURLs + "," +  packageUrl);
+		} else { 
+			// just set this new url to preferences
+			PreferencesData.set(Constants.PREF_BOARDS_MANAGER_ADDITIONAL_URLS, packageUrl);
+		}
 	}
 	@Override
 	public List<String> install(String name, String architecture, String version, String url) throws Exception {
-		ContributedPlatform founded = contributionIndexer.getIndex().findPlatform(name, architecture, version);
+		// refresh info about available packages
+		ContributedPlatform founded = findPlatformByNameArchVersion(name, architecture, version);
 		if (founded != null) { 
-			// if we find specified platform in already downloaded and indexed package
-			// and it is not installed, install. 				
-			if (!founded.isInstalled()) {
-				return contributionInstaller.install(founded, progressListener);
-			} else {
+			// if we found anything we dont do nothing. 	
+			if (founded.isInstalled())
 				return Arrays.asList("Platform already installed. Exiting");
+			else {
+				System.out.println("CICA NU E INSTALATA");
+				contributionInstaller.install(founded, progressListener);
 			}
 		} else { //if we don't find this platform in already downloaded packages, we try to index from specified url and manually search for it in index
 			File downloadedJson = download(url);
@@ -80,7 +96,7 @@ public class PackagesInstallerWrapper extends AbstractPackagesInstallerWrapper {
 
 	@Override
 	public List<String> remove(String name, String architecture, String version) throws Exception {
-		ContributedPlatform founded = contributionIndexer.getIndex().findPlatform(name, architecture, version);
+		ContributedPlatform founded = findPlatformByNameArchVersion(name, architecture, version);
 		if (founded != null && founded.isInstalled())
 			return contributionInstaller.remove(founded);
 		
@@ -145,16 +161,21 @@ public class PackagesInstallerWrapper extends AbstractPackagesInstallerWrapper {
 	}
 	
 	
-	public PackageDto findPlatformByNameArchVersion(String name, String architecture, String version) {
-		ContributedPlatform founded = contributionIndexer.getIndex().findPlatform(name, architecture, version);
-		if (founded == null) return null;
-		
-		PackageDto result = new PackageDto();
-		result.setInstalled(founded.isInstalled());
-		result.setPlatformVersion(founded.getVersion());
-		result.setPlatformArch(founded.getArchitecture());
-		result.setPackageName(founded.getParentPackage().getName());
-		return result;
+	public ContributedPlatform findPlatformByNameArchVersion(String name, String architecture, String version) throws Exception {
+		// this command redownload jsons ( both from AdruinoIDE and additional URLs) - it can block due to server failure.
+		contributionInstaller.updateIndex(progressListener);
+		// this command parse previous downloaded JSONs and load them in memory for further analysis
+		BaseNoGui.indexer.parseIndex();
+		BaseNoGui.indexer.syncWithFilesystem(BaseNoGui.getHardwareFolder());
+		// search a platform in data previously loaded
+		return  contributionIndexer.getIndex().findPlatform(name, architecture, version);
 	}
 	
+	public void clearDirectoryFromTemporaryFiles(File directory) {
+		File fList[] = directory.listFiles();
+        for (File f : fList) {
+            if (f.getName().endsWith(".tmp")) {
+                f.delete(); 
+            }}
+	}
 }
