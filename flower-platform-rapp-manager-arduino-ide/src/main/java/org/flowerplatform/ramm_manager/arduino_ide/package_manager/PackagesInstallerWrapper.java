@@ -6,7 +6,6 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.file.Files;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,30 +48,36 @@ public class PackagesInstallerWrapper extends AbstractPackagesInstallerWrapper {
 		// get contribution indexer from Arduino IDE
 		contributionIndexer = BaseNoGui.indexer;
 		
-		// set this property because is used by updateIndex method fomr Arduino IDE. this holds urls to contribution packages.
+		// set this property because is used by updateIndex method for Arduino IDE. this holds urls to contribution packages.
 		packageUrl = packageUrl.replace("\r\n", "\n").replace("\r", "\n").replace("\n", ",");
 		String additionalURLs = PreferencesData.get(Constants.PREF_BOARDS_MANAGER_ADDITIONAL_URLS, "");
 		
 		if (additionalURLs != null && additionalURLs.length() > 4) {
 			// preserve old additional urls and add the new one. 
-			if (!additionalURLs.contains(packageUrl)) // add only if it is not already there.
+			if (!additionalURLs.contains(packageUrl)) { // add only if it is not already there.
 				PreferencesData.set(Constants.PREF_BOARDS_MANAGER_ADDITIONAL_URLS, additionalURLs + "," +  packageUrl);
+				reDownloadJsonsAndSync();
+			}
 		} else { 
 			// just set this new url to preferences
 			PreferencesData.set(Constants.PREF_BOARDS_MANAGER_ADDITIONAL_URLS, packageUrl);
+			// this is new URL and we need to download JSONs
+			reDownloadJsonsAndSync();
 		}
+		// invoke save command in Arduino IDE to write settings in file
+		saveSettingsInArduinoIDE();
 	}
 	@Override
-	public List<String> install(String name, String architecture, String version, String url) throws Exception {
+	public Object[] install(String name, String architecture, String version, String url) throws Exception {
 		// refresh info about available packages
+		reDownloadJsonsAndSync();
 		ContributedPlatform founded = findPlatformByNameArchVersion(name, architecture, version);
 		if (founded != null) { 
-			// if we found anything we dont do nothing. 	
+			// if we found anything we don't do nothing. 	
 			if (founded.isInstalled())
-				return Arrays.asList("Platform already installed. Exiting");
+				return new String[] {"Platform already installed. Exiting"};
 			else {
-				System.out.println("CICA NU E INSTALATA");
-				contributionInstaller.install(founded, progressListener);
+				return contributionInstaller.install(founded, progressListener).toArray();
 			}
 		} else { //if we don't find this platform in already downloaded packages, we try to index from specified url and manually search for it in index
 			File downloadedJson = download(url);
@@ -86,7 +91,7 @@ public class PackagesInstallerWrapper extends AbstractPackagesInstallerWrapper {
 					if (architecture.equals(contributedPlatform.getArchitecture()) 
 							&& toFindVersion.equals(VersionHelper.valueOf(contributedPlatform.getVersion()))
 							) {
-						return contributionInstaller.install(contributedPlatform, progressListener);
+						return  (String[]) contributionInstaller.install(contributedPlatform, progressListener).toArray();
 					}
 				}
 		}
@@ -95,12 +100,11 @@ public class PackagesInstallerWrapper extends AbstractPackagesInstallerWrapper {
 	}
 
 	@Override
-	public List<String> remove(String name, String architecture, String version) throws Exception {
+	public Object[] remove(String name, String architecture, String version) throws Exception {
 		ContributedPlatform founded = findPlatformByNameArchVersion(name, architecture, version);
 		if (founded != null && founded.isInstalled())
-			return contributionInstaller.remove(founded);
-		
-		return Arrays.asList("Platform given for remove not found. Exiting");
+			return contributionInstaller.remove(founded).toArray();
+		return new String[] {"Platform given for remove not found. Exiting"};
 	}
 	
 	/**
@@ -160,15 +164,22 @@ public class PackagesInstallerWrapper extends AbstractPackagesInstallerWrapper {
 		return (ContributionsIndex) parseIndex.invoke(contributionIndexer, jsonFile);
 	}
 	
-	
-	public ContributedPlatform findPlatformByNameArchVersion(String name, String architecture, String version) throws Exception {
+	/**
+	 * This method force to redownload all JSONS from available URLs( default and aditionalURLs) and reload data in memory.
+	 * This is very useful when we need to download resycronize data from HDD with Arduino IDE
+	 * @throws Exception 
+	 */
+	public void reDownloadJsonsAndSync() throws Exception {
 		// this command redownload jsons ( both from AdruinoIDE and additional URLs) - it can block due to server failure.
 		contributionInstaller.updateIndex(progressListener);
 		// this command parse previous downloaded JSONs and load them in memory for further analysis
 		BaseNoGui.indexer.parseIndex();
 		BaseNoGui.indexer.syncWithFilesystem(BaseNoGui.getHardwareFolder());
+	}
+	
+	public ContributedPlatform findPlatformByNameArchVersion(String name, String architecture, String version) throws Exception {
 		// search a platform in data previously loaded
-		return  contributionIndexer.getIndex().findPlatform(name, architecture, version);
+		return contributionIndexer.getIndex().findPlatform(name, architecture, version);
 	}
 	
 	public void clearDirectoryFromTemporaryFiles(File directory) {
@@ -177,5 +188,15 @@ public class PackagesInstallerWrapper extends AbstractPackagesInstallerWrapper {
             if (f.getName().endsWith(".tmp")) {
                 f.delete(); 
             }}
+	}
+	/**
+	 * This method use java reflection to invoke save method form Arduino IDE. This method write all settings in file.
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 */
+	public void saveSettingsInArduinoIDE() throws Exception {
+		Method save = PreferencesData.class.getDeclaredMethod("save");
+		save.setAccessible(true);
+		save.invoke(null);
 	}
 }

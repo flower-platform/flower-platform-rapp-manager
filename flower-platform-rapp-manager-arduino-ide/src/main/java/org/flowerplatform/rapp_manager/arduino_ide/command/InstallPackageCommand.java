@@ -5,10 +5,6 @@ import org.flowerplatform.ramm_manager.arduino_ide.package_manager.PackagesInsta
 import org.flowerplatform.tiny_http_server.HttpCommandException;
 import org.flowerplatform.tiny_http_server.IHttpCommand;
 
-import cc.arduino.Constants;
-import processing.app.BaseNoGui;
-import processing.app.PreferencesData;
-
 public class InstallPackageCommand implements IHttpCommand{
 	private String packageName;
 	private String packageUrl;

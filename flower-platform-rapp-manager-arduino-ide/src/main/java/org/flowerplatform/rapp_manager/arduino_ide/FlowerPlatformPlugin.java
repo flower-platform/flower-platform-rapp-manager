@@ -16,11 +16,13 @@ import java.util.Properties;
 
 import javax.swing.JMenu;
 
+import org.flowerplatform.rapp_manager.arduino_ide.command.CheckPackageIfInstalledCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.CompileCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.GetBoardsCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.GetLogCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.GetSelectedBoard;
 import org.flowerplatform.rapp_manager.arduino_ide.command.GetStatusCommand;
+import org.flowerplatform.rapp_manager.arduino_ide.command.InstallPackageCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.SetOptionsCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.SetSelectedBoardCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.SynchronizeLibrariesCommand;
@@ -142,6 +144,9 @@ public class FlowerPlatformPlugin implements Tool {
 			server.registerCommand("getStatus", GetStatusCommand.class);
 			server.registerCommand("getLog", GetLogCommand.class);
 			server.registerCommand("synchronizeLibraries", SynchronizeLibrariesCommand.class);
+			server.registerCommand("checkPackageIfInstalled", CheckPackageIfInstalledCommand.class);
+			server.registerCommand("installPackage", InstallPackageCommand.class);
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

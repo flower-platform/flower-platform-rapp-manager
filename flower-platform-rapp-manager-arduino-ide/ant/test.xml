@@ -21,6 +21,7 @@
 				<jvmarg value="-Dsun.java2d.d3d=false"/>
 				<jvmarg value="-Xms128M"/>
 				<jvmarg value="-Xmx512M"/>
+        		<!-- <jvmarg value="-agentlib:jdwp=transport=dt_socket,server=y,address=8000,suspend=y"/> -->
 				
 				<jvmarg value="-DAPP_DIR=@{arduino-dir}"/>
 				
