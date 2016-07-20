@@ -20,6 +20,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+/**
+ * In this test we check if our algorithm for compute libraries is working as we expected. Here we mock some objects to isolate calls 
+ * to ArduinoIDe code. For those commands test, check SynchronizeLibrariesCommandArduinoTest.
+ * @author Silviu Negoita
+ *
+ */
 public class SynchronizeLibrariesCommandTest {
 		
 	MatchedLibrary.Status[] expectedStatus = {Status.OK, Status.UNKNOWN, Status.NEEDS_DOWNLOAD, Status.NEEDS_DOWNLOAD, Status.NEEDS_DOWNLOAD, Status.NEEDS_DOWNLOAD};

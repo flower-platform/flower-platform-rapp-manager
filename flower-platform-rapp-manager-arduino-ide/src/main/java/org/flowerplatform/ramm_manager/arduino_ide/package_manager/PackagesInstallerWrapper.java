@@ -77,7 +77,8 @@ public class PackagesInstallerWrapper extends AbstractPackagesInstallerWrapper {
 			if (founded.isInstalled())
 				return new String[] {"Platform already installed. Exiting"};
 			else {
-				return contributionInstaller.install(founded, progressListener).toArray();
+				List<String> installResult = contributionInstaller.install(founded, progressListener);
+				return installResult.toArray(new String[installResult.size()]);
 			}
 		} else { //if we don't find this platform in already downloaded packages, we try to index from specified url and manually search for it in index
 			File downloadedJson = download(url);
@@ -91,7 +92,8 @@ public class PackagesInstallerWrapper extends AbstractPackagesInstallerWrapper {
 					if (architecture.equals(contributedPlatform.getArchitecture()) 
 							&& toFindVersion.equals(VersionHelper.valueOf(contributedPlatform.getVersion()))
 							) {
-						return  (String[]) contributionInstaller.install(contributedPlatform, progressListener).toArray();
+						List<String> installResult = contributionInstaller.install(contributedPlatform, progressListener);
+						return installResult.toArray(new String[installResult.size()]);
 					}
 				}
 		}
@@ -102,8 +104,10 @@ public class PackagesInstallerWrapper extends AbstractPackagesInstallerWrapper {
 	@Override
 	public Object[] remove(String name, String architecture, String version) throws Exception {
 		ContributedPlatform founded = findPlatformByNameArchVersion(name, architecture, version);
-		if (founded != null && founded.isInstalled())
-			return contributionInstaller.remove(founded).toArray();
+		if (founded != null && founded.isInstalled()) {
+			List<String> removeResult = contributionInstaller.remove(founded);
+			return removeResult.toArray(new String[removeResult.size()]);
+		}
 		return new String[] {"Platform given for remove not found. Exiting"};
 	}
 	
