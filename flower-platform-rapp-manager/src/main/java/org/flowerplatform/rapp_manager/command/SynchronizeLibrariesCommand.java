@@ -1,4 +1,4 @@
-package org.flowerplatform.rapp_manager.arduino_ide.command;
+package org.flowerplatform.rapp_manager.command;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,26 +8,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.flowerplatform.rapp_manager.arduino_ide.FlowerPlatformPlugin;
-import org.flowerplatform.rapp_manager.arduino_ide.library_manager.Library;
-import org.flowerplatform.rapp_manager.arduino_ide.library_manager.MatchedLibrary;
-import org.flowerplatform.rapp_manager.arduino_ide.library_manager.MatchedLibrary.Action;
-import org.flowerplatform.rapp_manager.arduino_ide.library_manager.MatchedLibrary.Status;
-import org.flowerplatform.rapp_manager.arduino_ide.library_manager.RequiredLibraryWrapper;
-import org.flowerplatform.rapp_manager.arduino_ide.library_manager.compatibility.AbstractLibraryInstallerWrapper;
+import org.flowerplatform.rapp_manager.library_manager.AbstractLibraryInstallerWrapper;
+import org.flowerplatform.rapp_manager.library_manager.Library;
+import org.flowerplatform.rapp_manager.library_manager.MatchedLibrary;
+import org.flowerplatform.rapp_manager.library_manager.MatchedLibrary.Action;
+import org.flowerplatform.rapp_manager.library_manager.MatchedLibrary.Status;
 import org.flowerplatform.tiny_http_server.HttpCommandException;
 import org.flowerplatform.tiny_http_server.IHttpCommand;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.github.zafarkhaja.semver.Version;
 
-import cc.arduino.contributions.VersionHelper;
-
-public class SynchronizeLibrariesCommand implements IHttpCommand{
+public class SynchronizeLibrariesCommand implements IHttpCommand {
 	
 	private List<Library> requiredLibraries;
 	private boolean dryRun;
 	private boolean duplicateLibraries;
+
+	@JsonIgnore
+	protected transient AbstractLibraryInstallerWrapper installer;
 	
 	public List<Library> getRequiredLibraries() {
 		return requiredLibraries;
@@ -52,14 +50,10 @@ public class SynchronizeLibrariesCommand implements IHttpCommand{
 	public void setDuplicateLibraries(boolean duplicateLibraries) {
 		this.duplicateLibraries = duplicateLibraries;
 	}
-
 	
-	@JsonIgnore
-	protected transient AbstractLibraryInstallerWrapper installer;
-	
-	@Override
+//	@Override
 	public Object run() throws HttpCommandException {
-		if(dryRun) {
+		if (dryRun) {
 			return analizeAndPopulate(requiredLibraries);
 		} else {
 			List<MatchedLibrary> result = analizeAndPopulate(requiredLibraries);
@@ -69,7 +63,6 @@ public class SynchronizeLibrariesCommand implements IHttpCommand{
 	}
 	
 	public List<MatchedLibrary> analizeAndPopulate(List<Library> requiredLibraries) {
-		
 		List<MatchedLibrary> matchedLibraries = new ArrayList<MatchedLibrary>();
 		// index all the required libs by header file
 		Map<String, Library> lookup = new HashMap<String, Library>();
@@ -80,8 +73,10 @@ public class SynchronizeLibrariesCommand implements IHttpCommand{
 		}
 		
 		// iteration over all libs on the disk
-		for (Library lib : installer.getInstalledLibraries()) {
+		for (org.flowerplatform.rapp_manager.library_manager.Library lib : installer.getInstalledLibraries()) {
 			MatchedLibrary entry = new MatchedLibrary();
+			entry.setExistingLibrary(installer.createLibrary());
+			entry.setRequiredLibrary(installer.createLibrary());
 			entry.getExistingLibrary().setHeaderFiles(lib.getHeaderFiles());
 			
 			// we try to match a required lib, based on the lib from the disk (based on header files)
@@ -103,7 +98,6 @@ public class SynchronizeLibrariesCommand implements IHttpCommand{
 					requiredLib.setMatched(true);
 					entry.setRequiredLibrary(requiredLib);
 					entry.setName(requiredLib.getName());
-//					entry.getExistingLibrary().setUserLibrary(lib.getUserLibrary());
 					entry.setExistingLibrary(lib);
 					// let's continue the iteration, to make sure that all required
 					// header files exist on the disk
@@ -127,8 +121,8 @@ public class SynchronizeLibrariesCommand implements IHttpCommand{
 							entry.setStatus(Status.UNKNOWN);
 							entry.setAction(Action.DOWNLOAD);
 					} else {
-						Version minVersion = VersionHelper.valueOf((String) entry.getRequiredLibrary().getVersion());
-						if (minVersion != null && minVersion.greaterThan(VersionHelper.valueOf(entry.getExistingLibrary().getVersion()))) {
+						versionCompare((String) entry.getRequiredLibrary().getVersion(), (String) entry.getExistingLibrary().getVersion());
+						if (versionCompare((String) entry.getRequiredLibrary().getVersion(), (String) entry.getExistingLibrary().getVersion()) < 0) {
 							entry.setStatus(Status.NEEDS_UPDATE);
 							entry.setAction(Action.DOWNLOAD);
 						} else {
@@ -151,7 +145,8 @@ public class SynchronizeLibrariesCommand implements IHttpCommand{
 			}
 			// aha, this one was not matched
 			MatchedLibrary entry = new MatchedLibrary();
-			
+			entry.setExistingLibrary(installer.createLibrary());
+			entry.setRequiredLibrary(installer.createLibrary());
 			matchedLibraries.add(entry);
 			
 			entry.setRequiredLibrary(requiredLib);
@@ -164,26 +159,43 @@ public class SynchronizeLibrariesCommand implements IHttpCommand{
 		return matchedLibraries;
 	}
 	
+	public static int versionCompare(String str1, String str2) {
+	    String[] vals1 = str1.split("\\.");
+	    String[] vals2 = str2.split("\\.");
+	    int i = 0;
+	    // set index to first non-equal ordinal or length of shortest version string
+	    while (i < vals1.length && i < vals2.length && vals1[i].equals(vals2[i])) {
+	      i++;
+	    }
+	    // compare first non-equal ordinal number
+	    if (i < vals1.length && i < vals2.length) {
+	        int diff = Integer.valueOf(vals1[i]).compareTo(Integer.valueOf(vals2[i]));
+	        return Integer.signum(diff);
+	    }
+	    // the strings are equal or one string is a substring of the other
+	    // e.g. "1.2.3" = "1.2.3" or "1.2.3" < "1.2.3.4"
+	    return Integer.signum(vals1.length - vals2.length);
+	}
+	
 	@SuppressWarnings("incomplete-switch")
 	protected void applyActions(List<MatchedLibrary> entries) {		
 		try {
 			for (MatchedLibrary entry : entries) {
-				FlowerPlatformPlugin.log("For required library: " + entry.getName() + ", applying action: " + entry.getAction());
+				// FlowerPlatformPlugin.log("For required library: " + entry.getName() + ", applying action: " + entry.getAction());
 				switch (entry.getAction()) {
 				case DELETE:
 					if (entry.getExistingLibrary() == null) {
 						break;
 					}
-					installer.remove(entry.getExistingLibrary().getUserLibrary());
+					installer.remove(entry.getExistingLibrary());
 					break;
 				case DOWNLOAD:
-					RequiredLibraryWrapper requiredLibrary = new RequiredLibraryWrapper(entry.getRequiredLibrary());
-					installer.install(requiredLibrary, entry.getExistingLibrary().getUserLibrary());
+					installer.install(entry.getRequiredLibrary(), entry.getExistingLibrary());
 					break;
 				}
 			}
 		} catch (Exception e) {
-			FlowerPlatformPlugin.log("Error while applying actions", e);
+			// FlowerPlatformPlugin.log("Error while applying actions", e);
 		}
 	}
 	

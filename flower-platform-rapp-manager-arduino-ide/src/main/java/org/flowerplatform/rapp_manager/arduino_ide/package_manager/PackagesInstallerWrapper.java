@@ -1,4 +1,4 @@
-package org.flowerplatform.ramm_manager.arduino_ide.package_manager;
+package org.flowerplatform.rapp_manager.arduino_ide.package_manager;
 
 import static processing.app.I18n.tr;
 
@@ -36,9 +36,9 @@ public class PackagesInstallerWrapper extends AbstractPackagesInstallerWrapper {
 	
 	public PackagesInstallerWrapper(String packageUrl) throws Exception {progressListener = new ProgressListener() {
 		@Override
-		public void onProgress(Progress progress) {
-			System.out.println(progress.getStatus());
-		}
+			public void onProgress(Progress progress) {
+				System.out.println(progress.getStatus());
+			}
 		};
 		// delete all .tmp files from settings directory. any .tmp file can cause system instability.
 		clearDirectoryFromTemporaryFiles(BaseNoGui.getSettingsFolder());
@@ -137,7 +137,6 @@ public class PackagesInstallerWrapper extends AbstractPackagesInstallerWrapper {
 	 * @return
 	 */
 	public List<ContributedPackage> parseAndGetContributedPackages(ContributionsIndex index) {
-		
 		List<ContributedPackage> packages = index.getPackages();
 	    Collection<ContributedPackage> packagesWithTools = packages.stream()
 	      .filter(input -> input.getTools() != null && !input.getTools().isEmpty())

@@ -1,7 +1,7 @@
 package org.flowerplatform.rapp_manager.arduino_ide.command;
 
-import org.flowerplatform.ramm_manager.arduino_ide.package_manager.AbstractPackagesInstallerWrapper;
-import org.flowerplatform.ramm_manager.arduino_ide.package_manager.PackagesInstallerWrapper;
+import org.flowerplatform.rapp_manager.arduino_ide.package_manager.AbstractPackagesInstallerWrapper;
+import org.flowerplatform.rapp_manager.arduino_ide.package_manager.PackagesInstallerWrapper;
 import org.flowerplatform.tiny_http_server.HttpCommandException;
 import org.flowerplatform.tiny_http_server.IHttpCommand;
 

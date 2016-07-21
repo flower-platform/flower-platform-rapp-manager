@@ -1,13 +1,6 @@
 package org.flowerplatform.rapp_manager.arduino_ide.library_manager;
-import static org.flowerplatform.rapp_manager.arduino_ide.library_manager.compatibility.LibraryInstallerWrapperPre166.librariesIndexer;
+import org.flowerplatform.rapp_manager.library_manager.Library;
 
-import java.io.File;
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-
-import org.flowerplatform.rapp_manager.arduino_ide.FlowerPlatformPlugin;
-
-import cc.arduino.utils.FileHash;
 import processing.app.packages.UserLibrary;
 
 /**
@@ -15,8 +8,6 @@ import processing.app.packages.UserLibrary;
  */
 public class RequiredLibraryWrapper extends UserLibrary {
 	private Library requiredLibrary;
-	
-	private String checksum;
 	
 	public RequiredLibraryWrapper(Library requiredLibrary) {
 		super();
@@ -42,16 +33,16 @@ public class RequiredLibraryWrapper extends UserLibrary {
 	 * For pre 1.6.6, the checksum IS needed (by <code>DownloadableContributionsDownloader.download()</code>). So we calculate it
 	 * to make the system happy. Further versions verify if the checksum is present.
 	 */
-	@Override
-	public String getChecksum() {
-		if (librariesIndexer != null && checksum == null) {
-			try {
-				checksum = FileHash.hash(new File(librariesIndexer.getStagingFolder(), getArchiveFileName()), "SHA-256");
-			} catch (NoSuchAlgorithmException | IOException e) {
-				FlowerPlatformPlugin.log("Cannot calculate checksum", e);
-			}
-		}
-		return checksum;
-	}
+//	@Override
+//	public String getChecksum() {
+//		if (librariesIndexer != null && checksum == null) {
+//			try {
+//				checksum = FileHash.hash(new File(librariesIndexer.getStagingFolder(), getArchiveFileName()), "SHA-256");
+//			} catch (NoSuchAlgorithmException | IOException e) {
+//				FlowerPlatformPlugin.log("Cannot calculate checksum", e);
+//			}
+//		}
+//		return checksum;
+//	}
 	
 }

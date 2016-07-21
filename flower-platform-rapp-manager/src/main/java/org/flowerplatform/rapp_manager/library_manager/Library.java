@@ -1,18 +1,11 @@
-package org.flowerplatform.rapp_manager.arduino_ide.library_manager;
+package org.flowerplatform.rapp_manager.library_manager;
 
-import org.flowerplatform.rapp_manager.arduino_ide.library_manager.MatchedLibrary.Action;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import processing.app.packages.UserLibrary;
-
-@JsonIgnoreProperties(value = { "userLibrary" })
 public class Library {
 	private String name;
 	private String url;
 	private String version;
 	private String[] headerFiles;
-	boolean matched;
+	private boolean matched;
 	
 	public boolean isMatched() {
 		return matched;
@@ -20,8 +13,6 @@ public class Library {
 	public void setMatched(boolean matched) {
 		this.matched = matched;
 	}
-	private transient UserLibrary userLibrary;
-	
 	
 	public String getName() {
 		return name;
@@ -46,11 +37,5 @@ public class Library {
 	}
 	public void setHeaderFiles(String[] headerFiles) {
 		this.headerFiles = headerFiles;
-	}
-	public UserLibrary getUserLibrary() {
-		return userLibrary;
-	}
-	public void setUserLibrary(UserLibrary userLibrary) {
-		this.userLibrary = userLibrary;
 	}
 }

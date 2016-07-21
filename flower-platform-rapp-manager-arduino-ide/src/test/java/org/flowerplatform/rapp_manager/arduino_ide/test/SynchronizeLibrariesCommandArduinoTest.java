@@ -2,10 +2,10 @@ package org.flowerplatform.rapp_manager.arduino_ide.test;
 
 import java.util.Arrays;
 
-import org.flowerplatform.rapp_manager.arduino_ide.command.SynchronizeLibrariesCommand;
-import org.flowerplatform.rapp_manager.arduino_ide.library_manager.Library;
-import org.flowerplatform.rapp_manager.arduino_ide.library_manager.compatibility.AbstractLibraryInstallerWrapper;
-import org.flowerplatform.rapp_manager.arduino_ide.library_manager.compatibility.LibraryInstallerWrapper;
+import org.flowerplatform.rapp_manager.arduino_ide.library_manager.ArduinoLibrary;
+import org.flowerplatform.rapp_manager.arduino_ide.library_manager.compatibility.AbstractLibraryInstallerWrapperArduino;
+import org.flowerplatform.rapp_manager.arduino_ide.library_manager.compatibility.LibraryInstallerWrapperArduino;
+import org.flowerplatform.rapp_manager.command.SynchronizeLibrariesCommand;
 import org.flowerplatform.tiny_http_server.HttpCommandException;
 import org.junit.Test;
 
@@ -18,9 +18,9 @@ public class SynchronizeLibrariesCommandArduinoTest {
 	@Test
 	public void test() throws HttpCommandException {
 		// check 
-		AbstractLibraryInstallerWrapper installer = new LibraryInstallerWrapper();
+		AbstractLibraryInstallerWrapperArduino installer = new LibraryInstallerWrapperArduino();
 		// First we install correct library
-		Library toSend = new Library();
+		ArduinoLibrary toSend = new ArduinoLibrary();
 		toSend.setHeaderFiles(new String[] {"DHTSensor.h"});
 		toSend.setName("DHT sensor library");
 		toSend.setUrl("https://github.com/flower-platform/DHT-sensor-library/archive/master.zip");

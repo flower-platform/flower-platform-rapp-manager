@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 
 import org.flowerplatform.rapp_manager.arduino_ide.FlowerPlatformPlugin;
+import org.flowerplatform.rapp_manager.arduino_ide.library_manager.ArduinoLibrary;
+import org.flowerplatform.rapp_manager.arduino_ide.library_manager.RequiredLibraryWrapper;
+import org.flowerplatform.rapp_manager.library_manager.Library;
 
 import cc.arduino.contributions.ConsoleProgressListener;
-import cc.arduino.contributions.libraries.ContributedLibrary;
 import cc.arduino.contributions.libraries.LibraryInstaller;
 import processing.app.Base;
 
@@ -15,7 +17,8 @@ import processing.app.Base;
  * 
  * @author Cristian Spiescu
  */
-public class LibraryInstallerWrapper extends AbstractLibraryInstallerWrapper {
+public class LibraryInstallerWrapperArduino extends AbstractLibraryInstallerWrapperArduino {
+	
 	
 	protected void initLibraryInstaller() {
 		try {
@@ -29,13 +32,17 @@ public class LibraryInstallerWrapper extends AbstractLibraryInstallerWrapper {
 	}
 
 	@Override
-	public void remove(ContributedLibrary lib) throws IOException {
-		installer.remove(lib, new ConsoleProgressListener());
+	public void remove(Library lib) throws IOException {
+		installer.remove(((ArduinoLibrary) lib).getUserLibrary(), new ConsoleProgressListener());
 	}
 
 	@Override
-	public void install(ContributedLibrary lib, ContributedLibrary replacedLib) throws Exception {
-		installer.install(lib, replacedLib, new ConsoleProgressListener());
+	public void install(Library lib, Library replacedLib) throws Exception {
+		installer.install(new RequiredLibraryWrapper(lib), ((ArduinoLibrary) replacedLib).getUserLibrary(), new ConsoleProgressListener());
 	}
 
+	@Override
+	public Library createLibrary() {
+		return new ArduinoLibrary();
+	}
 }

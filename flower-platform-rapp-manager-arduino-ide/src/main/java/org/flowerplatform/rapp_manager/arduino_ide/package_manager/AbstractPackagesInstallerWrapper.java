@@ -1,6 +1,4 @@
-package org.flowerplatform.ramm_manager.arduino_ide.package_manager;
-
-import java.util.List;
+package org.flowerplatform.rapp_manager.arduino_ide.package_manager;
 
 import cc.arduino.contributions.packages.ContributedPlatform;
 

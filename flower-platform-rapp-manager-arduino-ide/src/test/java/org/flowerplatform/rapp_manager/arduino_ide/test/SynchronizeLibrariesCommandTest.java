@@ -2,7 +2,6 @@ package org.flowerplatform.rapp_manager.arduino_ide.test;
 
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -10,16 +9,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.flowerplatform.rapp_manager.arduino_ide.command.SynchronizeLibrariesCommand;
-import org.flowerplatform.rapp_manager.arduino_ide.library_manager.Library;
-import org.flowerplatform.rapp_manager.arduino_ide.library_manager.MatchedLibrary;
-import org.flowerplatform.rapp_manager.arduino_ide.library_manager.MatchedLibrary.Status;
-import org.flowerplatform.rapp_manager.arduino_ide.library_manager.compatibility.AbstractLibraryInstallerWrapper;
+import org.flowerplatform.rapp_manager.arduino_ide.library_manager.ArduinoLibrary;
+import org.flowerplatform.rapp_manager.arduino_ide.library_manager.compatibility.AbstractLibraryInstallerWrapperArduino;
+import org.flowerplatform.rapp_manager.command.SynchronizeLibrariesCommand;
+import org.flowerplatform.rapp_manager.library_manager.Library;
+import org.flowerplatform.rapp_manager.library_manager.MatchedLibrary;
+import org.flowerplatform.rapp_manager.library_manager.MatchedLibrary.Status;
 import org.flowerplatform.tiny_http_server.HttpCommandException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-
+import static org.mockito.Mockito.when;
 /**
  * In this test we check if our algorithm for compute libraries is working as we expected. Here we mock some objects to isolate calls 
  * to ArduinoIDe code. For those commands test, check SynchronizeLibrariesCommandArduinoTest.
@@ -52,21 +52,21 @@ public class SynchronizeLibrariesCommandTest {
 		
 		installedLibraries = new ArrayList<Library>();
 		/** add H/C lib1 **/
-		Library lib = new Library();
+		ArduinoLibrary lib = new ArduinoLibrary();
 		lib.setHeaderFiles(new String[]{"file1.h", "file2.h"});
 		lib.setName("lib1");
 		lib.setVersion("1.1.0");
 		installedLibraries.add(lib);
 		
 		/** add H/C lib2 **/
-		lib = new Library();
+		lib = new ArduinoLibrary();
 		lib.setHeaderFiles(new String[]{"file3.h", "file4.h", "file5.h"});
 		lib.setName("lib2");
 		lib.setVersion("1.2.0");
 		installedLibraries.add(lib);
 		
 		/** add H/C lib3 **/
-		lib = new Library();
+		lib = new ArduinoLibrary();
 		lib.setHeaderFiles(new String[]{"file7.h"});
 		lib.setName("lib3");	
 		installedLibraries.add(lib);
@@ -75,35 +75,35 @@ public class SynchronizeLibrariesCommandTest {
 		
 		requiredLibraries = new ArrayList<Library>();
 		
-		lib = new Library();		
+		lib = new ArduinoLibrary();		
 		lib.setHeaderFiles(new String[]{"file1.h", "file2.h"});
 		lib.setName("lib1");
 		lib.setVersion("1.1.0");
 		requiredLibraries.add(lib);	
 		
-		lib = new Library();		
+		lib = new ArduinoLibrary();		
 		lib.setHeaderFiles(new String[]{"file2.h"});
 		lib.setName("lib2");
 		lib.setVersion("1.3.0");
 		requiredLibraries.add(lib);
 		
-		lib = new Library();		
+		lib = new ArduinoLibrary();		
 		lib.setHeaderFiles(new String[]{"file2.h"});
 		lib.setName("lib2");
 		lib.setVersion("1.1.0");
 		requiredLibraries.add(lib);
 		
-		lib = new Library();		
+		lib = new ArduinoLibrary();		
 		lib.setHeaderFiles(new String[]{"file6.h"});
 		lib.setName("lib4");
 		requiredLibraries.add(lib);
 		
-		lib = new Library();		
+		lib = new ArduinoLibrary();		
 		lib.setHeaderFiles(new String[]{"file7.h"});
 		lib.setName("lib3");
 		requiredLibraries.add(lib);
 		
-		lib = new Library();		
+		lib = new ArduinoLibrary();		
 		lib.setHeaderFiles(new String[]{"file8.h"});
 		lib.setName("lib2");
 		lib.setVersion("1.2.0");
@@ -119,8 +119,9 @@ public class SynchronizeLibrariesCommandTest {
 		synchronizeCommand.setDryRun(true);
 				
 		// Mocking the installer for test
-		AbstractLibraryInstallerWrapper installer = Mockito.mock(AbstractLibraryInstallerWrapper.class);		
+		AbstractLibraryInstallerWrapperArduino installer = Mockito.mock(AbstractLibraryInstallerWrapperArduino.class);		
 		when(installer.getInstalledLibraries()).thenReturn(installedLibraries);
+		when(installer.createLibrary()).thenReturn(new ArduinoLibrary());
 		
 		// inject mocked installer in command
 		synchronizeCommand.setInstaller(installer);

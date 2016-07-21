@@ -3,15 +3,14 @@ package org.flowerplatform.rapp_manager.arduino_ide.library_manager.compatibilit
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.flowerplatform.rapp_manager.arduino_ide.FlowerPlatformPlugin;
-import org.flowerplatform.rapp_manager.arduino_ide.library_manager.Library;
+import org.flowerplatform.rapp_manager.arduino_ide.library_manager.ArduinoLibrary;
+import org.flowerplatform.rapp_manager.library_manager.AbstractLibraryInstallerWrapper;
+import org.flowerplatform.rapp_manager.library_manager.Library;
 
-import cc.arduino.contributions.libraries.ContributedLibrary;
 import cc.arduino.contributions.libraries.LibraryInstaller;
 import processing.app.Base;
-import processing.app.BaseNoGui;
 import processing.app.packages.LibraryList;
 import processing.app.packages.UserLibrary;
 
@@ -20,20 +19,18 @@ import processing.app.packages.UserLibrary;
  * 
  * @author Cristian Spiescu
  */
-public abstract class AbstractLibraryInstallerWrapper {
-	
+public abstract class AbstractLibraryInstallerWrapperArduino extends AbstractLibraryInstallerWrapper {
 	protected LibraryInstaller installer;
 	
-	abstract public void remove(ContributedLibrary lib) throws Exception;
-	abstract public void install(ContributedLibrary lib, ContributedLibrary replacedLib) throws Exception;
+//	abstract public void remove(ArduinoLibrary lib) throws Exception;
+//	abstract public void install(ArduinoLibrary lib, ArduinoLibrary replacedLib) throws Exception;
 	
-	public AbstractLibraryInstallerWrapper() {
+	public AbstractLibraryInstallerWrapperArduino() {
 		super();
 		initLibraryInstaller();
 	}
 	
 	abstract protected void initLibraryInstaller();
-	
 
 	public List<Library> getInstalledLibraries()  {
 		List<Library> result = new ArrayList<Library>();
@@ -42,8 +39,8 @@ public abstract class AbstractLibraryInstallerWrapper {
 		for (UserLibrary uLib: Base.INSTANCE.getUserLibs()) {
 			allLibraries.add(uLib);
 		}
- 		for(UserLibrary uLib : allLibraries) {
- 			Library lib = new Library();
+ 		for (UserLibrary uLib : allLibraries) {
+ 			ArduinoLibrary lib = new ArduinoLibrary();
  			lib.setName(uLib.getName());
  			lib.setVersion(uLib.getVersion());
  			lib.setUrl(uLib.getWebsite());

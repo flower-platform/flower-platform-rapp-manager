@@ -25,21 +25,18 @@ import org.flowerplatform.rapp_manager.arduino_ide.command.GetStatusCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.InstallPackageCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.SetOptionsCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.SetSelectedBoardCommand;
-import org.flowerplatform.rapp_manager.arduino_ide.command.SynchronizeLibrariesCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.UpdateSourceFilesAndCompileCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.UpdateSourceFilesCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.command.UploadToBoardCommand;
-import org.flowerplatform.rapp_manager.arduino_ide.library_manager.compatibility.AbstractLibraryInstallerWrapper;
-import org.flowerplatform.rapp_manager.arduino_ide.library_manager.compatibility.LibraryInstallerWrapper;
-import org.flowerplatform.rapp_manager.arduino_ide.library_manager.compatibility.LibraryInstallerWrapperPre166;
+import org.flowerplatform.rapp_manager.arduino_ide.library_manager.compatibility.AbstractLibraryInstallerWrapperArduino;
+import org.flowerplatform.rapp_manager.arduino_ide.library_manager.compatibility.LibraryInstallerWrapperArduino;
+import org.flowerplatform.rapp_manager.command.SynchronizeLibrariesCommand;
 import org.flowerplatform.tiny_http_server.CommandFactory;
 import org.flowerplatform.tiny_http_server.HttpServer;
 import org.flowerplatform.tiny_http_server.IHttpCommand;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.zafarkhaja.semver.Version;
 
-import cc.arduino.contributions.VersionHelper;
 import processing.app.BaseNoGui;
 import processing.app.Editor;
 import processing.app.Sketch;
@@ -270,27 +267,8 @@ public class FlowerPlatformPlugin implements Tool {
 	 *  This method analize the current Arduino Ide version and return a compatible installer:
 	 * @return LibraryInstallerWrapperPre166 if current version < 166, LibraryInstallerWrapper otherwise
 	 */
-	protected AbstractLibraryInstallerWrapper getLegacyInstaller() {
-		String currentVersionStr = "0.0.0";
-		try {
-			// we use reflection, because otherwise the compile time version would be "stamped" into the jar
-			Field versionName = BaseNoGui.class.getField("VERSION_NAME");
-			currentVersionStr = (String) versionName.get(null);
-		} catch (NoSuchFieldException | SecurityException
-				| IllegalArgumentException | IllegalAccessException e) {
-			log("Error getting the Arduino IDE version", e);
-		}
-		Version currentVersion = VersionHelper.valueOf(currentVersionStr);
-		Version v165 = VersionHelper.valueOf("1.6.5");
-		if (currentVersion.lessThan(v165)) {
-			log("WARNING! Your Arduino IDE v" + currentVersion + " is too old. Flowerino Plugin "
-					+ "has been tested with Arduino IDE starting with v" + v165 + ". Unexpected errors may appear.");
-		} else if (currentVersion.lessThan(VersionHelper.valueOf("1.6.6"))) {
-			return new LibraryInstallerWrapperPre166();
-		} else {
-			return new LibraryInstallerWrapper();
-		}
-		return null;
+	protected AbstractLibraryInstallerWrapperArduino getLegacyInstaller() {
+		return new LibraryInstallerWrapperArduino();
 	}
 	
 	public static File getBuildFolder(Sketch sketch) throws IOException {

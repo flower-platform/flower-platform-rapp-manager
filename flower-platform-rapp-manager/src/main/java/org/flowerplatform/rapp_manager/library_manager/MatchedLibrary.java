@@ -1,4 +1,4 @@
-package org.flowerplatform.rapp_manager.arduino_ide.library_manager;
+package org.flowerplatform.rapp_manager.library_manager;
 
 /**
  * @author Cristian Spiescu
@@ -18,7 +18,6 @@ public class MatchedLibrary {
 		public String toString() {
 			return label;
 		}
-		
 	};
 	
 	public enum Action {
@@ -34,7 +33,6 @@ public class MatchedLibrary {
 		public String toString() {
 			return label;
 		}
-		
 	};	
 	
 	private Library existingLibrary;
@@ -73,8 +71,8 @@ public class MatchedLibrary {
 	}
 
 	public MatchedLibrary() {
-		this.existingLibrary = new Library();
-		this.requiredLibrary = new Library();
+		//this.existingLibrary = new Library();
+		//this.requiredLibrary = new Library();
 	}
 	
 	public Library getExistingLibrary() {
