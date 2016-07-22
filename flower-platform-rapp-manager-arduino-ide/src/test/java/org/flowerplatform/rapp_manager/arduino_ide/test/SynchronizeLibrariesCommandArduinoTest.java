@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.flowerplatform.rapp_manager.arduino_ide.library_manager.ArduinoLibrary;
 import org.flowerplatform.rapp_manager.arduino_ide.library_manager.compatibility.AbstractLibraryInstallerWrapperArduino;
 import org.flowerplatform.rapp_manager.arduino_ide.library_manager.compatibility.LibraryInstallerWrapperArduino;
+import org.flowerplatform.rapp_manager.arduino_ide.util.ArduinoLogger;
 import org.flowerplatform.rapp_manager.command.SynchronizeLibrariesCommand;
 import org.flowerplatform.tiny_http_server.HttpCommandException;
 import org.junit.Test;
@@ -29,6 +30,7 @@ public class SynchronizeLibrariesCommandArduinoTest {
 		SynchronizeLibrariesCommand syncLibCommand = new SynchronizeLibrariesCommand();
 		syncLibCommand.setRequiredLibraries(Arrays.asList(toSend));
 		syncLibCommand.setInstaller(installer);
+		syncLibCommand.setLogger(new ArduinoLogger());
 		syncLibCommand.run();
 		
 		// Secondly we rename to library to suggest remove and rerun test.

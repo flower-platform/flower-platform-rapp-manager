@@ -51,7 +51,6 @@ public class CheckPackageIfInstalledCommand implements IHttpCommand {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		// hope this will not reach
 		return false;
 	}
 

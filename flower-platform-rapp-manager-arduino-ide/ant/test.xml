@@ -6,7 +6,7 @@
 	
 	<property name="arduinoDir" value="D:/Arduino_IDEs_test/"/>
 	<property name="testSuite" value="org.flowerplatform.rapp_manager.arduino_ide.test.TestSuiteArduinoIde"/>
-	<property name="tiny-http-server.folder" value="E:/data/arduino-reps/tiny-http-server/tiny-http-server" />
+	<property name="tiny-http-server.folder" value="E:/data/home-user-git-config/git/tiny-http-server/tiny-http-server" />
 
 	<description>
             description

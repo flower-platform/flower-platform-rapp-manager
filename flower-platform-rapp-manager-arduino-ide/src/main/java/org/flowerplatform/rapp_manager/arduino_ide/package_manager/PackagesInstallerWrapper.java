@@ -34,7 +34,7 @@ public class PackagesInstallerWrapper extends AbstractPackagesInstallerWrapper {
 	
 	ProgressListener progressListener;
 	
-	public PackagesInstallerWrapper(String packageUrl) throws Exception {progressListener = new ProgressListener() {
+ 	public PackagesInstallerWrapper(String packageUrl) throws Exception {progressListener = new ProgressListener() {
 		@Override
 			public void onProgress(Progress progress) {
 				System.out.println(progress.getStatus());
@@ -48,29 +48,31 @@ public class PackagesInstallerWrapper extends AbstractPackagesInstallerWrapper {
 		// get contribution indexer from Arduino IDE
 		contributionIndexer = BaseNoGui.indexer;
 		
-		// set this property because is used by updateIndex method for Arduino IDE. this holds urls to contribution packages.
-		packageUrl = packageUrl.replace("\r\n", "\n").replace("\r", "\n").replace("\n", ",");
-		String additionalURLs = PreferencesData.get(Constants.PREF_BOARDS_MANAGER_ADDITIONAL_URLS, "");
-		
-		if (additionalURLs != null && additionalURLs.length() > 4) {
-			// preserve old additional urls and add the new one. 
-			if (!additionalURLs.contains(packageUrl)) { // add only if it is not already there.
-				PreferencesData.set(Constants.PREF_BOARDS_MANAGER_ADDITIONAL_URLS, additionalURLs + "," +  packageUrl);
+		// this check is here because some packages dont need an url because its are a part of official Arduino IDE package suite. 
+		if (packageUrl != null) {
+			// set this property because is used by updateIndex method for Arduino IDE. this holds urls to contribution packages.
+			packageUrl = packageUrl.replace("\r\n", "\n").replace("\r", "\n").replace("\n", ",");
+			String additionalURLs = PreferencesData.get(Constants.PREF_BOARDS_MANAGER_ADDITIONAL_URLS, "");
+			
+			if (additionalURLs != null && additionalURLs.length() > 4) {
+				// preserve old additional urls and add the new one. 
+				if (!additionalURLs.contains(packageUrl)) { // add only if it is not already there.
+					PreferencesData.set(Constants.PREF_BOARDS_MANAGER_ADDITIONAL_URLS, additionalURLs + "," +  packageUrl);
+					// refresh info about available packages
+					reDownloadJsonsAndSync();
+				}
+			} else { 
+				// just set this new url to preferences
+				PreferencesData.set(Constants.PREF_BOARDS_MANAGER_ADDITIONAL_URLS, packageUrl);
+				// refresh info about available packages
 				reDownloadJsonsAndSync();
 			}
-		} else { 
-			// just set this new url to preferences
-			PreferencesData.set(Constants.PREF_BOARDS_MANAGER_ADDITIONAL_URLS, packageUrl);
-			// this is new URL and we need to download JSONs
-			reDownloadJsonsAndSync();
-		}
-		// invoke save command in Arduino IDE to write settings in file
-		saveSettingsInArduinoIDE();
+			// invoke save command in Arduino IDE to write settings in file
+			saveSettingsInArduinoIDE();
+		} 
 	}
 	@Override
 	public Object[] install(String name, String architecture, String version, String url) throws Exception {
-		// refresh info about available packages
-		reDownloadJsonsAndSync();
 		ContributedPlatform founded = findPlatformByNameArchVersion(name, architecture, version);
 		if (founded != null) { 
 			// if we found anything we don't do nothing. 	
@@ -81,6 +83,9 @@ public class PackagesInstallerWrapper extends AbstractPackagesInstallerWrapper {
 				return installResult.toArray(new String[installResult.size()]);
 			}
 		} else { //if we don't find this platform in already downloaded packages, we try to index from specified url and manually search for it in index
+			if (url == null) { // in this case there was no url provided by command and this package to install is not in official Arduino IDE suite
+				return new String[] {"Couldn't find this package. Instalation aborted"};
+			} 
 			File downloadedJson = download(url);
 			ContributionsIndex index = parseIndexFromFile(downloadedJson);
 			Version toFindVersion = VersionHelper.valueOf(version);
@@ -98,7 +103,7 @@ public class PackagesInstallerWrapper extends AbstractPackagesInstallerWrapper {
 				}
 		}
 		// we can't find and install specified platform even with the url given. hope that this will not happen
-		return null;
+		return new String[] {"Couldn't find this package. Instalation aborted"};
 	}
 
 	@Override
@@ -141,7 +146,6 @@ public class PackagesInstallerWrapper extends AbstractPackagesInstallerWrapper {
 	    Collection<ContributedPackage> packagesWithTools = packages.stream()
 	      .filter(input -> input.getTools() != null && !input.getTools().isEmpty())
 	      .collect(Collectors.toList());
-	    
 		for (ContributedPackage pack : index.getPackages()) {
 		      for (ContributedPlatform platform : pack.getPlatforms()) {
 		        // Set a reference to parent packages

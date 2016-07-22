@@ -13,20 +13,32 @@ import org.flowerplatform.rapp_manager.library_manager.Library;
 import org.flowerplatform.rapp_manager.library_manager.MatchedLibrary;
 import org.flowerplatform.rapp_manager.library_manager.MatchedLibrary.Action;
 import org.flowerplatform.rapp_manager.library_manager.MatchedLibrary.Status;
+import org.flowerplatform.rapp_manager.util.AbstractLogger;
 import org.flowerplatform.tiny_http_server.HttpCommandException;
 import org.flowerplatform.tiny_http_server.IHttpCommand;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+/**
+ * @author Silviu Negoita
+ */
 public class SynchronizeLibrariesCommand implements IHttpCommand {
-	
 	private List<Library> requiredLibraries;
 	private boolean dryRun;
 	private boolean duplicateLibraries;
+	AbstractLogger logger;
 
 	@JsonIgnore
 	protected transient AbstractLibraryInstallerWrapper installer;
 	
+	public AbstractLogger getLogger() {
+		return logger;
+	}
+
+	public void setLogger(AbstractLogger logger) {
+		this.logger = logger;
+	}
+
 	public List<Library> getRequiredLibraries() {
 		return requiredLibraries;
 	}
@@ -51,7 +63,6 @@ public class SynchronizeLibrariesCommand implements IHttpCommand {
 		this.duplicateLibraries = duplicateLibraries;
 	}
 	
-//	@Override
 	public Object run() throws HttpCommandException {
 		if (dryRun) {
 			return analizeAndPopulate(requiredLibraries);
@@ -62,18 +73,18 @@ public class SynchronizeLibrariesCommand implements IHttpCommand {
 		}
 	}
 	
-	public List<MatchedLibrary> analizeAndPopulate(List<Library> requiredLibraries) {
+	public List<MatchedLibrary> analizeAndPopulate(List<Library> requiredLibs) {
 		List<MatchedLibrary> matchedLibraries = new ArrayList<MatchedLibrary>();
 		// index all the required libs by header file
 		Map<String, Library> lookup = new HashMap<String, Library>();
-		for (Library lib : requiredLibraries) {
+		for (Library lib : requiredLibs) {
 			for (String headerFile : lib.getHeaderFiles()) {
 				lookup.put(headerFile, lib);
 			}
 		}
 		
 		// iteration over all libs on the disk
-		for (org.flowerplatform.rapp_manager.library_manager.Library lib : installer.getInstalledLibraries()) {
+		for (Library lib : installer.getInstalledLibraries()) {
 			MatchedLibrary entry = new MatchedLibrary();
 			entry.setExistingLibrary(installer.createLibrary());
 			entry.setRequiredLibrary(installer.createLibrary());
@@ -139,7 +150,7 @@ public class SynchronizeLibrariesCommand implements IHttpCommand {
 		}
 		
 		// and now let's see if all required libs have been matched
-		for (Library requiredLib : requiredLibraries) {
+		for (Library requiredLib : requiredLibs) {
 			if (requiredLib.isMatched()) {
 				continue;
 			}
@@ -177,11 +188,10 @@ public class SynchronizeLibrariesCommand implements IHttpCommand {
 	    return Integer.signum(vals1.length - vals2.length);
 	}
 	
-	@SuppressWarnings("incomplete-switch")
 	protected void applyActions(List<MatchedLibrary> entries) {		
 		try {
 			for (MatchedLibrary entry : entries) {
-				// FlowerPlatformPlugin.log("For required library: " + entry.getName() + ", applying action: " + entry.getAction());
+				logger.log("For required library: " + entry.getName() + ", applying action: " + entry.getAction());
 				switch (entry.getAction()) {
 				case DELETE:
 					if (entry.getExistingLibrary() == null) {
@@ -192,10 +202,12 @@ public class SynchronizeLibrariesCommand implements IHttpCommand {
 				case DOWNLOAD:
 					installer.install(entry.getRequiredLibrary(), entry.getExistingLibrary());
 					break;
+				default:
+					break;
 				}
 			}
 		} catch (Exception e) {
-			// FlowerPlatformPlugin.log("Error while applying actions", e);
+			logger.log("Error while applying actions", e);
 		}
 	}
 	

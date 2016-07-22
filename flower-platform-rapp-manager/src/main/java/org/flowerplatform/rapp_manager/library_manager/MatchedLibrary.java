@@ -4,13 +4,15 @@ package org.flowerplatform.rapp_manager.library_manager;
  * @author Cristian Spiescu
  */
 public class MatchedLibrary {
-	
+	/**
+	 * @author Silviu Negoita
+	 */
 	public enum Status { 
 		OK("OK"), NEEDS_DOWNLOAD("Needs download"), NEEDS_UPDATE("Needs update"), UNKNOWN("Unknown"), NEEDS_DELETE("Needs delete");
 		
 		private String label;
 
-		private Status(String label) {
+		Status(String label) {
 			this.label = label;
 		}
 
@@ -19,13 +21,15 @@ public class MatchedLibrary {
 			return label;
 		}
 	};
-	
+	/**
+	 * @author Silviu Negoita
+	 */
 	public enum Action {
 		DOWNLOAD("Download"), DELETE("Delete"), NONE("Nothing to do");
 		
 		private String label;
 	
-		private Action(String label) {
+		Action(String label) {
 			this.label = label;
 		}
 	
@@ -70,11 +74,6 @@ public class MatchedLibrary {
 		this.name = name;
 	}
 
-	public MatchedLibrary() {
-		//this.existingLibrary = new Library();
-		//this.requiredLibrary = new Library();
-	}
-	
 	public Library getExistingLibrary() {
 		return existingLibrary;
 	}

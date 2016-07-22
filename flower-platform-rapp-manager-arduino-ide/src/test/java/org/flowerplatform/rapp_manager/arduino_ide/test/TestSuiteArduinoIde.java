@@ -12,7 +12,7 @@ import com.googlecode.junittoolbox.WildcardPatternSuite;
 import processing.app.Base;
 
 @RunWith(WildcardPatternSuite.class)
-@SuiteClasses({"SynchronizePackageCommandTest.class", "!*TestSuiteArduinoIde.class"})
+@SuiteClasses({"**/*.class", "!*TestSuiteArduinoIde.class"})
 public class TestSuiteArduinoIde {
 
 	public static FlowerPlatformPlugin flowerPlatformPlugin;
@@ -22,11 +22,11 @@ public class TestSuiteArduinoIde {
 		System.out.println("Starting Arduino ide.");
 		ArduinoIdeWrapper.launchArduinoIde();
 
-//		flowerPlatformPlugin = new FlowerPlatformPlugin();
-//		while (Base.INSTANCE.getActiveEditor() == null) {
-//			try { Thread.sleep(100); } catch (Exception e) { }
-//		}
-//		flowerPlatformPlugin.init(Base.INSTANCE.getActiveEditor());
+		flowerPlatformPlugin = new FlowerPlatformPlugin();
+		while (Base.INSTANCE.getActiveEditor() == null) {
+			try { Thread.sleep(100); } catch (Exception e) { }
+		}
+		flowerPlatformPlugin.init(Base.INSTANCE.getActiveEditor());
 	}
 
 	@AfterClass

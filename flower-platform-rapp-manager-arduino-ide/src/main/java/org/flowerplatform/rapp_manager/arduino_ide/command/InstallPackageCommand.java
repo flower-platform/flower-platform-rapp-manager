@@ -52,7 +52,6 @@ public class InstallPackageCommand implements IHttpCommand{
 		this.packageUrl = packageUrl;
 	}
 
-	
 	@Override
 	public Object run() throws HttpCommandException {
 		try {

@@ -1,5 +1,8 @@
 package org.flowerplatform.rapp_manager.library_manager;
 
+/**
+ * @author Silviu Negoita
+ */
 public class Library {
 	private String name;
 	private String url;

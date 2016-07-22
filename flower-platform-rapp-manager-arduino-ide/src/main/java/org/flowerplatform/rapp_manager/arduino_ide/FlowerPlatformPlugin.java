@@ -30,7 +30,9 @@ import org.flowerplatform.rapp_manager.arduino_ide.command.UpdateSourceFilesComm
 import org.flowerplatform.rapp_manager.arduino_ide.command.UploadToBoardCommand;
 import org.flowerplatform.rapp_manager.arduino_ide.library_manager.compatibility.AbstractLibraryInstallerWrapperArduino;
 import org.flowerplatform.rapp_manager.arduino_ide.library_manager.compatibility.LibraryInstallerWrapperArduino;
+import org.flowerplatform.rapp_manager.arduino_ide.util.ArduinoLogger;
 import org.flowerplatform.rapp_manager.command.SynchronizeLibrariesCommand;
+import org.flowerplatform.rapp_manager.util.AbstractLogger;
 import org.flowerplatform.tiny_http_server.CommandFactory;
 import org.flowerplatform.tiny_http_server.HttpServer;
 import org.flowerplatform.tiny_http_server.IHttpCommand;
@@ -62,6 +64,7 @@ public class FlowerPlatformPlugin implements Tool {
 	protected Editor editor;
 	protected Properties globalProperties;
 	
+	protected static AbstractLogger logger = new ArduinoLogger();
 	/**
 	 * Internal properties file, packed within current jar.
 	 */
@@ -121,6 +124,8 @@ public class FlowerPlatformPlugin implements Tool {
 						} else if (command instanceof SynchronizeLibrariesCommand) {
 							// inject installer for SynchronizeLibrariesCommand
 							((SynchronizeLibrariesCommand) command).setInstaller(getLegacyInstaller());
+							// inject logger for SynchronizeLibrariesCommand
+							((SynchronizeLibrariesCommand) command).setLogger(logger);
 						}
 						return command;
 					} catch (IOException e) {
@@ -178,12 +183,11 @@ public class FlowerPlatformPlugin implements Tool {
 	}
 	
 	public static void log(String message) {
-		System.out.println(message);
+		logger.log(message);
 	}
 	
 	public static void log(String message, Throwable t) {
-		System.out.println(message);
-		t.printStackTrace(System.out);
+		logger.log(message, t);
 	}
 	
 	public File getProjectPropertiesFile() {
