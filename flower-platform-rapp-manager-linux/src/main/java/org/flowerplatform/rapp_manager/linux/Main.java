@@ -36,8 +36,6 @@ public class Main {
 		
 		//check and create folder structure
 		File f;
-		f = new File(Constants.LIB_DIR);
-		f.mkdir();
 		f = new File(Constants.LOG_DIR);
 		f.mkdir();
 		f = new File(Constants.RAPPS_DIR);
@@ -82,6 +80,10 @@ public class Main {
 	
 	public static void logp(String message) {
 		System.out.print(message);
+	}
+
+	public static void logc(char c) {
+		System.out.print(c);
 	}
 
 	public static void log(String message) {

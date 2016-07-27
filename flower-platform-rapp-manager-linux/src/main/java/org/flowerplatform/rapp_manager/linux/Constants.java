@@ -23,7 +23,9 @@ public class Constants {
 
 	public static final String PID_FILE_PATTERN = PID_DIR + "/%s.pid";
 
-	public static final String LIB_DIR = WORK_DIR + "/lib";
+	public static final String LIB_DIR = WORK_DIR + "/.local/lib/python2.7/site-packages";
+
+	public static final String TMP_DIR = "/tmp";
 	
 	public static final String RAPP_PROPERTIES_FILE_NAME = "rapp.properties";
 
