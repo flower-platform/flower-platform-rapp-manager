@@ -3,6 +3,11 @@ package org.flowerplatform.rapp_manager.linux;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 
 /**
  * Collection of utilities for manipulating rapp-related filesystem. 
@@ -89,4 +94,35 @@ public class FileUtils {
 
 		return folderName.replaceAll("\\|", "/");
 	}
+
+	public static void deleteRecursively(final Path path) throws IOException {
+		Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+			
+			@Override
+			public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+				Files.delete(file);
+				return FileVisitResult.CONTINUE;
+			}
+
+			@Override
+			public FileVisitResult visitFileFailed(final Path file, final IOException e) {
+				return handleException(e);
+			}
+
+			private FileVisitResult handleException(final IOException e) {
+				return FileVisitResult.CONTINUE;
+			}
+
+			@Override
+			public FileVisitResult postVisitDirectory(final Path dir, final IOException e) throws IOException {
+				if (e != null) {
+					return handleException(e);
+				}
+				Files.delete(dir);
+				return FileVisitResult.CONTINUE;
+			}
+		
+		});
+	};
+
 }
