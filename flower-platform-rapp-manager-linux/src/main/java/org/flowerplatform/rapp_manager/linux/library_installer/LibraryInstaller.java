@@ -29,14 +29,14 @@ import org.flowerplatform.rapp_manager.linux.Main;
  */
 public class LibraryInstaller extends AbstractLibraryInstallerWrapper {
 
-	public static final String CMD_REMOVE_LIRBRARY = "/opt/flower-platform/bin/remove-library %s";
+	public static final String CMD_REMOVE_LIRBRARY = "/opt/flower-platform/bin/remove-library";
 
-	public static final String CMD_INSTALL_LIRBRARY = "/opt/flower-platform/bin/install-library %s";
+	public static final String CMD_INSTALL_LIRBRARY = "/opt/flower-platform/bin/install-library";
 	
 	@Override
 	public void remove(Library lib) throws Exception {
 		Main.logger.log(String.format("Removing library %s...", lib.getName()));
-		Process p = Runtime.getRuntime().exec(String.format(CMD_REMOVE_LIRBRARY, lib.getName()));
+		Process p = Runtime.getRuntime().exec(new String[] { CMD_REMOVE_LIRBRARY, lib.getName() });
 		for (int c; (c = p.getInputStream().read()) != -1; ) {
 			Main.logger.logSameLine("" + (char) c);
 		}
@@ -77,7 +77,7 @@ public class LibraryInstaller extends AbstractLibraryInstallerWrapper {
 		}
 		
 		Main.logger.log(String.format("Installing library %s...", lib.getName()));
-		Process p = Runtime.getRuntime().exec(String.format(CMD_INSTALL_LIRBRARY, setupDir));
+		Process p = Runtime.getRuntime().exec(new String[] { CMD_INSTALL_LIRBRARY, setupDir.getAbsolutePath() });
 		for (int c; (c = p.getInputStream().read()) != -1; ) {
 			Main.logger.logSameLine("" + (char) c);
 		}
@@ -131,8 +131,8 @@ public class LibraryInstaller extends AbstractLibraryInstallerWrapper {
 				while (files.hasMoreElements()) {
 					ZipEntry file = files.nextElement();
 					String fileName = file.getName();
-					if (fileName.endsWith("py")) {
-						srcFiles.add(fileName.substring(fileName.lastIndexOf('/') + 1));
+					if (fileName.endsWith(".py")) {
+						srcFiles.add(fileName);
 					}
 				}
 				zip.close();
