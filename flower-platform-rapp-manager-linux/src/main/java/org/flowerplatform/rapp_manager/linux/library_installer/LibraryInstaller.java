@@ -10,6 +10,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -124,7 +125,18 @@ public class LibraryInstaller extends AbstractLibraryInstallerWrapper {
 						}
 					}
 				}
+				@SuppressWarnings("unchecked")
+				Enumeration<ZipEntry> files = (Enumeration<ZipEntry>) zip.entries();
+				List<String> srcFiles = new ArrayList<>();
+				while (files.hasMoreElements()) {
+					ZipEntry file = files.nextElement();
+					String fileName = file.getName();
+					if (fileName.endsWith("py")) {
+						srcFiles.add(fileName.substring(fileName.lastIndexOf('/') + 1));
+					}
+				}
 				zip.close();
+				library.setHeaderFiles(srcFiles.toArray(new String[srcFiles.size()]));
 				res.add(library);
 			} catch (IOException e) {
 				throw new RuntimeException(e);
