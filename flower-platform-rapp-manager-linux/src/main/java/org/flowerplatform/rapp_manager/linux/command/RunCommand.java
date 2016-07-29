@@ -1,7 +1,6 @@
 package org.flowerplatform.rapp_manager.linux.command;
 
-import static org.flowerplatform.rapp_manager.linux.Main.log;
-import static org.flowerplatform.rapp_manager.linux.Main.logp;
+import static org.flowerplatform.rapp_manager.linux.Main.logger;
 
 import java.io.IOException;
 
@@ -42,16 +41,16 @@ public class RunCommand extends AbstractRunCommand {
 		// try to start rapp
 		Process p;
 		try {
-			logp("Starting rapp: " + rappId);
+			logger.logSameLine("Starting rapp: " + rappId);
 			String cmd = String.format(START_APP_COMMAND, Constants.WORK_DIR, rappId, FileUtils.rappIdToFilesystemName(rappId));
 			p = Runtime.getRuntime().exec(cmd);
-			logp("...");
+			logger.logSameLine("...");
 			p.waitFor();
 			if (p.exitValue() != 0) {
-				log("failed");
+				logger.log("failed");
 				throw new HttpCommandException("Error starting rapp: " + rappId);
 			} else {
-				log("done");
+				logger.log("done");
 			}
 			return "Rapp started: " + rappId;
 		} catch (IOException | InterruptedException e) {

@@ -166,7 +166,6 @@ public class SynchronizeLibrariesCommand implements IHttpCommand {
 			entry.setStatus(Status.NEEDS_DOWNLOAD);
 			entry.setAction(Action.DOWNLOAD);
 		}		
-
 		return matchedLibraries;
 	}
 	

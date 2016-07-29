@@ -3,7 +3,7 @@ package org.flowerplatform.rapp_manager.linux;
 import static org.flowerplatform.rapp_manager.linux.Constants.PID_FILE_PATTERN;
 import static org.flowerplatform.rapp_manager.linux.Constants.PROPERTY_START_AT_BOOT;
 import static org.flowerplatform.rapp_manager.linux.Constants.RAPPS_DIR;
-import static org.flowerplatform.rapp_manager.linux.Main.log;
+import static org.flowerplatform.rapp_manager.linux.Main.logger;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -156,7 +156,7 @@ public class Util {
 					rapp.setStartAtBoot(Util.getStartAtBootFlag(rapp.getRappId()));
 					rapp.setUploadTimestamp(Util.getRappTimestamp(rapp.getRappId()));
 				} catch (IOException | InterruptedException e) {
-					log(e.getMessage(), e);
+					logger.log(e.getMessage(), e);
 					throw new RuntimeException(e.getMessage(), e);
 				}
 			}

@@ -1,7 +1,6 @@
 package org.flowerplatform.rapp_manager.linux.command;
 
-import static org.flowerplatform.rapp_manager.linux.Main.log;
-import static org.flowerplatform.rapp_manager.linux.Main.logp;
+import static org.flowerplatform.rapp_manager.linux.Main.logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,22 +38,22 @@ public class StopCommand extends AbstractRappCommand {
 		
 		Process p;
 		try {
-			logp("Stopping rapp: " + rappId);
+			logger.logSameLine("Stopping rapp: " + rappId);
 			String cmd = String.format(STOP_APP_COMMAND, Constants.WORK_DIR, rappId, FileUtils.rappIdToFilesystemName(rappId));
 			p = Runtime.getRuntime().exec(cmd);
-			logp("...");
+			logger.logSameLine("...");
 			p.waitFor();
 			String processOutput = processOutputAsString(p);
 			
 			if (p.exitValue() != 0) {
-				log("failed : " + processOutput);
+				logger.log("failed : " + processOutput);
 				throw new RuntimeException("Error stopping rapp " + rappId + "; The output of the process was: \n\n" + processOutput);
 			} else {
-				log("done : " + processOutput);
+				logger.log("done : " + processOutput);
 			}
 			return "Rapp stopped: " + rappId;
 		} catch (IOException | InterruptedException e) {
-			log("Error stopping app", e);
+			logger.log("Error stopping app", e);
 			throw new HttpCommandException(e.getMessage());
 		}
 	}

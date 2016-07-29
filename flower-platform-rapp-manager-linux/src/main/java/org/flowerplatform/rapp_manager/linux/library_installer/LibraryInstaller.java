@@ -34,26 +34,26 @@ public class LibraryInstaller extends AbstractLibraryInstallerWrapper {
 	
 	@Override
 	public void remove(Library lib) throws Exception {
-		Main.log(String.format("Removing library %s...", lib.getName()));
+		Main.logger.log(String.format("Removing library %s...", lib.getName()));
 		Process p = Runtime.getRuntime().exec(String.format(CMD_REMOVE_LIRBRARY, lib.getName()));
 		for (int c; (c = p.getInputStream().read()) != -1; ) {
-			Main.logp("" + (char) c);
+			Main.logger.logSameLine("" + (char) c);
 		}
 		for (int c; (c = p.getErrorStream().read()) != -1; ) {
-			Main.logp("" + (char) c);
+			Main.logger.logSameLine("" + (char) c);
 		}
 		p.waitFor();
 	}
 
 	@Override
 	public void install(Library lib, Library replacedLib) throws Exception {
-		Main.log("Preparing folder...");
+		Main.logger.log("Preparing folder...");
 		File tmpDir = new File(Constants.TMP_DIR + "/" + lib.getName());
 		FileUtils.deleteRecursively(tmpDir.toPath());
 		tmpDir.mkdirs();
 		String tmpPath = tmpDir.getAbsolutePath();
 		
-		Main.log("Downloading and extracting library files...");
+		Main.logger.log("Downloading and extracting library files...");
 		InputStream in = new URL(lib.getUrl()).openStream();
 		ZipInputStream zip = new ZipInputStream(in);
 		
@@ -75,13 +75,13 @@ public class LibraryInstaller extends AbstractLibraryInstallerWrapper {
 			throw new RuntimeException(String.format("Could not find \"setup.py\" in library %s", lib.getName()));
 		}
 		
-		Main.log(String.format("Installing library %s...", lib.getName()));
+		Main.logger.log(String.format("Installing library %s...", lib.getName()));
 		Process p = Runtime.getRuntime().exec(String.format(CMD_INSTALL_LIRBRARY, setupDir));
 		for (int c; (c = p.getInputStream().read()) != -1; ) {
-			Main.logp("" + (char) c);
+			Main.logger.logSameLine("" + (char) c);
 		}
 		for (int c; (c = p.getErrorStream().read()) != -1; ) {
-			Main.logp("" + (char) c);
+			Main.logger.logSameLine("" + (char) c);
 		}
 		p.waitFor();
 	}
@@ -150,7 +150,7 @@ public class LibraryInstaller extends AbstractLibraryInstallerWrapper {
 	public static void main(String[] args) throws Exception {
 		List<Library> libraries = new LibraryInstaller().getInstalledLibraries();
 		for (Library library : libraries) {
-			Main.log(library.getName() + " " + library.getVersion());
+			Main.logger.log(library.getName() + " " + library.getVersion());
 		}
 		
 		Library lib = new Library();

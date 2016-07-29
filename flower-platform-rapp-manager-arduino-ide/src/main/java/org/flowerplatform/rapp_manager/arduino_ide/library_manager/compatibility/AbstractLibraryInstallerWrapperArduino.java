@@ -22,9 +22,6 @@ import processing.app.packages.UserLibrary;
 public abstract class AbstractLibraryInstallerWrapperArduino extends AbstractLibraryInstallerWrapper {
 	protected LibraryInstaller installer;
 	
-//	abstract public void remove(ArduinoLibrary lib) throws Exception;
-//	abstract public void install(ArduinoLibrary lib, ArduinoLibrary replacedLib) throws Exception;
-	
 	public AbstractLibraryInstallerWrapperArduino() {
 		super();
 		initLibraryInstaller();

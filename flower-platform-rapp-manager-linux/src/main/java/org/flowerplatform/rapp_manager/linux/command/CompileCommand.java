@@ -1,6 +1,6 @@
 package org.flowerplatform.rapp_manager.linux.command;
 
-import static org.flowerplatform.rapp_manager.linux.Main.log;
+import static org.flowerplatform.rapp_manager.linux.Main.logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -51,7 +51,7 @@ public class CompileCommand extends AbstractCompileCommand {
 					
 					if (p.exitValue() != 0) {
 						compilationLog.append(compilationErrors);
-						log(compilationLog.toString());
+						logger.log(compilationLog.toString());
 						throw new CompilationException(compilationLog.toString());
 					}
 				}
@@ -62,10 +62,10 @@ public class CompileCommand extends AbstractCompileCommand {
 			compilationLog.append("Successfully compiled application " + rappId + "\n");
 			return compilationLog.toString();
 		} catch (IOException | InterruptedException e) {
-			log("Error occurred.", e);
+			logger.log("Error occurred.", e);
 			throw new HttpCommandException(e.getMessage(), e);
 		} finally {
-			log(compilationLog.toString());
+			logger.log(compilationLog.toString());
 		}
 	}
 }

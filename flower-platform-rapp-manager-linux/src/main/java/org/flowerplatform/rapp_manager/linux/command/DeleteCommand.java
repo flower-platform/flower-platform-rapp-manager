@@ -1,6 +1,6 @@
 package org.flowerplatform.rapp_manager.linux.command;
 
-import static org.flowerplatform.rapp_manager.linux.Main.log;
+import static org.flowerplatform.rapp_manager.linux.Main.logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,11 +22,11 @@ public class DeleteCommand extends AbstractRappCommand {
 			throw new HttpCommandException("Rapp name not specified");
 		}
 		
-		log("Deleting rapp: " + rappId);
+		logger.log("Deleting rapp: " + rappId);
 		File rappDir = FileUtils.getRappDir(rappId);
 		if (!rappDir.exists()) {
 			HttpCommandException e = new HttpCommandException(String.format("Rapp not found: %s", rappId));
-			log(e.getMessage(), e);
+			logger.log(e.getMessage(), e);
 			throw e;
 		}
 		Process p;
@@ -35,12 +35,12 @@ public class DeleteCommand extends AbstractRappCommand {
 			p.waitFor();
 			if (p.exitValue() != 0) {
 				HttpCommandException e = new HttpCommandException("Error deleting rapp: " + rappId);
-				log (e.getMessage(), e);
+				logger.log (e.getMessage(), e);
 				throw e;
 			}
 		} catch (IOException | InterruptedException ex) {
 			HttpCommandException e = new HttpCommandException(ex.getMessage(), ex);
-			log(e.getMessage(), e);
+			logger.log(e.getMessage(), e);
 			throw e;
 		}
 		return null;

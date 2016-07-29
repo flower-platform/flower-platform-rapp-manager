@@ -1,14 +1,14 @@
-package org.flowerplatform.rapp_manager.arduino_ide.util;
+package org.flowerplatform.rapp_manager.linux.util;
 
 import org.flowerplatform.rapp_manager.util.AbstractLogger;
 
-public class ArduinoLogger extends AbstractLogger {
+public class LinuxLogger extends AbstractLogger{
 
 	@Override
 	public void log(String message) {
-		System.out.println(message);		
+		System.out.println(message);
 	}
-	
+
 	@Override
 	public void log(String message, Throwable t) {
 		System.out.println(message);

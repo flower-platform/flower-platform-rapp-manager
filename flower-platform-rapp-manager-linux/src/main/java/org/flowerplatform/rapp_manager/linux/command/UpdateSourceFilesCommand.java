@@ -1,6 +1,6 @@
 package org.flowerplatform.rapp_manager.linux.command;
 
-import static org.flowerplatform.rapp_manager.linux.Main.log;
+import static org.flowerplatform.rapp_manager.linux.Main.logger;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -32,15 +32,15 @@ public class UpdateSourceFilesCommand extends AbstractUpdateSourceFilesCommand {
 			throw new HttpCommandException(e.getMessage(), e);
 		}
 		
-		log("Writing files to folder + " + rappDir);
+		logger.log("Writing files to folder + " + rappDir);
 		// save files to disk
 		for (SourceFileDto srcFile : files) {
-			log("Writing sourceFileDto " + srcFile + " to disk.");
+			logger.log("Writing sourceFileDto " + srcFile + " to disk.");
 			// Note that we need to make sure that file names match the linux filesystem restrictions (i.e. no "/" characters)
 			try (FileOutputStream out = new FileOutputStream(rappDir.getAbsolutePath() + File.separator + FileUtils.rappIdToFilesystemName(srcFile.getName()))) {
 				out.write(srcFile.getContents().getBytes());
 			} catch (IOException e) {
-				log("Error while saving file: " + srcFile.getName());
+				logger.log("Error while saving file: " + srcFile.getName());
 				throw new HttpCommandException(e);
 			}
 		}
