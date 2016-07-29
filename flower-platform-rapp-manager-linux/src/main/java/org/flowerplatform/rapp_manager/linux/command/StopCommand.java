@@ -48,6 +48,7 @@ public class StopCommand extends AbstractRappCommand {
 			
 			if (p.exitValue() != 0) {
 				log("failed : " + processOutput);
+				log(Util.slurp(p.getErrorStream(), 1024));
 				throw new RuntimeException("Error stopping rapp " + rappId + "; The output of the process was: \n\n" + processOutput);
 			} else {
 				log("done : " + processOutput);

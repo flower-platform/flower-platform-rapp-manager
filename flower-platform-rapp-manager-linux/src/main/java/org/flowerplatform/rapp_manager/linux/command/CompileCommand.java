@@ -2,14 +2,13 @@ package org.flowerplatform.rapp_manager.linux.command;
 
 import static org.flowerplatform.rapp_manager.linux.Main.log;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.flowerplatform.rapp_manager.command.AbstractCompileCommand;
 import org.flowerplatform.rapp_manager.linux.CompilationException;
 import org.flowerplatform.rapp_manager.linux.FileUtils;
+import org.flowerplatform.rapp_manager.linux.Util;
 import org.flowerplatform.tiny_http_server.HttpCommandException;
 
 /**
@@ -35,23 +34,11 @@ public class CompileCommand extends AbstractCompileCommand {
 					String cmd = String.format(COMPILE_COMMAND, f.getPath());
 					p = Runtime.getRuntime().exec(cmd);
 					
-					// read error stream
-					StringBuilder compilationErrors = new StringBuilder(); 
-					try (InputStream in = p.getErrorStream()) {
-						ByteArrayOutputStream result = new ByteArrayOutputStream();
-						byte[] buf = new byte[1024];
-						int n;
-						while ((n = in.read(buf)) != -1) {
-						    result.write(buf, 0, n);
-						}
-						compilationErrors.append(result.toString("UTF8") + "\n");
-					}
-					
 					p.waitFor();
 					
 					if (p.exitValue() != 0) {
+						String compilationErrors = Util.slurp(p.getErrorStream(), 1024);
 						compilationLog.append(compilationErrors);
-						log(compilationLog.toString());
 						throw new CompilationException(compilationLog.toString());
 					}
 				}
@@ -68,4 +55,5 @@ public class CompileCommand extends AbstractCompileCommand {
 			log(compilationLog.toString());
 		}
 	}
+
 }

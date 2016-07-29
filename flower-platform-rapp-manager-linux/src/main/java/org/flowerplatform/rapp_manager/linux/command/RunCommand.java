@@ -49,6 +49,7 @@ public class RunCommand extends AbstractRunCommand {
 			p.waitFor();
 			if (p.exitValue() != 0) {
 				log("failed");
+				log(Util.slurp(p.getErrorStream(), 1024));
 				throw new HttpCommandException("Error starting rapp: " + rappId);
 			} else {
 				log("done");
