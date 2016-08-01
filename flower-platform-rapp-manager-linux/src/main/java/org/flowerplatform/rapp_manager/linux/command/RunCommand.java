@@ -4,6 +4,7 @@ import static org.flowerplatform.rapp_manager.linux.Main.log;
 import static org.flowerplatform.rapp_manager.linux.Main.logp;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import org.flowerplatform.rapp_manager.command.AbstractRunCommand;
 import org.flowerplatform.rapp_manager.linux.Constants;
@@ -49,8 +50,15 @@ public class RunCommand extends AbstractRunCommand {
 			p.waitFor();
 			if (p.exitValue() != 0) {
 				log("failed");
-				log(Util.slurp(p.getErrorStream(), 1024));
-				throw new HttpCommandException("Error starting rapp: " + rappId);
+				
+				// This process started as background process. stdout and stderr are thus not available (or not relevant)
+				// and we need to provide the log output instead.
+				GetLogCommand getLog = new GetLogCommand();
+				getLog.setRappId(rappId);
+				getLog.setToken(UUID.randomUUID().toString());
+				
+				Object logResult = getLog.run();
+				throw new HttpCommandException("Error starting rapp " + rappId + "\n" + (logResult != null ? new String((byte[])logResult, "UTF-8") : "(empty)"));
 			} else {
 				log("done");
 			}
