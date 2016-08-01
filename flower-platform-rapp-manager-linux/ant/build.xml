@@ -19,6 +19,12 @@
 			</filterchain>
 		</loadfile>
 		
+		<replaceregexp file="src_debian_package/DEBIAN/control"
+		               match="Version:(.*)"
+		               replace="Version: ${version}"
+		               byline="true"
+		/>
+		
 		<copy todir="src_debian_package/opt/flower-platform/bin" overwrite="true">
 		    <fileset dir="target/" includes="*-bundle.jar" />
 			<globmapper from="*" to="rapp-manager.jar" />
