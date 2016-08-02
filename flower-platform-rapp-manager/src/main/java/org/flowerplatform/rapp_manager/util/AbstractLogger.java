@@ -10,6 +10,8 @@ public abstract class AbstractLogger {
 
 	public abstract void log(String message);
 	
+	public abstract void log(char c);
+
 	public abstract void logSameLine(String message);
 
 	public abstract void log(String message, Throwable t);

@@ -38,12 +38,13 @@ public class LibraryInstaller extends AbstractLibraryInstallerWrapper {
 		Main.logger.log(String.format("Removing library %s...", lib.getName()));
 		Process p = Runtime.getRuntime().exec(new String[] { CMD_REMOVE_LIRBRARY, lib.getName() });
 		for (int c; (c = p.getInputStream().read()) != -1; ) {
-			Main.logger.logSameLine("" + (char) c);
+			Main.logger.log((char) c);
 		}
 		for (int c; (c = p.getErrorStream().read()) != -1; ) {
-			Main.logger.logSameLine("" + (char) c);
+			Main.logger.log((char) c);
 		}
 		p.waitFor();
+		Main.logger.log(String.format("Library %s removed successfully.", lib.getName()));
 	}
 
 	@Override
@@ -85,6 +86,7 @@ public class LibraryInstaller extends AbstractLibraryInstallerWrapper {
 			Main.logger.logSameLine("" + (char) c);
 		}
 		p.waitFor();
+		Main.logger.log(String.format("Library %s installed successfully.", lib.getName()));
 	}
 
 	@Override

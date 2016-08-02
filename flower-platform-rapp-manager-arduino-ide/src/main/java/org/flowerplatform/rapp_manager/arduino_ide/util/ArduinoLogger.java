@@ -10,6 +10,11 @@ public class ArduinoLogger extends AbstractLogger {
 	}
 	
 	@Override
+	public void log(char c) {
+		System.out.print(c);
+	}
+
+	@Override
 	public void log(String message, Throwable t) {
 		System.out.println(message);
 		t.printStackTrace(System.out);
