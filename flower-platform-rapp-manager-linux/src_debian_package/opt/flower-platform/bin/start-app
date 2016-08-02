@@ -8,26 +8,28 @@ FILESYSTEM_RAPP_NAME=$3
 
 #Get running pid
 if [ -f $HOME_DIR/run/$FILESYSTEM_RAPP_NAME.pid ]
-then 
+then
     OLDPID=`cat $HOME_DIR/run/$FILESYSTEM_RAPP_NAME.pid`
 fi
 
 if [[ $OLDPID > 0 ]]
 then
     echo "Killing old process $OLDPID..."
-    kill $OLDPID
+    if ! kill $OLDPID > /dev/null 2>&1; then
+        echo "Could not kill $OLDPID. Perhaps not running?"
+    fi
 fi
 
 # Start rapp
 python -u $HOME_DIR/rapps/$FILESYSTEM_RAPP_NAME/$FILESYSTEM_RAPP_NAME.py >$HOME_DIR/log/$FILESYSTEM_RAPP_NAME.log 2>&1 &
 PID=$!
 
-sleep 1 # sleep 1 second
+sleep 3 # sleep 3 seconds
 
-# check if rapp is still running after 1 second
+# check if rapp is still running after 3 seconds
 ps -p $PID >/dev/null 2>&1
 if [ $? -eq 0 ]
-then 
+then
     mkdir -p $HOME_DIR/run
     echo $PID > $HOME_DIR/run/$FILESYSTEM_RAPP_NAME.pid
     exit 0
