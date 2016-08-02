@@ -1,5 +1,6 @@
 package org.flowerplatform.rapp_manager.linux.command;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Iterator;
@@ -46,8 +47,13 @@ public class GetLogCommand extends AbstractRappCommand {
 		}
 		String offsetKey = rappId + "~" + token;
 		
-		String logFileName = String.format(Constants.LOG_FILE_PATTERN, FileUtils.rappIdToFilesystemName(rappId));
-		try (RandomAccessFile logFile = new RandomAccessFile(logFileName, "r")) {
+		// if log file does not exist, return;
+		File logFilePath = new File(String.format(Constants.LOG_FILE_PATTERN, FileUtils.rappIdToFilesystemName(rappId)));
+		if (!logFilePath.exists()) {
+			return "".getBytes();
+		}
+		
+		try (RandomAccessFile logFile = new RandomAccessFile(logFilePath, "r")) {
 			Long offset = logOffsets.remove(offsetKey);
 			if (offset == null) {
 				offset = Math.max(0, logFile.length() - 16384);
