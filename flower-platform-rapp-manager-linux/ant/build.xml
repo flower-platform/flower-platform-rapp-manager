@@ -19,12 +19,6 @@
 			</filterchain>
 		</loadfile>
 		
-		<replaceregexp file="src_debian_package/DEBIAN/control"
-		               match="Version:(.*)"
-		               replace="Version: ${version}"
-		               byline="true"
-		/>
-		
 		<copy todir="src_debian_package/opt/flower-platform/bin" overwrite="true">
 		    <fileset dir="target/" includes="*-bundle.jar" />
 			<globmapper from="*" to="rapp-manager.jar" />
@@ -35,5 +29,11 @@
 			<arg value="src_debian_package" />
 		</exec>
 		<move file="src_debian_package.deb" tofile="target/flower-platform_${version}_all.deb" />
+		<copy file="target/flower-platform_${version}_all.deb" todir="/data/backed-up/repo-rapp-manager" overwrite="true" />
+		<exec executable="dpkg-scanpackages">
+			<arg value="/data/backed-up/repo-rapp-manager" />
+			<arg value="/dev/null" />
+			<arg value="| gzip -9c > /data/backed-up/repo-rapp-manager/Packages.gz" />
+		</exec>
 	</target>
 </project>
