@@ -30,10 +30,10 @@
 		</exec>
 		<move file="src_debian_package.deb" tofile="target/flower-platform_${version}_all.deb" />
 		<copy file="target/flower-platform_${version}_all.deb" todir="/data/backed-up/repo-rapp-manager" overwrite="true" />
-		<exec executable="dpkg-scanpackages">
-			<arg value="/data/backed-up/repo-rapp-manager" />
-			<arg value="/dev/null" />
-			<arg value="| gzip -9c > /data/backed-up/repo-rapp-manager/Packages.gz" />
+		<exec executable="/bin/bash">
+			<arg value="-c" />
+			<arg value="dpkg-scanpackages /data/backed-up/repo-rapp-manager /dev/null | gzip -9c > /data/backed-up/repo-rapp-manager/Packages.gz" />
 		</exec>
 	</target>
+	
 </project>
