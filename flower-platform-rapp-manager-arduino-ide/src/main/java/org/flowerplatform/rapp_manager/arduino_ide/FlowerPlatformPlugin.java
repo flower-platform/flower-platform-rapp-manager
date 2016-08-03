@@ -2,35 +2,27 @@ package org.flowerplatform.rapp_manager.arduino_ide;
 
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Properties;
 
 import javax.swing.JMenu;
-
-import org.flowerplatform.rapp_manager.arduino_ide.command.CompileCommand;
-import org.flowerplatform.rapp_manager.arduino_ide.command.GetBoardsCommand;
-import org.flowerplatform.rapp_manager.arduino_ide.command.GetLogCommand;
-import org.flowerplatform.rapp_manager.arduino_ide.command.GetSelectedBoard;
-import org.flowerplatform.rapp_manager.arduino_ide.command.GetStatusCommand;
-import org.flowerplatform.rapp_manager.arduino_ide.command.SetOptionsCommand;
-import org.flowerplatform.rapp_manager.arduino_ide.command.SetSelectedBoardCommand;
-import org.flowerplatform.rapp_manager.arduino_ide.command.UpdateSourceFilesAndCompileCommand;
-import org.flowerplatform.rapp_manager.arduino_ide.command.UpdateSourceFilesCommand;
-import org.flowerplatform.rapp_manager.arduino_ide.command.UploadToBoardCommand;
-import org.flowerplatform.tiny_http_server.CommandFactory;
-import org.flowerplatform.tiny_http_server.HttpServer;
-import org.flowerplatform.tiny_http_server.IHttpCommand;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import processing.app.BaseNoGui;
 import processing.app.Editor;
@@ -62,6 +54,12 @@ public class FlowerPlatformPlugin implements Tool {
 	 */
 	protected Properties internalProperties;
 	
+	/**
+	 * Enables a bunch of utility functions which should get invoked only when
+	 * debugging the application.
+	 */
+	public static final boolean DEBUG_MODE = true;
+	
 	public Properties getGlobalProperties() {
 		return globalProperties;
 	}
@@ -72,6 +70,50 @@ public class FlowerPlatformPlugin implements Tool {
 
 	@Override
 	public void init(final Editor editor) {
+		initProperties();
+		
+		int serverPort = Integer.parseInt(globalProperties.getProperty("commandServerPort"));
+		final HttpServerInitializer serverInitializer = new HttpServerInitializer(serverPort, this);
+
+		this.editor = editor;
+		editor.addComponentListener(new ComponentListener() {
+			@Override
+			public void componentShown(ComponentEvent e) {
+				// initialize the menu
+				JMenu menu = new JMenu("Flower Platform");
+				
+				editor.getJMenuBar().add(menu, editor.getJMenuBar().getComponentCount() - 1);
+				editor.getJMenuBar().revalidate();
+			}
+
+			@Override
+			public void componentResized(ComponentEvent e) {}
+			@Override
+			public void componentMoved(ComponentEvent e) {}
+			@Override
+			public void componentHidden(ComponentEvent e) {
+			}
+		});
+		
+		// We need to notify our initializer to stop polling whenever this window is closed.
+		editor.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				serverInitializer.destroy();
+			}
+		});
+	}
+
+	@Override
+	public void run() {
+	}
+
+	@Override
+	public String getMenuTitle() {
+		return FLOWER_PLATFORM;
+	}
+	
+	private void initProperties() {
 		try {
 			internalProperties = readInternalProperties();
 		} catch (Throwable th) {
@@ -100,79 +142,24 @@ public class FlowerPlatformPlugin implements Tool {
 		if (writeProperties) {
 			writeProperties(globalProperties, getGlobalPropertiesFile());
 		}
-		
-		try {
-			int serverPort = Integer.parseInt(globalProperties.getProperty("commandServerPort"));
-			HttpServer server = new HttpServer(serverPort);
-			// set command factory, in order to inject plugin reference into the IFlowerPlatformPluginAware command instances
-			server.setCommandFactory(new CommandFactory() { 
-				@Override
-				public Object createCommandInstance(Class<? extends IHttpCommand> commandClass, Object data) {
-					ObjectMapper mapper = new ObjectMapper();
-					IHttpCommand command;
-					try {
-						command = mapper.readValue((String) data, commandClass);
-						if (command instanceof IFlowerPlatformPluginAware) {
-							((IFlowerPlatformPluginAware) command).setFlowerPlatformPlugin(FlowerPlatformPlugin.this);
-						}
-						return command;
-					} catch (IOException e) {
-						e.printStackTrace(System.err);
-						throw new RuntimeException("Cannot create command object", e);
-					}
-				}
-			});
-			server.registerCommand("uploadToBoard", UploadToBoardCommand.class);
-			server.registerCommand("updateSourceFiles", UpdateSourceFilesCommand.class);
-			server.registerCommand("compile", CompileCommand.class);
-			server.registerCommand("updateSourceFilesAndCompile", UpdateSourceFilesAndCompileCommand.class);
-			server.registerCommand("getBoards", GetBoardsCommand.class);
-			server.registerCommand("getSelectedBoard", GetSelectedBoard.class);
-			//server.registerCommand("getBoardsWithDetails", GetBoardsWithDetails.class);
-			server.registerCommand("setSelectedBoard", SetSelectedBoardCommand.class);
-			server.registerCommand("setOptions", SetOptionsCommand.class);
-			server.registerCommand("getStatus", GetStatusCommand.class);
-			server.registerCommand("getLog", GetLogCommand.class);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		this.editor = editor;
-		editor.addComponentListener(new ComponentListener() {
-			@Override
-			public void componentShown(ComponentEvent e) {
-				// initialize the menu
-				JMenu menu = new JMenu("Flower Platform");
-				
-				editor.getJMenuBar().add(menu, editor.getJMenuBar().getComponentCount() - 1);
-				editor.getJMenuBar().revalidate();
-			}
-
-			@Override
-			public void componentResized(ComponentEvent e) {}
-			@Override
-			public void componentMoved(ComponentEvent e) {}
-			@Override
-			public void componentHidden(ComponentEvent e) {}
-		});
-	}
-
-	@Override
-	public void run() {
-	}
-
-	@Override
-	public String getMenuTitle() {
-		return FLOWER_PLATFORM;
 	}
 	
 	public static void log(String message) {
 		System.out.println(message);
+		debugLogToFile(message);
 	}
 	
 	public static void log(String message, Throwable t) {
 		System.out.println(message);
 		t.printStackTrace(System.out);
+		debugExceptionToFile(t);
+	}
+	
+	public static void debug(String message) {
+		if (!DEBUG_MODE) {
+			return;
+		}
+		log(message);
 	}
 	
 	public File getProjectPropertiesFile() {
@@ -272,5 +259,42 @@ public class FlowerPlatformPlugin implements Tool {
 	 */
 	public String getVersion() {
 		return internalProperties.getProperty("app.version");
+	}
+	
+	/**
+	 * Utility function to write a message to a log file; used only in debug mode.
+	 * 
+	 * Sometimes, plugin initialization happens very early, so the editor is not yet available => sometimes 
+	 * we do not see the error messages appearing in the editor's console because the console might not be 
+	 * ready yet, at this stage.
+	 */
+	public static void debugLogToFile(String message) {
+		String debugFileName = "D:/arduino_ide_debug_log.txt";
+		
+		if (message == null || !DEBUG_MODE) {
+			return;
+		}
+		File file = new File(debugFileName);
+		try {
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+		    Files.write(Paths.get(debugFileName), (message + "\n").getBytes(), StandardOpenOption.APPEND);
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
+	}
+
+	/**
+	 * Utility function to write an exception's stacktrace into file; used only in debug mode.
+	 */
+	public static void debugExceptionToFile(Throwable th) {
+		if (th == null || !DEBUG_MODE) {
+			return;
+		}
+		StringWriter sw = new StringWriter();
+		th.printStackTrace(new PrintWriter(sw));
+		
+		debugLogToFile(sw.toString());
 	}
 }
