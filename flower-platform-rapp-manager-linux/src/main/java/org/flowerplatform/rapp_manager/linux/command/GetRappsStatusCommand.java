@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileFilter;
 
 import org.flowerplatform.rapp_manager.linux.Constants;
-import org.flowerplatform.rapp_manager.linux.Main;
 import org.flowerplatform.rapp_manager.linux.ServerStatus;
 import org.flowerplatform.rapp_manager.linux.Util;
 import org.flowerplatform.tiny_http_server.HttpCommandException;
@@ -26,7 +25,7 @@ public class GetRappsStatusCommand implements IHttpCommand {
 		});
 	
 		ServerStatus status = new ServerStatus();
-		status.setVersion(Main.VERSION);
+		Util.fillSimpleStatus(status);
 		
 		status.setRapps(Util.getRappsStatus(rappDirs, true));
 		return status;

@@ -4,7 +4,6 @@ import static org.flowerplatform.rapp_manager.linux.Main.log;
 import static org.flowerplatform.rapp_manager.linux.Main.logp;
 
 import java.io.IOException;
-import java.util.UUID;
 
 import org.flowerplatform.rapp_manager.command.AbstractRunCommand;
 import org.flowerplatform.rapp_manager.linux.Constants;
@@ -12,11 +11,8 @@ import org.flowerplatform.rapp_manager.linux.FileUtils;
 import org.flowerplatform.rapp_manager.linux.Util;
 import org.flowerplatform.tiny_http_server.HttpCommandException;
 
-
 /**
- * 
  * @author Claudiu Matei
- *
  */
 public class RunCommand extends AbstractRunCommand {
 
@@ -49,18 +45,11 @@ public class RunCommand extends AbstractRunCommand {
 			logp("...");
 			p.waitFor();
 			if (p.exitValue() != 0) {
-				log("failed");
-				
-				// This process started as background process. stdout and stderr are thus not available (or not relevant)
-				// and we need to provide the log output instead.
-				GetLogCommand getLog = new GetLogCommand();
-				getLog.setRappId(rappId);
-				getLog.setToken(UUID.randomUUID().toString());
-				
-				Object logResult = getLog.run();
-				throw new HttpCommandException("Error starting rapp " + rappId + "\n" + (logResult != null ? new String((byte[])logResult, "UTF-8") : "(empty)"));
+				String processOutput = Util.getPrettyProcessOutput(p);
+				log("Failed to start rapp " + rappId + ". Startup script terminated abnormally with exit code " + p.exitValue() + "; output from the script was " + processOutput);
+				throw new HttpCommandException("Error starting rapp " + rappId + "\n" + processOutput);
 			} else {
-				log("done");
+				log("Successfully started rapp " + rappId);
 			}
 			return "Rapp started: " + rappId;
 		} catch (IOException | InterruptedException e) {

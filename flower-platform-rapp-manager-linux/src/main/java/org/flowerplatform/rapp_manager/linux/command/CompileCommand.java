@@ -37,7 +37,7 @@ public class CompileCommand extends AbstractCompileCommand {
 					p.waitFor();
 					
 					if (p.exitValue() != 0) {
-						String compilationErrors = Util.slurp(p.getErrorStream(), 1024);
+						String compilationErrors = Util.slurp(p.getErrorStream());
 						compilationLog.append(compilationErrors);
 						throw new CompilationException(compilationLog.toString());
 					}

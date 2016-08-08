@@ -4,7 +4,6 @@ import static org.flowerplatform.rapp_manager.linux.Main.log;
 import static org.flowerplatform.rapp_manager.linux.Main.logp;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.flowerplatform.rapp_manager.command.AbstractRappCommand;
 import org.flowerplatform.rapp_manager.linux.Constants;
@@ -43,40 +42,19 @@ public class StopCommand extends AbstractRappCommand {
 			String cmd = String.format(STOP_APP_COMMAND, Constants.WORK_DIR, rappId, FileUtils.rappIdToFilesystemName(rappId));
 			p = Runtime.getRuntime().exec(cmd);
 			logp("...");
-			p.waitFor();
-			String processOutput = processOutputAsString(p);
 			
+			p.waitFor();
 			if (p.exitValue() != 0) {
-				log("failed : " + processOutput);
-				log(Util.slurp(p.getErrorStream(), 1024));
-				throw new RuntimeException("Error stopping rapp " + rappId + "; The output of the process was: \n\n" + processOutput);
+				String processOutput = Util.getPrettyProcessOutput(p);
+				log("Failed to stop rapp " + rappId + ". Startup script terminated abnormally with exit code " + p.exitValue() + "; output from the script was " + processOutput);
+				throw new HttpCommandException("Error stopping rapp " + rappId + "\n" + processOutput);
 			} else {
-				log("done : " + processOutput);
+				log("Successfully stopped rapp " + rappId);
 			}
 			return "Rapp stopped: " + rappId;
 		} catch (IOException | InterruptedException e) {
 			log("Error stopping app", e);
 			throw new HttpCommandException(e.getMessage());
 		}
-	}
-	
-	// Converts the output of the given process to a String
-	private static String processOutputAsString(Process p) throws UnsupportedOperationException, IOException {
-		StringBuilder result = new StringBuilder();
-		InputStream stdoutStream = p.getInputStream(), stderrStream = p.getErrorStream();
-		
-		if (stdoutStream != null) {
-			result.append("Normal output:\n");
-			result.append(Util.slurp(stdoutStream, 4096));
-		}
-		if (stderrStream != null) {
-			if (result.length() > 0) {
-				result.append("\n\n");
-			}
-			result.append("Err output:\n");
-			result.append(Util.slurp(stderrStream, 4096));
-		}
-		
-		return result.toString();
 	}
 }

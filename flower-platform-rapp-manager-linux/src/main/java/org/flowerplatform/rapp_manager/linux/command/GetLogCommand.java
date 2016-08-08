@@ -1,18 +1,16 @@
 package org.flowerplatform.rapp_manager.linux.command;
 
+import static org.flowerplatform.rapp_manager.linux.Main.log;
+
 import java.io.File;
-import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.flowerplatform.rapp_manager.command.AbstractRappCommand;
 import org.flowerplatform.rapp_manager.linux.Constants;
 import org.flowerplatform.rapp_manager.linux.FileUtils;
+import org.flowerplatform.rapp_manager.linux.LogFilesCache;
+import org.flowerplatform.rapp_manager.linux.LogFilesCache.SessionInfo;
 import org.flowerplatform.tiny_http_server.HttpCommandException;
-
 
 /**
  * 
@@ -21,24 +19,21 @@ import org.flowerplatform.tiny_http_server.HttpCommandException;
  */
 public class GetLogCommand extends AbstractRappCommand {
 
-	private static final long SESSION_TIMEOUT_INTERVAL = 10 * 60 * 1000L;
-	
 	private static final int RESPONSE_MINIMUM_TIME = 1000; // multiple of 200ms
 
 	private static final int MAX_SEND_SIZE = 10240; // max number of bytes to be sent in response; the last MAX_SEND_SIZE bytes are sent, previous bytes are ignored
-	
-	private static Map<String, Long> logOffsets = new ConcurrentHashMap<>(); 	// <fileName~token, offset>
 
-	private static Map<String, Long> sessionExpirationTimestamps = new ConcurrentHashMap<>(); 	// <fileName~token, expiration_timestamp>
-	
-	private long nextSessionCleanUpTimestamp = System.currentTimeMillis() + SESSION_TIMEOUT_INTERVAL;
+	/**
+	 * The http code of the error thrown when the given token can no longer be used for communication, 
+	 * and the client should issue a new request, if it wants the info.
+	 */
+	private static final int HTTP_CODE_TOKEN_NO_LONGER_VALID = 310;
 	
 	private String token;
 
 	public Object run() throws HttpCommandException {
-		if (System.currentTimeMillis() > nextSessionCleanUpTimestamp) {
-			cleanUpSessions();
-		}
+		LogFilesCache.get().maybePerformMaintenance();
+		
 		if (rappId == null) {
 			throw new IllegalArgumentException("Rapp name not specified");
 		}
@@ -54,13 +49,13 @@ public class GetLogCommand extends AbstractRappCommand {
 		}
 		
 		try (RandomAccessFile logFile = new RandomAccessFile(logFilePath, "r")) {
-			Long offset = logOffsets.remove(offsetKey);
-			if (offset == null) {
-				offset = Math.max(0, logFile.length() - 16384);
+			SessionInfo sessionInfo = LogFilesCache.get().getOrCreateSession(offsetKey);
+			if (sessionInfo.offset == null) {
+				sessionInfo.offset = Math.max(0, logFile.length() - MAX_SEND_SIZE);
 			}
 			
 			// wait for some new data to be written to the log file; wait no less than a second and no more than 8 seconds
-			for (int i = 0; i < 40 && (i < RESPONSE_MINIMUM_TIME / 200 || logFile.length() <= offset); i++) { 
+			for (int i = 0; i < 40 && (i < RESPONSE_MINIMUM_TIME / 200 || logFile.length() == sessionInfo.offset); i++) { 
 				try { Thread.sleep(200); } catch (Exception e) { }
 			}
 			
@@ -74,40 +69,42 @@ public class GetLogCommand extends AbstractRappCommand {
 				}
 			}
 			
-			StringBuffer sb = new StringBuffer();
-			// read at most MAX_SEND_SIZE bytes into sb
-			if (offset + MAX_SEND_SIZE < fileLength) {
-				sb.append("\n[...]\n");
-				offset = fileLength - MAX_SEND_SIZE;
+			// Quick sanity check; this can happen when the corresponding app has been restarted, and thus
+			// the log was also restarted.
+			// In this case, we send a custom HTTP code, to tell the client that it needs to issue a new request.
+			if (sessionInfo.offset > fileLength) {
+				LogFilesCache.get().invalidate(offsetKey);
+				log("GetLog request with token " + token + " got automatically invalidated.");
+				throw new HttpCommandException(HTTP_CODE_TOKEN_NO_LONGER_VALID, "Given token is no longer valid. Please issue a new request with a new token.");
 			}
 			
-			logOffsets.put(offsetKey, fileLength);
-			sessionExpirationTimestamps.put(offsetKey, System.currentTimeMillis() + SESSION_TIMEOUT_INTERVAL);
+			StringBuffer sb = new StringBuffer();
 			
-			logFile.seek(offset);
-			byte[] data = new byte[(int)(fileLength - offset)];
+			// Ensure that we don't grab a chunk larger than we want to process.
+			if (sessionInfo.offset + MAX_SEND_SIZE < fileLength) {
+				sb.append("\n[...]\n");
+				sessionInfo.offset = fileLength - MAX_SEND_SIZE;
+			}
+			
+			long start = sessionInfo.offset;
+			sessionInfo.offset = fileLength;
+			logFile.seek(start);
+			
+			byte[] data = new byte[(int)(fileLength - start)];
 			logFile.readFully(data);
 
 			sb.append(new String(data));
 			return sb.toString().getBytes();
 			
-		} catch (IOException e) {
-			throw new HttpCommandException(e.getMessage(), e);
+		} catch (HttpCommandException hce) {
+			// A HttpCommandException always passes through.
+			throw hce;
+		} catch (Throwable th) {
+			log("Error calculating log bytes", th);
+			throw new HttpCommandException(th.getMessage(), th);
 		}
 	}
 
-	public void cleanUpSessions() {
-		Iterator<Entry<String, Long>> it = sessionExpirationTimestamps.entrySet().iterator();
-		while (it.hasNext()) {
-			Entry<String, Long> entry = it.next();
-			if (System.currentTimeMillis() > entry.getValue()) {
-				it.remove();
-				logOffsets.remove(entry.getKey());
-			}
-		}
-		nextSessionCleanUpTimestamp = System.currentTimeMillis() + SESSION_TIMEOUT_INTERVAL;
-	}
-	
 	public String getToken() {
 		return token;
 	}

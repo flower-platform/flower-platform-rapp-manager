@@ -1,8 +1,10 @@
 package org.flowerplatform.rapp_manager.arduino_ide.command;
 
+import org.flowerplatform.rapp_manager.SimpleStatus;
 import org.flowerplatform.rapp_manager.arduino_ide.FlowerPlatformPlugin;
 import org.flowerplatform.rapp_manager.arduino_ide.IFlowerPlatformPluginAware;
 import org.flowerplatform.tiny_http_server.IHttpCommand;
+
 import processing.app.BaseNoGui;
 
 /**
@@ -24,44 +26,11 @@ public class GetStatusCommand implements IHttpCommand, IFlowerPlatformPluginAwar
 
 	@Override
 	public Object run() {
-		Status status = new Status();
+		SimpleStatus status = new SimpleStatus();
 		status.setVersion(plugin.getVersion());
 		status.setHostSystemName("Arduino IDE");
 		status.setHostSystemVersion(BaseNoGui.VERSION_NAME);
 		
 		return status;
-	}
-
-	public static class Status {
-		public Status() {
-		}
-		public Status(String version, String hostSystemName, String hostSystemVersion) {
-			this.version = version;
-			this.hostSystemName = hostSystemName;
-			this.hostSystemVersion = hostSystemVersion;
-		}
-
-		private String version = BaseNoGui.VERSION_NAME;
-		private String hostSystemName;
-		private String hostSystemVersion;
-		
-		public String getVersion() {
-			return version;
-		}
-		public void setVersion(String version) {
-			this.version = version;
-		}
-		public String getHostSystemName() {
-			return hostSystemName;
-		}
-		public void setHostSystemName(String hostSystemName) {
-			this.hostSystemName = hostSystemName;
-		}
-		public String getHostSystemVersion() {
-			return hostSystemVersion;
-		}
-		public void setHostSystemVersion(String hostSystemVersion) {
-			this.hostSystemVersion = hostSystemVersion;
-		}
 	}
 }

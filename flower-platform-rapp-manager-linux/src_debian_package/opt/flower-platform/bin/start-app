@@ -20,19 +20,14 @@ then
     fi
 fi
 
+echo "Rapp launching" > $HOME_DIR/log/$FILESYSTEM_RAPP_NAME.log
+
 # Start rapp
-python -u $HOME_DIR/rapps/$FILESYSTEM_RAPP_NAME/$FILESYSTEM_RAPP_NAME.py >$HOME_DIR/log/$FILESYSTEM_RAPP_NAME.log 2>&1 &
+python -u $HOME_DIR/rapps/$FILESYSTEM_RAPP_NAME/$FILESYSTEM_RAPP_NAME.py >> $HOME_DIR/log/$FILESYSTEM_RAPP_NAME.log 2>&1 &
 PID=$!
 
-sleep 3 # sleep 3 seconds
+# Note that we no longer check if the process is actually running after a period of time
+# We rely on the user actually checking logs/consoles, etc, to determine what happened with its app.
 
-# check if rapp is still running after 3 seconds
-ps -p $PID >/dev/null 2>&1
-if [ $? -eq 0 ]
-then
-    mkdir -p $HOME_DIR/run
-    echo $PID > $HOME_DIR/run/$FILESYSTEM_RAPP_NAME.pid
-    exit 0
-fi
-
-exit 1
+mkdir -p $HOME_DIR/run
+echo $PID > $HOME_DIR/run/$FILESYSTEM_RAPP_NAME.pid

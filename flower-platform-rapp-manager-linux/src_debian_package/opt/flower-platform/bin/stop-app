@@ -12,8 +12,9 @@ if [ -f $PIDFILE ]
 then
     PID=`cat $HOME_DIR/run/$FILESYSTEM_RAPP_NAME.pid`
 else
-	echo "Failed to stop Rapp $RAPP. Application already stopped?"
+    echo "Failed to stop Rapp $RAPP. Application already stopped?"
     exit 1
 fi
 
 kill $PID && rm $PIDFILE
+echo "Rapp stopped!" >> $HOME_DIR/log/$FILESYSTEM_RAPP_NAME.log

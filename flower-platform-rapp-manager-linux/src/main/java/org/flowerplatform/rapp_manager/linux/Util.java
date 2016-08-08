@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
 
+import org.flowerplatform.rapp_manager.SimpleStatus;
+
 /**
  * 
  * @author Claudiu Matei
@@ -165,11 +167,29 @@ public class Util {
 		
 		return rapps;
 	}
+
+	/**
+	 * Fills in the object given as parameter with proper status information.
+	 * 
+	 * @param status
+	 */
+	public static void fillSimpleStatus(SimpleStatus status) {
+		status.setVersion(Main.VERSION);
+		status.setHostSystemName(System.getProperty("os.name"));
+		status.setHostSystemVersion(System.getProperty("os.version"));
+	}
 	
 	/**
 	 * Converts the given input stream into a string.
 	 */
-	public static String slurp(final InputStream is, final int bufferSize) throws UnsupportedEncodingException, IOException {
+	public static String slurp(final InputStream is) throws UnsupportedEncodingException, IOException {
+		return slurp(is, 1024);
+	}
+	
+	/**
+	 * Converts the given input stream into a string.
+	 */
+	private static String slurp(final InputStream is, final int bufferSize) throws UnsupportedEncodingException, IOException {
 	    final char[] buffer = new char[bufferSize];
 	    final StringBuilder out = new StringBuilder();
 	    try (Reader in = new InputStreamReader(is, "UTF-8")) {
@@ -185,5 +205,26 @@ public class Util {
 	    	throw ex;
 	    }
 	    return out.toString();
-	}	
+	}
+	
+	/**
+	 * Combines the stdout and stderr of the given process in a format suited for user display. 
+	 */
+	public static String getPrettyProcessOutput(Process p) throws UnsupportedEncodingException, IOException {
+		String stdout = slurp(p.getInputStream(), 1024);
+		String stderr = slurp(p.getErrorStream(), 1024);
+		
+		stdout = (stdout != null ? stdout.trim() : stdout);
+		stderr = (stderr != null ? stderr.trim() : stderr);
+		
+		StringBuilder processOutput = new StringBuilder();
+		if (stderr != null) {
+			processOutput.append(stderr);
+		}
+		if (stdout != null) {
+			processOutput.append(stdout);
+		}
+		
+		return processOutput.length() > 0 ? processOutput.toString() : null;
+	}
 }
