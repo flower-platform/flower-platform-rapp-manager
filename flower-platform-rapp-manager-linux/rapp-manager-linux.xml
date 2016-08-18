@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.flowerplatform</groupId>
-	<artifactId>flower-platform-rapp-manager-linux-build</artifactId>
+	<artifactId>flower-platform-rapp-manager-linux-reactor</artifactId>
 	<version>1.0.0</version>
 	<packaging>pom</packaging>
 	<properties>
@@ -12,6 +12,6 @@
 	<modules>
 		<module>${tiny-http-server.folder}</module>
 		<module>../flower-platform-rapp-manager</module>
-		<module>../flower-platform-rapp-manager-linux</module>
+		<module>.</module>
 	</modules>
 </project>
