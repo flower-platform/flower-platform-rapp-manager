@@ -87,6 +87,11 @@ public class FlowerPlatformPlugin implements Tool {
 			public void componentShown(ComponentEvent e) {
 				// initialize the menu
 				JMenu menu = new JMenu("Flower Platform");
+				
+				JMenuItem menuCurrentVersion = new JMenuItem("Flower Platform Plugin v" + getVersion());
+				menuCurrentVersion.setEnabled(false);
+				menu.add(menuCurrentVersion);
+				
 				JMenuItem menuCheckForUpdate = new JMenuItem("Check for new version...");
 				menuCheckForUpdate.addActionListener(event -> checkForUpdate());
 				menu.add(menuCheckForUpdate);
