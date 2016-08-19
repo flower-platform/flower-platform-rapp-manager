@@ -12,7 +12,7 @@
          ================================= -->
 	<target name="default" description="Package (contains launcher and plugin)">
 
-		<loadfile encoding="UTF-8" property="version" srcFile="../flower-platform-rapp-manager-arduino-ide/pom.xml" >
+		<loadfile encoding="UTF-8" property="version" srcFile="pom.xml" >
 			<filterchain>
 				<striplinebreaks/>
 		    	<containsregex pattern=".*?&lt;version&gt;(.+?)&lt;.*" replace="\1" />
@@ -23,9 +23,9 @@
 			<zipfileset dir="target" includes="flower-platform-rapp-manager-arduino-ide-${version}.jar" />
 		</zip>
 		
-		<zip destfile="target/flower-platform-rapp-manager-arduino-ide-launcher-${version}.zip">
-			<zipfileset dir="target" includes="FlowerPlatformPluginLauncher.jar" prefix="FlowerPlatformPluginLauncher/tool" />
-			<zipfileset dir="../flower-platform-rapp-manager-arduino-ide/target" includes="flower-platform-rapp-manager-arduino-ide-${version}.jar" prefix="FlowerPlatformPluginLauncher/tool/new-version" />
+		<zip destfile="target/flower-platform-rapp-manager-arduino-ide-${version}-launcher.zip">
+			<zipfileset dir="../flower-platform-rapp-manager-arduino-ide-launcher/target" includes="FlowerPlatformPluginLauncher.jar" prefix="FlowerPlatformPluginLauncher/tool" />
+			<zipfileset dir="target" includes="flower-platform-rapp-manager-arduino-ide-${version}.jar" prefix="FlowerPlatformPluginLauncher/tool/new-version" />
 		</zip>
 	
 	</target>
