@@ -19,7 +19,7 @@
 			</filterchain>
 		</loadfile>
 		
-		<zip destfile="target/flower-platform-rapp-manager-arduino-ide-${version}.zip">
+		<zip destfile="target/flower-platform-rapp-manager-arduino-ide-launcher-${version}.zip">
 			<zipfileset dir="target" includes="FlowerPlatformPluginLauncher.jar" prefix="FlowerPlatformPluginLauncher/tool" />
 			<zipfileset dir="../flower-platform-rapp-manager-arduino-ide/target" includes="flower-platform-rapp-manager-arduino-ide-${version}.jar" prefix="FlowerPlatformPluginLauncher/tool/new-version" />
 		</zip>
