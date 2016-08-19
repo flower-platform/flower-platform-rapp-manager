@@ -23,7 +23,6 @@
 	<target name="install" depends="default">
 		<copy file="build/FlowerPlatformPlugin.jar" todir="${user.home}/Documents/Arduino/tools/FlowerPlatformPlugin/tool" />
 	</target>
-
 	
 	<target name="clean">
 		<delete>

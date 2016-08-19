@@ -4,7 +4,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -14,6 +13,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -21,9 +21,15 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Properties;
+import java.util.Scanner;
 
 import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
+import org.flowerplatform.updateable_launcher.Downloader;
+
+import cc.arduino.contributions.VersionHelper;
 import processing.app.BaseNoGui;
 import processing.app.Editor;
 import processing.app.Sketch;
@@ -81,9 +87,14 @@ public class FlowerPlatformPlugin implements Tool {
 			public void componentShown(ComponentEvent e) {
 				// initialize the menu
 				JMenu menu = new JMenu("Flower Platform");
+				JMenuItem menuCheckForUpdate = new JMenuItem("Check for new version...");
+				menuCheckForUpdate.addActionListener(event -> checkForUpdate());
+				menu.add(menuCheckForUpdate);
 				
 				editor.getJMenuBar().add(menu, editor.getJMenuBar().getComponentCount() - 1);
 				editor.getJMenuBar().revalidate();
+				
+				checkForUpdate();
 			}
 
 			@Override
@@ -108,6 +119,40 @@ public class FlowerPlatformPlugin implements Tool {
 	public void run() {
 	}
 
+	private void checkForUpdate() {
+		new Thread(() -> { 
+			String latestVersion = null; 
+			try (Scanner scanner = new Scanner(new URL(globalProperties.getProperty("update.versionUrl", null)).openStream())) {
+				latestVersion = scanner.nextLine();
+				if (VersionHelper.valueOf(latestVersion).greaterThan(VersionHelper.valueOf(getVersion()))) {
+					if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, "A newer version of Flower Platform Plugin is available. It's recommended to upgrade.\n"
+							+ "Installed version = " + getVersion()
+							+ ". Latest version = " + latestVersion
+							+ ".\n\n"
+							+ "Do you want to upgrade to the latest version?", "Information", JOptionPane.YES_NO_OPTION)) {
+						downloadUpdate();
+					}
+				}
+			} catch (IOException e) {
+				log("Error getting latest Flower Platform Plugin version", e);
+			} 
+		}).start();
+	}
+	
+	private void downloadUpdate() {
+		File updateLocation = new File(BaseNoGui.getSketchbookFolder() + "/tools/FlowerPlatformPluginLauncher/tool/new-version");
+		updateLocation.mkdirs();
+		log("Downloading update...");
+		try {
+			Downloader.downloadAndUnzip(globalProperties.getProperty("update.downloadUrl", null), updateLocation);
+			log("Download complete.");
+			JOptionPane.showMessageDialog(null, "The latest version of Flower Platform Plugin was downloaded. Please restart Arduino IDE for the changes to take effect.");
+		} catch (Exception e) {
+			updateLocation.delete();
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	public String getMenuTitle() {
 		return FLOWER_PLATFORM;
@@ -125,6 +170,14 @@ public class FlowerPlatformPlugin implements Tool {
 		boolean writeProperties = false;
 		if (globalProperties.getProperty("commandServerPort") == null) {
 			globalProperties.put("commandServerPort", "9000");
+			writeProperties = true;
+		}
+		if (globalProperties.getProperty("update.versionUrl") == null) {
+			globalProperties.put("update.versionUrl", "http://hub.flower-platform.com/update/version.txt");
+			writeProperties = true;
+		}
+		if (globalProperties.getProperty("update.downloadUrl") == null) {
+			globalProperties.put("update.downloadUrl", "http://hub.flower-platform.com/update/flower-platform-arduino-ide.zip");
 			writeProperties = true;
 		}
 		if (globalProperties.getProperty("otaUpload.serverSignature") == null) {
