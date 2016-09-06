@@ -3,7 +3,7 @@ package org.flowerplatform.rapp_manager.arduino_ide.launcher;
 import java.io.File;
 import java.net.URLClassLoader;
 
-import org.flowerplatform.updateable_launcher.LauncherForUpdateableCode;
+import org.flowerplatform.updatable_code.UpdatableCodeLoader;
 
 import processing.app.Editor;
 import processing.app.tools.Tool;
@@ -16,12 +16,12 @@ public class FlowerPlatformPluginLauncher implements Tool {
 	static final String NEW_BIN_PATH = PPLUGIN_PATH + "/new-version/";
 	static final String CLASS_NAME = "org.flowerplatform.rapp_manager.arduino_ide.FlowerPlatformPlugin";
 	
-	LauncherForUpdateableCode launcher;
+	UpdatableCodeLoader launcher;
 	URLClassLoader loader;
 	Tool flowerPlatformPlugin;
 	
 	public void init(Editor editor) {
-		this.launcher = new LauncherForUpdateableCode(PREVIOUS_BIN_PATH, CURRENT_BIN_PATH, NEW_BIN_PATH);
+		this.launcher = new UpdatableCodeLoader(PREVIOUS_BIN_PATH, CURRENT_BIN_PATH, NEW_BIN_PATH);
 		loader = launcher.load();
 		try {
 			flowerPlatformPlugin = (Tool) Class.forName(CLASS_NAME, true, loader).newInstance();

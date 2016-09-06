@@ -13,7 +13,6 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -21,13 +20,12 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Properties;
-import java.util.Scanner;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
-import org.flowerplatform.updateable_launcher.Downloader;
+import org.flowerplatform.updatable_code.util.UpdatableCodeUtils;
 
 import cc.arduino.contributions.VersionHelper;
 import processing.app.BaseNoGui;
@@ -126,34 +124,28 @@ public class FlowerPlatformPlugin implements Tool {
 
 	private void checkForUpdate() {
 		new Thread(() -> { 
-			String latestVersion = null; 
-			try (Scanner scanner = new Scanner(new URL(globalProperties.getProperty("update.versionUrl", null)).openStream())) {
-				latestVersion = scanner.nextLine();
-				if (VersionHelper.valueOf(latestVersion).greaterThan(VersionHelper.valueOf(getVersion()))) {
-					if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, "A newer version of Flower Platform Plugin is available. It's recommended to upgrade.\n"
-							+ "Installed version = " + getVersion()
-							+ ". Latest version = " + latestVersion
-							+ ".\n\n"
-							+ "Do you want to upgrade to the latest version?", "Information", JOptionPane.YES_NO_OPTION)) {
-						downloadUpdate();
-					}
+			Properties updateInfo = UpdatableCodeUtils.getUpdateInfo(globalProperties.getProperty("updateUrl"));
+			String updateVersion = updateInfo.getProperty("version");
+			if (VersionHelper.valueOf(updateVersion).greaterThan(VersionHelper.valueOf(getVersion()))) {
+				if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, "A newer version of Flower Platform Plugin is available. It's recommended to upgrade.\n"
+						+ "Installed version = " + getVersion()
+						+ ".\nLatest version = " + updateVersion
+						+ ".\n\n"
+						+ "Do you want to upgrade to the latest version?", "Information", JOptionPane.YES_NO_OPTION)) {
+					downloadUpdate(updateInfo.getProperty("url"));
 				}
-			} catch (IOException e) {
-				log("Error getting latest Flower Platform Plugin version", e);
-			} 
+			}
 		}).start();
 	}
 	
-	private void downloadUpdate() {
-		File updateLocation = new File(BaseNoGui.getSketchbookFolder() + "/tools/FlowerPlatformPluginLauncher/tool/new-version");
-		updateLocation.mkdirs();
+	private void downloadUpdate(String downloadUrl) {
 		log("Downloading update...");
+		File updateLocation = new File(BaseNoGui.getSketchbookFolder() + "/tools/FlowerPlatformPluginLauncher/tool/new-version");
 		try {
-			Downloader.downloadAndUnzip(globalProperties.getProperty("update.downloadUrl", null), updateLocation);
+			UpdatableCodeUtils.downloadAndUnzip(downloadUrl, updateLocation);
 			log("Download complete.");
 			JOptionPane.showMessageDialog(null, "The latest version of Flower Platform Plugin was downloaded. Please restart Arduino IDE for the changes to take effect.");
 		} catch (Exception e) {
-			updateLocation.delete();
 			e.printStackTrace();
 		}
 	}
@@ -177,12 +169,8 @@ public class FlowerPlatformPlugin implements Tool {
 			globalProperties.put("commandServerPort", "9000");
 			writeProperties = true;
 		}
-		if (globalProperties.getProperty("update.versionUrl") == null) {
-			globalProperties.put("update.versionUrl", "http://hub.flower-platform.com/update/version.txt");
-			writeProperties = true;
-		}
-		if (globalProperties.getProperty("update.downloadUrl") == null) {
-			globalProperties.put("update.downloadUrl", "http://hub.flower-platform.com/update/flower-platform-arduino-ide.zip");
+		if (globalProperties.getProperty("updateUrl") == null) {
+			globalProperties.put("updateUrl", "http://hub.flower-platform.com/update/update.txt");
 			writeProperties = true;
 		}
 		if (globalProperties.getProperty("otaUpload.serverSignature") == null) {

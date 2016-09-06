@@ -77,9 +77,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.flowerplatform</groupId>
-			<artifactId>
-				flower-platform-launcher-for-updatable-code
-			</artifactId>
+			<artifactId>flower-platform-updatable-code-library</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
