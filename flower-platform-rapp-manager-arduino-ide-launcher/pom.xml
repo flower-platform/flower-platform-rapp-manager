@@ -9,7 +9,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 
-		<arduino.home>D:/Java/arduino-1.6.7/</arduino.home>
+		<arduino.home>D:/Arduino_IDEs/arduino-1.6.7/</arduino.home>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 	</properties>
 
@@ -17,7 +17,7 @@
 		<dependency>
 			<groupId>org.flowerplatform</groupId>
 			<artifactId>flower-platform-updatable-code-library</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>cc.arduino</groupId>
