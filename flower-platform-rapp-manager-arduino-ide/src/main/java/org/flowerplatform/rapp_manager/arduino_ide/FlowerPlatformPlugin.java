@@ -25,6 +25,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
+import org.flowerplatform.rapp_manager.arduino_ide.library_manager.compatibility.AbstractLibraryInstallerWrapperArduino;
+import org.flowerplatform.rapp_manager.arduino_ide.library_manager.compatibility.LibraryInstallerWrapperArduino;
 import org.flowerplatform.updatable_code.util.UpdatableCodeUtils;
 
 import cc.arduino.contributions.VersionHelper;
@@ -161,7 +163,6 @@ public class FlowerPlatformPlugin implements Tool {
 		} catch (Throwable th) {
 			th.printStackTrace(System.err);
 		}
-		
 		// get/create global properties
 		globalProperties = readProperties(getGlobalPropertiesFile());
 		boolean writeProperties = false;
@@ -279,7 +280,20 @@ public class FlowerPlatformPlugin implements Tool {
 	public void writeGlobalProperties() {
 		writeProperties(globalProperties, getGlobalPropertiesFile());
 	}
-
+	
+	/*
+	 * This method analize the current ArduinoIde version and return a compatible installer:
+	 * for < 1.6.6 return LibraryInstallerWrapperPre166
+	 * for >= 1.6.6 return LibraryInstallerWrapper
+	 */
+	/**
+	 *  This method analize the current Arduino Ide version and return a compatible installer:
+	 * @return LibraryInstallerWrapperPre166 if current version < 166, LibraryInstallerWrapper otherwise
+	 */
+	protected AbstractLibraryInstallerWrapperArduino getLegacyInstaller() {
+		return new LibraryInstallerWrapperArduino();
+	}
+	
 	public static File getBuildFolder(Sketch sketch) throws IOException {
 		SketchData sketchData = null;
 		try {

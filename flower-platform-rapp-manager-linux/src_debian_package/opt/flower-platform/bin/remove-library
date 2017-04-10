@@ -1,0 +1,4 @@
+#!/bin/bash
+
+LIBRARY_NAME=$1
+easy_install --user -m $LIBRARY_NAME

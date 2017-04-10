@@ -4,9 +4,9 @@
      ====================================================================== -->
 <project name="project" default="default" basedir="..">
 	
-	<property name="arduinoDir" value="D:/Arduino_IDEs/"/>
+	<property name="arduinoDir" value="D:/Arduino_IDEs_test/"/>
 	<property name="testSuite" value="org.flowerplatform.rapp_manager.arduino_ide.test.TestSuiteArduinoIde"/>
-	<property name="tiny-http-server.folder" value="../../tiny-http-server/tiny-http-server" />
+	<property name="tiny-http-server.folder" value="E:/data/arduino-reps/tiny-http-server/tiny-http-server" />
 
 	<description>
             description
@@ -21,6 +21,7 @@
 				<jvmarg value="-Dsun.java2d.d3d=false"/>
 				<jvmarg value="-Xms128M"/>
 				<jvmarg value="-Xmx512M"/>
+        		<!-- <jvmarg value="-agentlib:jdwp=transport=dt_socket,server=y,address=8000,suspend=y"/> -->
 				
 				<jvmarg value="-DAPP_DIR=@{arduino-dir}"/>
 				
@@ -30,6 +31,7 @@
 					<pathelement location="test_deps/hamcrest-core-1.3.jar"/>
 					<pathelement location="test_deps/junit-toolbox-2.2.jar"/>
 					<pathelement location="test_deps/commons-io-2.4.jar"/>
+					<pathelement location="test_deps/mockito-all-1.9.5.jar"/>
 					<pathelement location="src/test/resources/"/>
 				</classpath>
         		

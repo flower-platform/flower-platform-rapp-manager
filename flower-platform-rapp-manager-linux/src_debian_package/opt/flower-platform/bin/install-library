@@ -1,0 +1,5 @@
+#!/bin/bash
+
+WORK_DIR=$1
+cd $WORK_DIR
+python setup.py install --user
